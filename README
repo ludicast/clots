@@ -1,0 +1,48 @@
+Clot
+=========
+
+This code seeks to implement extensions for liquid whereby it has the power of other template libraries.
+
+One of the big benefits of liquid is that it enforces a strict MVC paradign where the V cannot affect the M.  This is done for security reasons, but is an excellent approach to coding views in general.  Therefore, we seek to make liquid a fuller template library so it can be used for all views, not just ones that joe user can modify.
+
+Example
+=======
+
+It allows a form to be created like so
+
+{% formfor user activity:new, class:form, obj_class:users %}
+	{{ errors }}
+<fieldset>
+	<legend>User Information</legend>
+	{{ form_login | form_item: "Username:", true}}
+	{{ form_first_name | form_item: "First Name:"}}
+	{{ form_last_name | form_item: "Last Name:"}}
+	{{ form_email | form_item: "Email:", true}}
+	{{ form_password | set_param: "type", "password" | form_item: "Password:", true}}
+	{{ form_password_confirmation | set_param: "type", "password" | form_item: "Confirm Password:", true}}					
+	<br/>
+	{{ "Create!" | submit_button }}
+</fieldset>	
+{% endformfor %}
+
+
+And generate:
+
+<form method="POST" class="form" action="/users/">
+	
+<fieldset>
+	<legend>User Information</legend>
+	<p><label for="user[login]">Username:<span class="required">*</span></label><input type="text" id="user[login]" name="user[login]" value=""/></p>
+	<p><label for="user[first_name]">First Name:</label><input type="text" id="user[first_name]" name="user[first_name]" value=""/></p>
+	<p><label for="user[last_name]">Last Name:</label><input type="text" id="user[last_name]" name="user[last_name]" value=""/></p>
+	<p><label for="user[email]">Email:<span class="required">*</span></label><input type="text" id="user[email]" name="user[email]" value=""/></p>
+	<p><label for="user[password]">Password:<span class="required">*</span></label><input type="password" id="user[password]" name="user[password]" value=""/></p>
+	<p><label for="user[password_confirmation]">Confirm Password:<span class="required">*</span></label><input type="password" id="user[password_confirmation]" name="user[password_confirmation]" value=""/></p>					
+	<br/>
+
+	<div class="form-submit-button"><input type="submit" value="Create!"/></div>
+</fieldset>	
+</form>
+
+
+Copyright (c) 2008 Ludicast
