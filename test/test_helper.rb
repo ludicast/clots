@@ -23,6 +23,8 @@ class LiquidDemoModelDrop < Liquid::Drop
   
   attr_reader :source
   delegate :hash, :to => :source    
+  
+  undef :type
 
   
     def initialize(args = {})

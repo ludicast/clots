@@ -27,8 +27,8 @@ class LiquidCmsTest < Test::Unit::TestCase
   
   
   def test_new_form
-    expected = '<form method="POST" action="/text_contents/"><input type="text" id="text_content[name]" name="text_content[name]" value=""/></form>'
-    template = '{% formfor text_content activity:new obj_class:text_contents %}{{ form_name }}{% endformfor %}'
+    expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="text" id="liquid_demo_model_drop[name]" name="liquid_demo_model_drop[name]" value="My Name"/></form>'
+    template = '{% formfor liquid_demo_model_drop activity:new obj_class:liquid_demo_model_drops %}{{ form_name }}{% endformfor %}'
     assert_template_result(expected, template)
   end
 
