@@ -22,8 +22,8 @@ module Clot
       render_form context
     end    
     
-private 
-
+    private 
+    
     def set_variables(context)
       @model = context[@form_object]
       @form_helper = @attributes["form_helper"] || "simple_form_helper"
@@ -64,6 +64,7 @@ private
     end
     
     def render_form(context)
+
       #    need to settle contecxt issues here..
       
       result = '<form method="POST" ' + @class_string + 'action="' + @form_action + '"' + @upload_info + '>'
@@ -71,11 +72,15 @@ private
         result += '<input type="hidden" name="_method" value="PUT"/>'
       end
       
-      result += "#{auth_token}"
+      if context.has_key? 'auth_token'
+        result += '<input name="authenticity_token" type="hidden" value="' + context['auth_token'] + '"/>'
+      end
+  #  see if need to be outside of builder
+  #  result += "#{auth_token}"
       
       errors = ""
       
-
+      
       if @model.errors.count > 0     
         result += '<div id="error-explanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'  
         
@@ -84,10 +89,10 @@ private
           result += attr + " - " + msg.to_s
           result += "</li>"
         }
-
+        
         result += "</ul></div>"
       end   
-     
+      
       context.stack do
         @model.liquid_attributes.each { |value|
           value_string = ""
@@ -95,25 +100,25 @@ private
           unless @model[value].nil?
             value_string = @model[value].to_s
           end
-
+          
           errors = @model.errors.on(value)
           
           name_string = @class_name  + "[" + value.to_s + "]"
           contents = send @form_helper.to_sym, name_string, value_string, errors
-       
+          
           context["form_" + value.to_s] = contents    
         }
         
         results = render_all(@nodelist, context)
         result += (results * "")
-
+        
       end
       
       result += "</form>"
       result      
     end
-
-     
+    
+    
     def syntax_error
       raise SyntaxError.new("Syntax Error in 'formfor' - Valid syntax: formfor [object] activity:(edit|new)")      
     end

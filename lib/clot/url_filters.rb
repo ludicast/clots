@@ -1,6 +1,6 @@
 module Clot
   module UrlFilters
-   include ActionView::Helpers::TagHelper
+    include ActionView::Helpers::TagHelper
     
     def edit_link(target, message = "Edit", class_name = nil)
       url = get_url target, class_name    
@@ -66,8 +66,8 @@ module Clot
     end
     
     def drop_class_to_table_item(clazz)
-        match = /_drops/.match clazz.to_s.tableize
-        match.pre_match
+      match = /_drops/.match clazz.to_s.tableize
+      match.pre_match
     end
     
     def error_messages(object)
@@ -79,7 +79,7 @@ module Clot
     
     def form_item(tag, message, required = false)
       tag_id = get_tag_prop("id", tag)
-
+      
       form_string = ""
       if tag_id 
         form_string = " for=\"#{tag_id}\""
@@ -113,14 +113,14 @@ module Clot
     end
     
     def input_to_select(input, data_class, sort_field="name")
-
+      
       value_match = /value="([^"]*)"/.match input
       if value_match
         value_text = value_match[1]
       else
         value_text = ""
       end
-
+      
       name_match = /name="[^"]*"/.match input
       if name_match
         name_text = " #{name_match[0]}"
@@ -135,7 +135,7 @@ module Clot
       elsif data_class == "projects"
         users = get_projects
       end
-    
+      
       users.each do | user |
         if (user.id.to_s == value_text)
           select_string = "selected=\"selected\""   
@@ -150,14 +150,14 @@ module Clot
     
     #note - must reconstruct from scratch...
     def input_to_text(input)
-
+      
       value_match = /value="([^"]*)"/.match input
       if value_match
         value_text = value_match[1]
       else
         value_text = ""
       end
-
+      
       name_match = /name="[^"]*"/.match input
       if name_match
         name_text = " #{name_match[0]}"
@@ -167,21 +167,16 @@ module Clot
       
       "<textarea#{name_text}>#{value_text}</textarea>"
     end
-
-
-    def auth_token
-      "" # todo asap
-    end
-
+    
     def input_to_checkbox(input)
-
+      
       value_match = /value="([^"]*)"/.match input
       if value_match
         value_text = value_match[1]
       else
         value_text = ""
       end
-
+      
       name_match = /name="[^"]*"/.match input
       if name_match
         name_text = " #{name_match[0]}"
@@ -211,10 +206,10 @@ module Clot
     def page_link_for(url, page, message)
       "<a href=\"" + url + "?page=" + page.to_s + "\">" + message + "</a>" 
     end
-        
+    
     def will_paginate(collection, url)
       total = collection.total_pages
-
+      
       if total <= 1
         return ""
       end
@@ -226,18 +221,18 @@ module Clot
         links += page_link_for(url,current - 1, "&lt;")  + " "
       end     
       
-      (1..(total)).each do |index|
+       (1..(total)).each do |index|
         if index != 1
           links += " | "
         end
-    
+        
         if index == current
           links += index.to_s
         else
           links += page_link_for(url,index,index.to_s)
         end
       end
-
+      
       if current < total
         links += " " + page_link_for(url, current + 1, "&gt;")
         links += " " + page_link_for(url, total, "&gt;&gt;")
@@ -245,22 +240,22 @@ module Clot
       
       links += "</div>"
     end
-
+    
     def get_by_id(class_name, id, name_field)
       obj = class_name.constantize.send :find, id
       obj[:name_field]
     end  
-  
+    
     def escape_html(html)
       html_escape(html)
     end
-  
+    
     def get_tag_prop(prop, input)
       prop_match = /#{prop}="([^"]*)"/.match input
       if prop_match
         prop_match[1]
       end
     end
-  
+    
   end
 end
