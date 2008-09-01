@@ -27,10 +27,7 @@ module LiquidViewExtensions
       match = /Controller/.match @proxied_action_view.controller.class.to_s 
       @new_assigns['controller_name'] = match.pre_match
       
-      if @proxied_action_view.controller.send :protect_against_forgery?
-        puts (@proxied_action_view.controller.send :form_authenticity_token)
-        puts (@proxied_action_view.controller.send :form_authenticity_token)        
-        puts (@proxied_action_view.controller.send :form_authenticity_token)        
+      if @proxied_action_view.controller.send :protect_against_forgery?      
         @new_assigns['auth_token'] = @proxied_action_view.controller.send :form_authenticity_token
       end
       
