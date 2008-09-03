@@ -8,7 +8,7 @@ Liquid::Template.register_filter Clot::UrlFilters
 Liquid::Template.register_tag('formfor', Clot::LiquidFormBuilder)
 
 
-ActiveRecord::Base.send(:include, ActiveRecord::Acts::Droppable)
+ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 
 module LiquidViewExtensions
 
