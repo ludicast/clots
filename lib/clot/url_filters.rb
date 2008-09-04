@@ -11,7 +11,7 @@ module Clot
       if (class_name.nil?)
         class_name = object.dropped_class.to_s.tableize
       end
-    '/' + class_name + "/" + object.oid.to_s    
+    '/' + class_name + "/" + object.record_id.to_s    
     end
     
     def get_url(target, class_name = nil)

@@ -4,16 +4,27 @@ require 'activerecord'
 
 require File.dirname(__FILE__) + '/../../liquid/test/helper'
 
-
 #included for the actionview parts that helpers use
 require File.dirname(__FILE__) + '/../../../../config/environment'
 
 require 'clot/url_filters'
 
 class LiquidDemoModel
+  def initialize
+    @saved = false
+  end
+  
   def errors
     @errs ||= ActiveRecord::Errors.new Hash.new
     @errs
+  end
+  
+  def new_record?
+    @saved
+  end
+  
+  def save_record
+    @saved = true
   end
 end
 
@@ -55,7 +66,7 @@ class LiquidDemoModelDrop < Liquid::Drop
         "My Name"
     end
     
-    def oid
+    def record_id
       1
     end  
     

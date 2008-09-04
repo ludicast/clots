@@ -23,11 +23,23 @@ module Clot
     end    
     
     private 
+
+    def get_action
+#      if @attributes.has_key?("activity")
+#        @activity = @attributes["activity"]
+#      end
+      if @model.nil? || @model.source.nil? || @model.source.new_record?
+        @activity = "new"
+      else
+        @activity = "edit"
+      end
+    end
     
     def set_variables(context)
       @model = context[@form_object]
       @form_helper = @attributes["form_helper"] || "simple_form_helper"
-      @activity = @attributes["activity"] 
+      
+      @activity = get_action
       
       if @activity == "edit"
         if @attributes["obj_class"]
@@ -120,7 +132,7 @@ module Clot
     
     
     def syntax_error
-      raise SyntaxError.new("Syntax Error in 'formfor' - Valid syntax: formfor [object] activity:(edit|new)")      
+      raise SyntaxError.new("Syntax Error in 'formfor' - Valid syntax: formfor [object]")      
     end
     
   end

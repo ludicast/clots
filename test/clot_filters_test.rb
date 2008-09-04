@@ -31,11 +31,11 @@ class ClotTest < Test::Unit::TestCase
   def test_object_url
     obj = get_drop @@text_content_default_values
     test_url = object_url obj
-    assert_equal test_url, "/" + obj.dropped_class.to_s.tableize + "/" + obj.oid.to_s
+    assert_equal test_url, "/" + obj.dropped_class.to_s.tableize + "/" + obj.record_id.to_s
     
     obj = get_drop @@text_content_default_values
     test_url = object_url obj, "image_contents"
-    assert_equal test_url, "/image_contents/" + obj.oid.to_s
+    assert_equal test_url, "/image_contents/" + obj.record_id.to_s
   end
 
 
