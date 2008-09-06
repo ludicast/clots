@@ -5,6 +5,7 @@ require 'extras/liquid_view'
 
 
 Liquid::Template.register_filter Clot::UrlFilters  
+Liquid::Template.register_filter Clot::FormFilters  
 Liquid::Template.register_tag('formfor', Clot::LiquidFormBuilder)
 
 

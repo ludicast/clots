@@ -4,7 +4,14 @@ require File.dirname(__FILE__) + '/test_helper'
 
 class ClotTest < Test::Unit::TestCase
   include Clot::UrlFilters
+  include Clot::FormFilters
+  
   include Liquid
+  
+  def initialize(test_method_name)
+    @context ||= {}
+    super 
+  end
   
   def test_link_chains
     obj = get_drop @@text_content_default_values

@@ -4,9 +4,10 @@ require File.dirname(__FILE__) + '/test_helper'
 
 class LiquidCmsTest < Test::Unit::TestCase
   include Clot::UrlFilters
+  include Clot::FormFilters
+  
   include Liquid
   
-
   def test_empty_form_builder
     text_drop = get_drop @@text_content_default_values
 
