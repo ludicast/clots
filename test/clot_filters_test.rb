@@ -85,7 +85,23 @@ class ClotTest < Test::Unit::TestCase
     assert (! test_link.blank?)
     assert_equal test_link, test_link2        
   end
+  
+  def test_get_nested_url
+    obj = get_drop @@text_content_default_values
+    
+    url = get_nested_url obj, obj
+    expected_url = "/liquid_demo_models/1/liquid_demo_models/1"
+    assert_equal url, expected_url    
 
+    url = get_nested_url obj, "/child"
+    expected_url = "/liquid_demo_models/1/child"
+    assert_equal url, expected_url
+
+  end
+
+#get_nested_url(target, nested_target, class_name = "", nested_class_name = "")
+
+  
   def test_form_item_class
     expected = "<p><label>hello there</label>form_item</p>"
     template = '{{"form_item" | form_item: "hello there" }}'

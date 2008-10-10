@@ -7,6 +7,7 @@ require 'extras/liquid_view'
 Liquid::Template.register_filter Clot::UrlFilters  
 Liquid::Template.register_filter Clot::FormFilters  
 Liquid::Template.register_tag('formfor', Clot::LiquidFormBuilder)
+Liquid::Template.register_tag('nested_formfor', Clot::LiquidNestedFormBuilder)
 
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)

@@ -2,27 +2,39 @@ module Clot
   module UrlFilters
     include ActionView::Helpers::TagHelper
 
-    def object_url(object, class_name = nil)
-      if (class_name.nil?)
+    #get url from object
+    def object_url(object, class_name = "")
+      if (class_name.blank?)
         class_name = object.dropped_class.to_s.tableize
       end
-    '/' + class_name + "/" + object.record_id.to_s    
+      '/' + class_name + "/" + object.record_id.to_s
     end
-    
-    def get_url(target, class_name = nil)
+
+    #get url from either object or string
+    def get_url(target, class_name = "")
       if target.is_a? String
         target
       else
         object_url target, class_name
       end    
+    end
+    
+    #get url from object and nested object
+    def get_nested_url(target, nested_target, class_name = "", nested_class_name = "")
+      get_url(target, class_name) + get_url(nested_target, nested_class_name)
+    end
+
+    #get url from object and nested object
+    def get_nested_edit_url(target, nested_target, class_name = "", nested_class_name = "")
+      get_url(target, class_name) + get_url(nested_target, nested_class_name) + "/edit"
     end    
     
-    def edit_link(target, message = "Edit", class_name = nil)
+    def edit_link(target, message = "Edit", class_name = "")
       url = get_url target, class_name    
       content_tag :a, message, :href => url + "/edit"
     end
 
-    def view_link(target, message = "View", class_name = nil)
+    def view_link(target, message = "View", class_name = "")
       url = get_url target, class_name
       content_tag :a, message, :href => url
     end
@@ -31,7 +43,7 @@ module Clot
       content_tag :a, message, :href => "/" + class_name.tableize
     end
     
-    def delete_link(target, message = "Delete", class_name = nil)
+    def delete_link(target, message = "Delete", class_name = "")
       url = get_url target, class_name
       if @context.has_key? 'auth_token'
         token = @context['auth_token']

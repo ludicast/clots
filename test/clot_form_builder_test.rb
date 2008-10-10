@@ -10,13 +10,29 @@ class LiquidCmsTest < Test::Unit::TestCase
   
   def test_empty_form_builder
     text_drop = get_drop @@text_content_default_values
-
     expected = '<form method="POST" action="' + (object_url text_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
     template = '{% formfor text %}{% endformfor %}'
-    
-    
     assert_template_result(expected, template, 'text' => text_drop)  
   end  
+
+  def test_form_action_builder
+    text_drop = get_drop @@text_content_default_values
+    expected = '<form method="POST" action="' + (object_url text_drop) + '/no_no_no"></form>'
+    template = '{% formfor text post_method:no_no_no %}{% endformfor %}'
+    assert_template_result(expected, template, 'text' => text_drop)  
+  end  
+
+  def test_form_builder_for_nested_route
+    child_drop = get_drop @@text_content_default_values
+    parent_drop = get_drop @@text_content_default_values.merge({ :record_id => 2, :name => 'parent' })
+    expected = '<form method="POST" action="' + (object_url parent_drop) + (object_url child_drop)  + '"><input type="hidden" name="_method" value="PUT"/></form>' 
+    template = "{% nested_formfor parent child %}{% endnested_formfor %}"
+    assert_template_result(expected, template, 'child' => child_drop, 'parent' => parent_drop)
+
+    expected = '<form method="POST" action="' + (object_url parent_drop) + (object_url child_drop)  + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="liquid_demo_model[name]" name="liquid_demo_model[name]" value="Basic Essay Here"/><input type="text" id="liquid_demo_model[name]" name="liquid_demo_model[name]" value="parent"/></form>' 
+    template = "{% nested_formfor parent child %}{{ form_name }}{{ parent_form_name }}{% endnested_formfor %}"
+    assert_template_result(expected, template, 'child' => child_drop, 'parent' => parent_drop)  
+  end
 
   def test_form_builder_element
     user_drop = get_drop @@user_default_values

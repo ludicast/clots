@@ -29,32 +29,33 @@ class LiquidDemoModel
 end
 
 class LiquidDemoModelDrop < Liquid::Drop
-  class_inheritable_reader :liquid_attributes
-  write_inheritable_attribute :liquid_attributes, []
   
-  attr_reader :source
-  delegate :hash, :to => :source    
-  
+  attr_reader :source, :liquid_attributes
   undef :type
-
   
     def initialize(args = {})
       @dropped_class = LiquidDemoModel
       @source = LiquidDemoModel.new
-      
+      @liquid_attributes = [] 
+            
       args.each_pair do |symbol,value|
         if value.is_a? String
           value = "\'#{value}\'"
         end
         
-        @dropped_class.class_eval( "def #{symbol}() @#{symbol} || #{value}; end" )
-        @dropped_class.class_eval( "def #{symbol}=(val) @#{symbol} = val; end" )
-        liquid_attributes << symbol
+        @source.instance_eval( "def #{symbol}() @#{symbol} || #{value}; end" )
+        @source.instance_eval( "def #{symbol}=(val) @#{symbol} = val; end" )
+        @liquid_attributes << symbol
         instance_eval( "def #{symbol}() @source.#{symbol} || #{value}; end" )
         instance_eval( "def #{symbol}=(val) @source.#{symbol} = val; end" )
+      end
 
-      end     
-      @liquid = liquid_attributes.inject({}) { |h, k| h.update k.to_s => @source.send(k) }      
+      #throw in current properties
+      ["name", "record_id"].each do |item|
+        unless @liquid_attributes.include? item
+          @liquid_attributes << item
+        end
+      end
     end
     
     def errors
@@ -79,7 +80,7 @@ class LiquidDemoModelDrop < Liquid::Drop
     end
     
     def before_method(method)
-      @liquid[method.to_s]
+      send method.to_s
     end
         
   end
@@ -100,5 +101,4 @@ end
       :password => "password",
       :password_confirmation => "password",
       :type => "User"
-    } 
-  
+    }
