@@ -30,6 +30,13 @@ class LiquidDemoModel
   end
 end
 
+
+class MockDrop < Liquid::Drop
+  def initialize(args = {})
+    
+  end
+end
+
 class LiquidDemoModelDrop < Liquid::Drop
 
   attr_reader :source, :liquid_attributes
@@ -85,6 +92,40 @@ class LiquidDemoModelDrop < Liquid::Drop
       send method.to_s
     end
 
+
+
+
+  #probably should be able to remove this shite....
+      def self.self_and_descendants_from_active_record#nodoc:
+        klass = self
+        classes = [klass]
+        while klass != klass.base_class
+          classes << klass = klass.superclass
+        end
+        classes
+      rescue  
+        [self]
+      end
+
+       def self.human_name(options = {})
+        defaults = self_and_descendants_from_active_record.map do |klass|
+          :"#{klass.name.underscore}"
+        end
+        defaults << self.name.humanize
+        I18n.translate(defaults.shift, {:scope => [:activerecord, :models], :count => 1, :default => defaults}.merge(options))
+       end
+
+   def self.human_attribute_name(attribute_key_name, options = {})
+        defaults = self_and_descendants_from_active_record.map do |klass|
+          :"#{klass.name.underscore}.#{attribute_key_name}"
+        end
+        defaults << options[:default] if options[:default]
+        defaults.flatten!
+        defaults << attribute_key_name.humanize
+        options[:count] ||= 1
+        I18n.translate(defaults.shift, options.merge(:default => defaults, :scope => [:activerecord, :attributes]))
+      end
+
   end
 
 def get_drop(args = {})
@@ -109,6 +150,25 @@ include Liquid
 Spec::Matchers.define :parse_to do |expected|
   match do |template|
     expected.should == Template.parse(template).render {}
+  end
+
+  failure_message_for_should do |template|
+    "expected #{template} to parse to #{expected}"
+  end
+
+  failure_message_for_should_not do |template|
+    "expected #{template} to not parse to #{expected}"
+  end
+
+  description do
+    "parse"
+  end
+
+end
+
+Spec::Matchers.define :parse_with_atributes_to do |expected,attributes|
+  match do |template|
+    expected.should == Template.parse(template).render(attributes)
   end
 
   failure_message_for_should do |template|
