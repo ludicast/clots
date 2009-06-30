@@ -107,6 +107,81 @@ describe "Default Filters" do
     end  
   end
 
+  context "it should get same links from either url or object" do
+    before(:each) do
+      @obj = get_drop @@text_content_default_values
+    end
+
+    it "for editing" do
+      test_link = edit_link(object_url(@obj))
+      test_link2 = edit_link @obj
+      test_link.should == test_link2
+    end
+
+    it "for deleting" do
+      test_link = delete_link(object_url(@obj))
+      test_link2 = delete_link @obj
+      test_link.should == test_link2
+    end
+
+    it "for viewing" do
+      test_link = view_link(object_url(@obj))
+      test_link2 = view_link @obj  
+      test_link.should == test_link2
+    end
+
+  end
+
+  context "should set param on form items" do
+    it "that are closed" do
+      expected = '<input dummy="ffgg" ilse="sss"  type="password"/>'
+      template = '{{ \'<input dummy="ffgg" ilse="sss" />\' | set_param: "type", "password" }}'
+      template.should parse_to(expected)  
+    end
+
+    it "that are open" do
+      expected = '<input dummy="ffgg" ilse="sss"  type="password">'
+      template = '{{ \'<input dummy="ffgg" ilse="sss" >\' | set_param: "type", "password" }}'
+      template.should parse_to(expected)
+    end
+  end
+
+  context "should translate to text area" do
+    it "converting vaues to text contents" do
+      expected = '<textarea>HELLO</textarea>'
+      template = '{{ \'<input type="text" value="HELLO" />\' | input_to_text }}'
+      template.should parse_to(expected)
+    end
+
+    it "keeping original attributes" do
+      expected = '<textarea name="g-luv"></textarea>'
+      template = '{{ \'<input type="text" name="g-luv" />\' | input_to_text }}'
+      template.should parse_to(expected)
+    end
+
+  end
+
+  context "should label form items" do
+    it "should label form item" do
+      expected = "<p><label>hello there</label>form_item</p>"
+      template = '{{"form_item" | form_item: "hello there" }}'
+      template.should parse_to(expected)
+    end
+
+    it "should have 'required' option for form item's label" do
+      expected = '<p><label>hmm<span class="required">*</span></label>h2</p>'
+      template = '{{"h2" | form_item: "hmm", true }}'
+      template.should parse_to(expected)
+    end
+
+    it "should populate 'for' attribute depending on 'id' field" do    
+      expected = "<p><label for=\"item\">nyuk</label><i id=\"item\"></p>"
+      template = '{{\'<i id="item">\' | form_item: "nyuk" }}'
+      template.should parse_to(expected)
+    end
+  end
+
+
   def test_content_drop
     get_drop(@@text_content_default_values)
   end
