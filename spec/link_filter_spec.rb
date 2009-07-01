@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Link Filters" do
-
   include Clot::UrlFilters
-  include Clot::FormFilters
+  include Clot::LinkFilters
+
   include Liquid
 
   before(:each) do

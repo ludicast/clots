@@ -115,14 +115,18 @@ module Clot
     def concat(string1, string2)
       "#{string1}#{string2}"
     end
-    
+
+    def get_id_from_name(name)
+      name.sub("[", "_").sub("]","")
+    end
+
     def simple_form_helper(name, value, errors )
       error_string = ""
       unless errors.blank?
         error_string = ' class="error-item"'
       end
       
-      input = "<input type=\"text\" id=\"#{name}\" name=\"#{name}\" value=\"#{value}\"#{error_string}/>"
+      input = "<input type=\"text\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"#{error_string}/>"
       
       input
     end

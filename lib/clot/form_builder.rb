@@ -87,8 +87,6 @@ module Clot
     end
  
     def set_context_info(context, model, item_prefix = "form_")
-
-      
         model.liquid_attributes.each { |value|
           value_string = ""
           

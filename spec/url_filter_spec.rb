@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "Url Filters" do
 
   include Clot::UrlFilters
-  include Clot::FormFilters
   include Liquid
 
   before(:each) do

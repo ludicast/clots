@@ -33,13 +33,13 @@ describe "Form Builder" do
   context "when using a form_* item" do
     it "should produce data based on form type" do
       user_drop = get_drop @@user_default_values
-      expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><br/><input type="text" id="liquid_demo_model[login]" name="liquid_demo_model[login]" value="' + user_drop.login + '"/></form>'
+      expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><br/><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + user_drop.login + '"/></form>'
       template = '{% formfor liquid_demo_model %}<br/>{{ form_login }}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'liquid_demo_model' => user_drop)
     end
 
     it "should dynamically create an input box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="text" id="liquid_demo_model_drop[name]" name="liquid_demo_model_drop[name]" value="My Name"/></form>'
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="text" id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" value="My Name"/></form>'
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{{ form_name }}{% endformfor %}'
       template.should parse_to(expected)
     end    
@@ -77,7 +77,7 @@ describe "Form Builder" do
     end
 
     it "should allow elements that refer to both the parent and the child" do
-      expected = '<form method="POST" action="' + (object_url @parent_drop) + (object_url @child_drop)  + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="liquid_demo_model[name]" name="liquid_demo_model[name]" value="Basic Essay Here"/><input type="text" id="liquid_demo_model[name]" name="liquid_demo_model[name]" value="parent"/></form>'
+      expected = '<form method="POST" action="' + (object_url @parent_drop) + (object_url @child_drop)  + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="liquid_demo_model_name" name="liquid_demo_model[name]" value="Basic Essay Here"/><input type="text" id="liquid_demo_model_name" name="liquid_demo_model[name]" value="parent"/></form>'
       template = "{% nested_formfor parent child %}{{ form_name }}{{ parent_form_name }}{% endnested_formfor %}"
       template.should parse_with_atributes_to(expected, 'child' => @child_drop, 'parent' => @parent_drop)
     end  
@@ -99,7 +99,7 @@ describe "Form Builder" do
 
     it "should show error around relevant form item" do
       @user_drop.errors.add("login", "login already used")
-      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>1 error(s) occurred while processing information</h2><ul><li>login - login already used</li></ul></div><input type="text" id="liquid_demo_model[login]" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
+      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>1 error(s) occurred while processing information</h2><ul><li>login - login already used</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
       template = '{% formfor user class:tester %}{{ form_login }}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'user' => @user_drop)
     end
@@ -108,7 +108,7 @@ describe "Form Builder" do
       @user_drop.errors.add("error")
       @user_drop.errors.add("login", "login already used")
       @user_drop.errors.add("login", "login too short")
-      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>3 error(s) occurred while processing information</h2><ul><li>login - login already used</li><li>login - login too short</li><li>error - is invalid</li></ul></div><input type="text" id="liquid_demo_model[login]" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
+      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>3 error(s) occurred while processing information</h2><ul><li>login - login already used</li><li>login - login too short</li><li>error - is invalid</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
       template = '{% formfor user class:tester %}{{ form_login }}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'user' => @user_drop)
     end
