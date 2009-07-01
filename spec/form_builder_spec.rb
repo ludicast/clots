@@ -86,16 +86,6 @@ describe "Form Builder" do
 
   context "when a form has errors" do
     before(:each) do
-  '    model = mock_model Spec::Mocks::Mock, @@user_default_values
-      model.stub!(:errors).and_return(ActiveRecord::Errors.new(model))
-      @user_drop = model
-      def @user_drop.to_liquid
-        @user_drop
-      end
-      def @user_drop.dropped_class
-        "User"
-      end
-   '
       @user_drop = get_drop @@user_default_values
       @user_drop.stub!(:errors).and_return(ActiveRecord::Errors.new(@user_drop))
     end
