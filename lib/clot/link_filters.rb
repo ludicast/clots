@@ -3,18 +3,18 @@ module Clot
     include ActionView::Helpers::TagHelper
     
     def edit_link(target, message = "Edit", class_name = "")
-      url = get_url target, class_name    
+      url = object_url target, class_name
       content_tag :a, message, :href => url + "/edit"
     end
 
     def view_link(target, message = "View", class_name = "")
-      url = get_url target, class_name
+      url = object_url target, class_name
       content_tag :a, message, :href => url
     end
 
     
     def delete_link(target, message = "Delete", class_name = "")
-      url = get_url target, class_name
+      url = object_url target, class_name
       if @context.has_key? 'auth_token'
         token = @context['auth_token']
         token_string = "var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', '" + token + "') ;f.appendChild(s);"
@@ -23,11 +23,7 @@ module Clot
       end
       content_tag :a, message, :href => url, :onclick => "if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);" + token_string + "f.submit(); };return false;"
     end
-    
-    def stylesheet_link(url)
-    '<link href="'+ url +'"  media="screen" rel="stylesheet" type="text/css" />'
-    end
-    
+
     def index_link(controller, message = nil)
       if message.blank?
         controller_array = controller.split("_")
@@ -47,11 +43,15 @@ module Clot
     '<a href="/' + controller +'/new">' + message + '</a>'
     end
 
-    
+    def stylesheet_link(sheet_name)
+      '<link href="'+ stylesheet_url(sheet_name) +'"  media="screen" rel="stylesheet" type="text/css" />'
+    end
+
+              %w{
     def page_link_for(url, page, message)
       "<a href=\"" + url + "?page=" + page.to_s + "\">" + message + "</a>" 
     end
-              %w{
+
     def will_paginate(collection, url)
       total = collection.total_pages
       
