@@ -1,6 +1,7 @@
 module Clot
   class LiquidFormBuilder < ::Liquid::Block
     include Clot::UrlFilters
+    include Clot::LinkFilters
     include Clot::FormFilters
   
     Syntax = /([^\s]+)\s+/
