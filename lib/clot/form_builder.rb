@@ -55,7 +55,7 @@ module Clot
     
     def set_variables(context)
       @model = context[@form_object]
-      @form_helper = @attributes["form_helper"] || "simple_form_helper"
+      @form_helper = @attributes["form_helper"] || "form_input_item"
      
       
       @activity = get_method
@@ -87,7 +87,7 @@ module Clot
     end
  
     def set_context_info(context, model, item_prefix = "form_")
-        model.liquid_attributes.each { |value|
+        model.liquid_attributes.each do |value|
           value_string = ""
           
           unless model[value].nil?
@@ -99,7 +99,7 @@ module Clot
           contents = send @form_helper.to_sym, name_string, value_string, errors
 
           context[item_prefix + value.to_s] = contents 
-        }      
+      end
     end
     
     def render_form(context)
@@ -123,11 +123,11 @@ module Clot
       if @model.errors.count > 0     
         result += '<div id="error-explanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'  
         
-        @model.errors.each{ |attr,msg| 
+        @model.errors.each do |attr,msg|
           result += "<li>"
           result += attr + " - " + msg.to_s
           result += "</li>"
-        }
+        end
         
         result += "</ul></div>"
       end   

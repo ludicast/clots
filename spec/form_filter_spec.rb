@@ -10,20 +10,6 @@ describe "Form Filter" do
     @context = {}    
   end
 
-  context "input_to_text translates to text area" do
-    specify "converting value attribute to text contents" do
-      expected = '<textarea>HELLO</textarea>'
-      template = '{{ \'<input type="text" value="HELLO" />\' | input_to_text }}'
-      template.should parse_to(expected)
-    end
-
-    specify "keeping other attributes" do
-      expected = '<textarea name="g-luv"></textarea>'
-      template = '{{ \'<input type="text" name="g-luv" />\' | input_to_text }}'
-      template.should parse_to(expected)
-    end
-
-  end
 
   context "form_item filter" do
     it "adds label to arbitrary data" do
@@ -72,4 +58,89 @@ describe "Form Filter" do
       template.should parse_to(expected)
     end
   end
+  
+  context "the get_attribute_value filter" do
+    specify "should return the value for the attribute of an open tag" do
+      value = get_attribute_value "attribute", '<tag attribute="value">'
+      value.should == "value"
+    end
+    specify "should return the value for the attribute of a closed tag" do
+      value = get_attribute_value "attribute", '<tag attribute="value"/>'
+      value.should == "value"
+    end
+  end
+
+  context "the drop_class_to_table_item filter" do
+    specify "should return the table item that matches the drop" do
+      class DummyClassDrop; end
+      table_item = drop_class_to_table_item DummyClassDrop
+      table_item.should == "dummy_class"
+    end
+  end
+
+  context "the get_id_from_name filter" do
+    specify "should convert bracket form to regular form" do
+      id =  get_id_from_name "a_b_c[d]"
+      id.should == "a_b_c_d"
+    end
+  end
+
+  context "the concat filter" do
+    specify "should concatinate two strings" do
+      string1 = "string1"
+      string2 = "string2"
+      concatted = concat(string1,string2)
+      concatted.should == "string1string2"
+    end
+  end
+
+  context "input_to_text translates to text area" do
+      specify "converting value attribute to text contents" do
+        expected = '<textarea>HELLO</textarea>'
+        template = '{{ \'<input type="text" value="HELLO" />\' | input_to_text }}'
+        template.should parse_to(expected)
+      end
+
+      specify "keeping other attributes" do
+        expected = '<textarea name="g-luv"></textarea>'
+        template = '{{ \'<input type="text" name="g-luv" />\' | input_to_text }}'
+        template.should parse_to(expected)
+      end
+
+  end
+  
+ context "form_input_item filter" do
+   specify "creates an item based on inputed value and name" do
+     item = form_input_item("item[field]", "value", nil )
+     item.should == "<input type=\"text\" id=\"item_field\" name=\"item[field]\" value=\"value\"/>"
+   end
+
+   specify "sets error class if there is an error" do
+     item = form_input_item("item[field]", "value", true )
+     item.should == "<input type=\"text\" id=\"item_field\" name=\"item[field]\" value=\"value\" class=\"error-item\"/>"
+   end
+
+ end
+
+ context "the input_to_checkbox filter" do
+   specify "should take a textbox and produce a checkbox" do
+     box = input_to_checkbox '<input type="text" value="true"/>'
+     box.should == '<input type="checkbox" value="true"/>'
+   end
+ end
+
+  context "the input_to_select filter" do
+    specify "should take an input box and return a select" do
+      select = input_to_select '<input type="text" name="my_name"/>'
+      select.should == '<select name="my_name"></select>'
+    end
+
+    specify "should take an input box with a collection and return a select with options" do
+      select = input_to_select '<input type="text" name="my_name"/>', [{:record_id => 1, :name=>'Name'}]
+      select.should == '<select name="my_name"><option value="1">Name</option></select>'
+    end
+    
+  end
+
+
 end
