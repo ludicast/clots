@@ -136,7 +136,7 @@ describe "Form Filter" do
     end
 
     specify "should take an input box with a collection and return a select with options" do
-      select = input_to_select '<input type="text" name="my_name"/>', [{:record_id => 1, :name=>'Name'}]
+      select = input_to_select '<input type="text" name="my_name"/>', [{:id => 1, :name=>'Name'}]
       select.should == '<select name="my_name"><option value="1">Name</option></select>'
     end
     

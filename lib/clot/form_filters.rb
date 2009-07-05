@@ -99,7 +99,7 @@ module Clot
       open_tag = "<select name=\"#{name}\">"
       option_string = ''
       items.each do |item|
-        option_string += "<option value=\"#{item[:record_id]}\">#{item[:name]}</option>"
+        option_string += "<option value=\"#{item[:id]}\">#{item[:name]}</option>"
       end
       close_tag = "</select>"
       open_tag + option_string + close_tag
