@@ -1,6 +1,6 @@
 require 'clot/url_filters'
 require 'clot/form_builder'
-
+require 'clot/nested_form_builder'
 require 'extras/liquid_view'
 
 
