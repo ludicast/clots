@@ -1,14 +1,14 @@
 require 'clot/url_filters'
-require 'clot/form_builder'
-require 'clot/nested_form_builder'
+require 'clot/form_for'
+require 'clot/nested_form_for'
 require 'extras/liquid_view'
 
 
 Liquid::Template.register_filter Clot::UrlFilters  
 Liquid::Template.register_filter Clot::LinkFilters  
 Liquid::Template.register_filter Clot::FormFilters
-Liquid::Template.register_tag('formfor', Clot::LiquidFormBuilder)
-Liquid::Template.register_tag('nested_formfor', Clot::LiquidNestedFormBuilder)
+Liquid::Template.register_tag('formfor', Clot::LiquidFormFor)
+Liquid::Template.register_tag('nested_formfor', Clot::LiquidNestedFormFor)
 
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
