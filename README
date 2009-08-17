@@ -13,11 +13,10 @@ Clots allows a form to be created like so
 {% formfor recipe %}
 {{ errors }}
   <p>
-  	Title: {{ form_title }}
+  	Title: {% field :title %}
   </p>
   <p>
-    Description: {{ form_description | input_to_text | set_param: "rows", "4" |
-set_param: "cols", "40" }}
+    Description: {% field :description, rows:4, cols:40 %}
   </p>
   <p>
     {{ "Update" | submit_button }}

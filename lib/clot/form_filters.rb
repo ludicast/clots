@@ -81,29 +81,29 @@ module Clot
     end      
 
     def form_input_item(name, value, errors )
-      error_string = ""
-      unless errors.blank?
-        error_string = ' class="error-item"'
-      end
-      input = "<input type=\"text\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"#{error_string}/>"
+      input = "<input type=\"text\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"#{get_error_class(errors)}/>"
       input
     end    
 
-    def input_to_checkbox(input)
-      set_param(input, "type", "checkbox")
+    def form_text_item(name, value, errors )
+      text = "<text id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>#{value}</text>"
+      text
     end
 
-
-    def input_to_select(input, items = [])
-      name = get_attribute_value("name", input)
-      open_tag = "<select name=\"#{name}\">"
-      option_string = ''
-      items.each do |item|
-        option_string += "<option value=\"#{item[:id]}\">#{item[:name]}</option>"
+    def form_select_item(name, value, collection, errors)
+      select = "<select id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>"
+      collection.each do |item|
+        select += "<option value=\"#{item.record_id}\"#{get_selection_value(value, item)}>#{item.collection_label}</option>"
       end
-      close_tag = "</select>"
-      open_tag + option_string + close_tag
+      select += "</select>"
     end
 
+     def get_selection_value(value,item)
+       value == item.record_id ? ' selected="true"' : ''
+    end
+
+    def get_error_class(errors)
+      errors.blank? ? "" : ' class="error-item"'
+    end
   end
 end

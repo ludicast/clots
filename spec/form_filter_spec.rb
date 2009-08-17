@@ -122,25 +122,48 @@ describe "Form Filter" do
 
  end
 
- context "the input_to_checkbox filter" do
-   specify "should take a textbox and produce a checkbox" do
-     box = input_to_checkbox '<input type="text" value="true"/>'
-     box.should == '<input type="checkbox" value="true"/>'
+ context "the form_text_item filter" do
+   specify "creates an item based on inputed value and name" do
+     item = form_text_item "item[field]", "value", nil
+     item.should == "<text id=\"item_field\" name=\"item[field]\">value</text>"     
    end
+
+   specify "sets error class if there is an error" do
+     item = form_text_item "item[field]", "value", true
+     item.should == "<text id=\"item_field\" name=\"item[field]\" class=\"error-item\">value</text>"      
+   end
+
  end
 
-  context "the input_to_select filter" do
-    specify "should take an input box and return a select" do
-      select = input_to_select '<input type="text" name="my_name"/>'
-      select.should == '<select name="my_name"></select>'
+  context "the form_select_item filter" do
+    before do
+      class LiquidDemoModelDrop
+        def friend_id
+          1
+        end
+      end      
     end
 
-    specify "should take an input box with a collection and return a select with options" do
-      select = input_to_select '<input type="text" name="my_name"/>', [{:id => 1, :name=>'Name'}]
-      select.should == '<select name="my_name"><option value="1">Name</option></select>'
+    specify "selects an item based on inputed value and name" do
+      user_drop1 = get_drop @@user_default_values
+      user_drop2 = get_drop @@user_default_values.merge(:record_id => 2)
+      item = form_select_item "item[field]",  user_drop2.record_id, [user_drop1, user_drop2], nil
+      item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.record_id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.record_id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
     end
-    
+
+    specify "creates an item based on inputed value and name" do
+      user_drop1 = get_drop @@user_default_values
+      user_drop2 = get_drop @@user_default_values
+      item = form_select_item "item[field]", "value", [user_drop1, user_drop2], nil
+      item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.record_id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.record_id}\">#{user_drop2.collection_label}</option></select>"
+    end
+
+    specify "sets error class if there is an error" do
+      user_drop1 = get_drop @@user_default_values
+      user_drop2 = get_drop @@user_default_values
+      item = form_select_item "item[field]", "value", [user_drop1, user_drop2], true
+      item.should == "<select id=\"item_field\" name=\"item[field]\" class=\"error-item\"><option value=\"#{user_drop1.record_id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.record_id}\">#{user_drop2.collection_label}</option></select>"
+    end
   end
-
-
+   
 end

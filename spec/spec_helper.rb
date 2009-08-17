@@ -29,18 +29,15 @@ class LiquidDemoModel
     @saved = true
   end
 end
-
-
-class MockDrop < Liquid::Drop
-  def initialize(args = {})
-    
-  end
-end
-
+  
 class LiquidDemoModelDrop < Liquid::Drop
 
   attr_reader :source, :liquid_attributes
   undef :type
+
+    def collection_label
+      "item_label"
+    end
 
     def initialize(args = {})
       @dropped_class = LiquidDemoModel

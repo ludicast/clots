@@ -53,7 +53,11 @@ module Clot
     def errors
       @source.errors
     end
-    
+
+    def collection_label
+      "label field"
+    end
+
   protected
 
     def liquify(*records, &block)
