@@ -59,15 +59,19 @@ module Clot
     end
     
     def render(context)
-      tag = tag_name
-      errors = @model.errors.on(tag)
-      name_string = @class_name  + "[" + tag.to_s + "]"
-      tag_text = output_tag type, name_string, @model[tag], errors, context
+      errors = @model.errors.on(tag_name)
+      name_string = @class_name  + "[" + tag_name.to_s + "]"
+      tag_text = output_tag type, name_string, @model[tag_name], errors, context
       params.each do |param|
         tag_text = set_param tag_text, param[:key], param[:value]
       end
-      tag_text
+      if respond_to? :wrap_form_tag
+        wrap_form_tag tag_text, tag_name, type, errors
+      else
+        tag_text
+      end
     end
+
   end
 
 
