@@ -57,7 +57,7 @@ class LiquidDemoModelDrop < Liquid::Drop
       end
 
       #throw in current properties
-      ["name", "record_id"].each do |item|
+      ["name", "id"].each do |item|
         unless @liquid_attributes.include? item
           @liquid_attributes << item
         end
@@ -73,7 +73,7 @@ class LiquidDemoModelDrop < Liquid::Drop
         "My Name"
     end
 
-    def record_id
+    def id
       1
     end
 

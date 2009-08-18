@@ -93,13 +93,13 @@ module Clot
     def form_select_item(name, value, collection, errors)
       select = "<select id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>"
       collection.each do |item|
-        select += "<option value=\"#{item.record_id}\"#{get_selection_value(value, item)}>#{item.collection_label}</option>"
+        select += "<option value=\"#{item.id}\"#{get_selection_value(value, item)}>#{item.collection_label}</option>"
       end
       select += "</select>"
     end
 
      def get_selection_value(value,item)
-       value == item.record_id ? ' selected="true"' : ''
+       value == item.id ? ' selected="true"' : ''
     end
 
     def get_error_class(errors)

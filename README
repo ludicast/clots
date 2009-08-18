@@ -56,7 +56,7 @@ would provide a drop with access to the title, author_id and genre properties of
 
 We also added a few extra methods to the BaseDrop class (as well as taking some out that were specific to Mephisto):
 
-    def record_id
+    def id
       @source.id
     end
 

@@ -42,7 +42,7 @@ module Clot
     end
  
  
-    def record_id
+    def id
       @source.id
     end
     
@@ -56,7 +56,7 @@ module Clot
 
     def collection_label
       "label field"
-    end
+    end 
 
   protected
 

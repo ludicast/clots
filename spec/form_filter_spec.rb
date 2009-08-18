@@ -146,23 +146,23 @@ describe "Form Filter" do
 
     specify "selects an item based on inputed value and name" do
       user_drop1 = get_drop @@user_default_values
-      user_drop2 = get_drop @@user_default_values.merge(:record_id => 2)
-      item = form_select_item "item[field]",  user_drop2.record_id, [user_drop1, user_drop2], nil
-      item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.record_id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.record_id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
+      user_drop2 = get_drop @@user_default_values.merge(:id => 2)
+      item = form_select_item "item[field]",  user_drop2.id, [user_drop1, user_drop2], nil
+      item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "creates an item based on inputed value and name" do
       user_drop1 = get_drop @@user_default_values
       user_drop2 = get_drop @@user_default_values
       item = form_select_item "item[field]", "value", [user_drop1, user_drop2], nil
-      item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.record_id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.record_id}\">#{user_drop2.collection_label}</option></select>"
+      item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "sets error class if there is an error" do
       user_drop1 = get_drop @@user_default_values
       user_drop2 = get_drop @@user_default_values
       item = form_select_item "item[field]", "value", [user_drop1, user_drop2], true
-      item.should == "<select id=\"item_field\" name=\"item[field]\" class=\"error-item\"><option value=\"#{user_drop1.record_id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.record_id}\">#{user_drop2.collection_label}</option></select>"
+      item.should == "<select id=\"item_field\" name=\"item[field]\" class=\"error-item\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end
   end
    

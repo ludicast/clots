@@ -20,13 +20,13 @@ describe "Url Filters" do
     specify "should get url for object" do
       obj = get_drop @@text_content_default_values
       test_url = object_url obj
-      test_url.should == "/" + obj.dropped_class.to_s.tableize + "/" + obj.record_id.to_s
+      test_url.should == "/" + obj.dropped_class.to_s.tableize + "/" + obj.id.to_s
     end
 
     specify "with alternate resource name should get url for object within alternate resource" do
       obj = get_drop @@text_content_default_values
       test_url = object_url obj, "image_contents"
-      test_url.should == "/image_contents/" + obj.record_id.to_s
+      test_url.should == "/image_contents/" + obj.id.to_s
     end
   end
 
