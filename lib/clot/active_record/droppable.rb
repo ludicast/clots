@@ -16,7 +16,14 @@ module Clot
         drop_class = get_drop_class self.class
         drop_class.new self
       end
-      
+
+      def collection_label
+        if respond_to? :label then return label end
+        if respond_to? :title then return title end
+        if respond_to? :name then return name end
+        "label for item number :#{id}" 
+      end
+
     end
   end
 end
