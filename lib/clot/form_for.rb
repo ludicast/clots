@@ -1,5 +1,5 @@
 module Clot
-  class LiquidFormTag < Liquid::Block
+  class LiquidForm < Liquid::Block
     include Clot::UrlFilters
     include Clot::LinkFilters
     include Clot::FormFilters
@@ -23,6 +23,28 @@ module Clot
       render_form context
     end
 
+    def render_form(context)
+      result = get_form_header(context)
+      result += get_form_errors
+      result += get_form_body(context)
+      result += get_form_footer
+      result
+    end
+    
+    def syntax_error
+      raise SyntaxError.new("Syntax Error in form tag")
+    end
+
+    def get_form_body(context)
+      context.stack do
+        roll_tags(context)
+        render_all(@nodelist, context) * ""
+      end
+    end
+
+    def get_form_footer
+      "</form>"
+    end      
   end
 
   class LiquidFormElementTag < Struct.new(:tag_name, :type, :params)
@@ -116,7 +138,7 @@ module Clot
 
   end
 
-  class LiquidFormFor < LiquidFormTag
+  class LiquidFormFor < LiquidForm
 
     def roll_tags(context)
       @nodelist.each do |node|
@@ -232,29 +254,6 @@ module Clot
       end
       result
     end
-
-    def get_form_body(context)
-      context.stack do
-        roll_tags(context)
-        render_all(@nodelist, context) * ""
-      end
-    end
-
-    def get_form_footer
-      "</form>"
-    end
-
-    def render_form(context)
-      result = get_form_header(context)
-      result += get_form_errors
-      result += get_form_body(context)
-      result += get_form_footer
-      result      
-    end
-    
-    def syntax_error
-      raise SyntaxError.new("Syntax Error in 'formfor' - Valid syntax: formfor [object]")
-    end  
     
   end
 end

@@ -13,7 +13,7 @@ describe "Form For" do
 
   context "edit form" do
     it "should be have hidden method of PUT" do
-      text_drop = get_drop @@text_content_default_values
+      text_drop = mock_drop @@text_content_default_values
       expected = '<form method="POST" action="' + (object_url text_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
       template = '{% formfor text %}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'text' => text_drop)
@@ -22,7 +22,7 @@ describe "Form For" do
 
   context "when selecting an alternate method" do
     it "should post to that method" do
-      text_drop = get_drop @@text_content_default_values
+      text_drop = mock_drop @@text_content_default_values
       expected = '<form method="POST" action="' + (object_url text_drop) + '/no_no_no"></form>'
       template = '{% formfor text post_method:no_no_no %}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'text' => text_drop)
@@ -32,8 +32,8 @@ describe "Form For" do
 
   context "when using a field * item" do
     it "should produce data based on form type" do
-      user_drop = get_drop @@user_default_values
-      expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + user_drop.login + '"/></form>'
+      user_drop = mock_drop @@user_default_values
+      expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="dummy_login" name="dummy[login]" value="' + user_drop.login + '"/></form>'
       template = '{% formfor liquid_demo_model %}{% field :login %}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'liquid_demo_model' => user_drop)
     end

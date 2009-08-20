@@ -10,6 +10,28 @@ ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
 
 
 require 'clot/url_filters'
+class DummyDrop < Clot::BaseDrop; end
+module Spec
+  module Rails
+    module Mocks
+      def mock_drop(data = {})
+        model = mock_model NilClass, data.merge(:null_object => true)
+        def model.errors
+          @errs ||= ActiveRecord::Errors.new Hash.new
+          @errs
+        end
+        drop = DummyDrop.new model
+        data.each_pair do |symbol,value|
+          drop.instance_eval( "def #{symbol}() @source.#{symbol}; end" )
+          model.instance_eval( "def #{symbol}() \"#{value}\"; end" )
+          drop.liquid_attributes << symbol
+        end
+        drop
+      end
+    end
+  end
+end
+
 
 class LiquidDemoModel
   def initialize
@@ -40,8 +62,9 @@ class LiquidDemoModelDrop < Liquid::Drop
     end
 
     def initialize(args = {})
-      @dropped_class = LiquidDemoModel
-      @source = LiquidDemoModel.new
+   #   @source = mock_model(LiquidDemoModel)
+      @source =   LiquidDemoModel.new
+      @dropped_class = @source.class  # LiquidDemoModel      
       @liquid_attributes = []
 
       args.each_pair do |symbol,value|
@@ -140,7 +163,6 @@ end
       :email => "sfake@fake.com",
       :password => "password",
       :password_confirmation => "password",
-      :type => "User"
     }
 
 include Liquid

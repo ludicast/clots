@@ -135,32 +135,24 @@ describe "Form Filter" do
 
  end
 
-  context "the form_select_item filter" do
-    before do
-      class LiquidDemoModelDrop
-        def friend_id
-          1
-        end
-      end      
-    end
-
+  context "the form_select_item filter" do 
     specify "selects an item based on inputed value and name" do
-      user_drop1 = get_drop @@user_default_values
-      user_drop2 = get_drop @@user_default_values.merge(:id => 2)
+      user_drop1 = mock_drop @@user_default_values
+      user_drop2 = mock_drop @@user_default_values
       item = form_select_item "item[field]",  user_drop2.id, [user_drop1, user_drop2], nil
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "creates an item based on inputed value and name" do
-      user_drop1 = get_drop @@user_default_values
-      user_drop2 = get_drop @@user_default_values
+      user_drop1 = mock_drop @@user_default_values
+      user_drop2 = mock_drop @@user_default_values
       item = form_select_item "item[field]", "value", [user_drop1, user_drop2], nil
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "sets error class if there is an error" do
-      user_drop1 = get_drop @@user_default_values
-      user_drop2 = get_drop @@user_default_values
+      user_drop1 = mock_drop @@user_default_values 
+      user_drop2 = mock_drop @@user_default_values
       item = form_select_item "item[field]", "value", [user_drop1, user_drop2], true
       item.should == "<select id=\"item_field\" name=\"item[field]\" class=\"error-item\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end
