@@ -88,7 +88,7 @@ module Clot
         tag_text = set_param tag_text, param[:key], param[:value]
       end
       if respond_to? :wrap_form_tag
-        wrap_form_tag tag_text, tag_name, type, errors
+        wrap_form_tag tag_text, tag_name, type, errors, @model.source.class.to_s.tableize.singularize
       else
         tag_text
       end
