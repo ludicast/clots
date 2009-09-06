@@ -16,7 +16,7 @@ Clots allows a form to be created like so
   	Title: {% field :title %}
   </p>
   <p>
-    Description: {% field :description, rows:4, cols:40 %}
+    Description: {% text :description, rows:4, cols:40 %}
   </p>
   <p>
     {{ "Update" | submit_button }}

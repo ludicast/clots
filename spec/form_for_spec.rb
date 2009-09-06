@@ -60,7 +60,7 @@ describe "Form For" do
 
   context "when using a text * item" do
     it "should dynamically create a text box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><text id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]">My Name</text></form>'
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><textarea id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]">My Name</textarea></form>'
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% text :name %}{% endformfor %}'
       template.should parse_to(expected)
     end

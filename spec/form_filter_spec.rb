@@ -125,12 +125,12 @@ describe "Form Filter" do
  context "the form_text_item filter" do
    specify "creates an item based on inputed value and name" do
      item = form_text_item "item[field]", "value", nil
-     item.should == "<text id=\"item_field\" name=\"item[field]\">value</text>"     
+     item.should == "<textarea id=\"item_field\" name=\"item[field]\">value</textarea>"
    end
 
    specify "sets error class if there is an error" do
      item = form_text_item "item[field]", "value", true
-     item.should == "<text id=\"item_field\" name=\"item[field]\" class=\"error-item\">value</text>"      
+     item.should == "<textarea id=\"item_field\" name=\"item[field]\" class=\"error-item\">value</textarea>"      
    end
 
  end

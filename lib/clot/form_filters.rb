@@ -86,7 +86,7 @@ module Clot
     end    
 
     def form_text_item(name, value, errors )
-      text = "<text id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>#{value}</text>"
+      text = "<textarea id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>#{value}</textarea>"
       text
     end
 
