@@ -90,6 +90,11 @@ module Clot
       text
     end
 
+    def form_file_item(name, value, errors )
+      input = "<input type=\"file\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"/>"
+      input
+    end
+
     def form_select_item(name, value, collection, errors)
       select = "<select id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>"
       collection.each do |item|

@@ -32,8 +32,8 @@ describe "Form For" do
 
   context "when using a field * item" do
     it "should produce data based on form type" do
-      user_drop = mock_drop @@user_default_values
-      expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="dummy_login" name="dummy[login]" value="' + user_drop.login + '"/></form>'
+      user_drop = get_drop @@user_default_values
+      expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + user_drop.login + '"/></form>'
       template = '{% formfor liquid_demo_model %}{% field :login %}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'liquid_demo_model' => user_drop)
     end
@@ -56,6 +56,14 @@ describe "Form For" do
       template.should parse_to(expected)
     end
 
+  end
+
+  context "when using a file * item" do
+    it "should dynamically create a file upload box" do
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="file" id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" value="My Name"/></form>'
+      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% file :name %}{% endformfor %}'
+      template.should parse_to(expected)
+    end
   end
 
   context "when using a text * item" do

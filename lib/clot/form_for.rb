@@ -111,6 +111,7 @@ module Clot
       case type
         when :field:  form_input_item name, value, errors
         when :text:   form_text_item name, value, errors
+        when :file:   form_file_item name, value, errors
       end
     end
 
@@ -152,7 +153,7 @@ module Clot
     end
 
     def unknown_tag(name, params, tokens)
-      if name == "field" || name == "text"
+      if name == "field" || name == "text" || name == "file"
         @nodelist << LiquidFieldTag.get_tag(name.to_sym, params)
       elsif name == "select"
         @nodelist << LiquidCollectionTag.get_tag(name.to_sym, params)
