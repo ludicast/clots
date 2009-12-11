@@ -95,8 +95,14 @@ module Clot
       input
     end
 
-    def form_select_item(name, value, collection, errors)
+    def form_select_item(name, value, collection, errors, blank_option = nil)
+      prompt = ""
+      if blank_option
+        prompt = "<option>#{blank_option}</option>"
+      end
+
       select = "<select id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>"
+      select += prompt
       collection.each do |item|
         select += "<option value=\"#{item.id}\"#{get_selection_value(value, item)}>#{item.collection_label}</option>"
       end

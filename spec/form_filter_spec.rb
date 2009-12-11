@@ -152,6 +152,13 @@ describe "Form Filter" do
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
     end
 
+    specify "supports blank option" do
+      user_drop1 = mock_drop @@user_default_values
+      user_drop2 = mock_drop @@user_default_values
+      item = form_select_item "item[field]",  user_drop2.id, [user_drop1, user_drop2], nil, "blank data"
+      item.should == "<select id=\"item_field\" name=\"item[field]\"><option>blank data</option><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
+    end
+
     specify "creates an item based on inputed value and name" do
       user_drop1 = mock_drop @@user_default_values
       user_drop2 = mock_drop @@user_default_values

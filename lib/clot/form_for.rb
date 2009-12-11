@@ -48,12 +48,13 @@ module Clot
   end
 
   class LiquidFormElementTag < Struct.new(:tag_name, :type, :params)
+
     include Clot::UrlFilters
     include Clot::LinkFilters
     include Clot::FormFilters
 
     attr_accessor :model, :class_name
-
+    attr_accessor :prompt
     def self.shift_name(args)
       (args.shift)[/[:](.+)/,1]
     end
@@ -76,7 +77,11 @@ module Clot
     def self.load_params(tag, args)
       args.each do |param|
         param_array = param.split(/[:]/)
-        tag.params << {:key => param_array[0], :value => param_array[1]}
+        if param_array[0].match /^_/
+          tag.prompt = param_array[1]
+        else
+          tag.params << {:key => param_array[0], :value => param_array[1]}
+        end
       end
     end
     
@@ -120,6 +125,7 @@ module Clot
   class LiquidCollectionTag < LiquidFormElementTag
     attr_accessor :collection_name
 
+    
     def self.get_tag(type, params)
       args, tag_name = parse_params(params)
       tag = self.new(tag_name, type, [])
@@ -133,7 +139,7 @@ module Clot
 
     def output_tag(type, name, value, errors, context)
       case type
-        when :select: form_select_item name, value, context[@collection_name], errors
+        when :select: form_select_item name, value, context[@collection_name], errors, @prompt
       end
     end
 

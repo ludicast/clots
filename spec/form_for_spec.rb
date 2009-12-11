@@ -75,13 +75,15 @@ describe "Form For" do
   end
 
   context "when using a select * item" do
-    it "should dynamically create a select option" do
+    before :all do
       class LiquidDemoModelDrop
         def friend_id
           1
         end
-      end
+      end      
+    end
 
+    it "should dynamically create a select option" do
       user_drop1 = get_drop @@user_default_values
       user_drop2 = get_drop @@user_default_values.merge(:id => 2)
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
@@ -89,6 +91,17 @@ describe "Form For" do
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :users %}{% endformfor %}'
       template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
+
+    it "should allow a prompt" do
+      user_drop1 = get_drop @@user_default_values
+      user_drop2 = get_drop @@user_default_values.merge(:id => 2)
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
+      expected += "<option>nada to see</option>"
+      expected += "<option value=\"#{user_drop1.id}\" selected=\"true\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select></form>"
+      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :users, _prompt:nada to see %}{% endformfor %}'
+      template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
+    end
+
   end
 
   context "edit form" do
