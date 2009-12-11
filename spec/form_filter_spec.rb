@@ -111,9 +111,9 @@ describe "Form Filter" do
 
 
   context "form_file_item filter" do
-   specify "creates an item based on inputed value and name" do
-     item = form_file_item("item[field]", "value", nil )
-     item.should == "<input type=\"file\" id=\"item_field\" name=\"item[field]\" value=\"value\"/>"
+   specify "creates an item based on inputed name and ignores value" do
+     item = form_file_item("item[field]", nil )
+     item.should == "<input type=\"file\" id=\"item_field\" name=\"item[field]\" />"
    end
   end
 

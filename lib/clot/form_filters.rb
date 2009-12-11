@@ -90,8 +90,8 @@ module Clot
       text
     end
 
-    def form_file_item(name, value, errors )
-      input = "<input type=\"file\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"/>"
+    def form_file_item(name, errors )
+      input = "<input type=\"file\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" />"
       input
     end
 

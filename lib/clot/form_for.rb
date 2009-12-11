@@ -111,7 +111,7 @@ module Clot
       case type
         when :field:  form_input_item name, value, errors
         when :text:   form_text_item name, value, errors
-        when :file:   form_file_item name, value, errors
+        when :file:   form_file_item name, errors
       end
     end
 

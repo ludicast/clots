@@ -60,7 +60,7 @@ describe "Form For" do
 
   context "when using a file * item" do
     it "should dynamically create a file upload box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="file" id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" value="My Name"/></form>'
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="file" id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" /></form>'
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% file :name %}{% endformfor %}'
       template.should parse_to(expected)
     end
