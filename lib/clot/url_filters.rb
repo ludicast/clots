@@ -26,5 +26,24 @@ module Clot
       url
     end
     
+    def edit_link(obj, text="Edit")
+      url = ( obj.kind_of?( Liquid::Drop ) ? object_url( obj ) : obj )
+      "<a href=\"#{url}/edit\">#{text}</a>"
+    end
+    
+    def delete_link(obj, text="Delete")
+      url = ( obj.kind_of?( Liquid::Drop ) ? object_url( obj ) : obj )
+      "<a href=\"#{url}/delete\">#{text}</a>"
+    end
+    
+    def view_link(obj, text=nil)
+      url = ( obj.kind_of?( Liquid::Drop ) ? object_url( obj ) : obj )
+      "<a href=\"#{url}\">#{text ? text : url.capitalize}</a>"
+    end
+    
+    def index_link(obj, text=nil)
+      url = ( obj.kind_of?( Liquid::Drop ) ? object_url( obj ) : obj )
+      "<a href=\"/#{url}\">#{text ? text : url.capitalize+' Index'}</a>"
+    end
   end
 end

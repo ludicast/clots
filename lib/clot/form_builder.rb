@@ -133,6 +133,7 @@ module Clot
         result += "</ul></div>"
       end   
       
+      # NOTE: this is adding an input field that the specs say shouldn't be there for some reason
       context.stack do
         set_context_info(context, @model)
         results = render_all(@nodelist, context)

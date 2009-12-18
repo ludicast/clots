@@ -28,20 +28,20 @@ describe "Default Filters" do
   end
 
   it "should get url for stylesheets" do
-    test_url = stylesheet_url "stylesheet.css"
+    test_url = stylesheet_url "stylesheet"
     test_url.should == "/stylesheets/stylesheet.css"
   end
  
   it "should get url for object" do
     obj = get_drop @@text_content_default_values
     test_url = object_url obj
-    test_url.should == "/" + obj.dropped_class.to_s.tableize + "/" + obj.record_id.to_s
+    test_url.should == "/" + obj.dropped_class.to_s.tableize + "/" + obj.id.to_s
   end
 
   it "should get url for object within alternate class" do  
     obj = get_drop @@text_content_default_values
     test_url = object_url obj, "image_contents"
-    test_url.should == "/image_contents/" + obj.record_id.to_s
+    test_url.should == "/image_contents/" + obj.id.to_s
   end
 
   context "index link" do
