@@ -1,5 +1,6 @@
 module Clot
   module UrlFilters
+
    # include ActionView::Helpers::TagHelper
 
     #get url from object
