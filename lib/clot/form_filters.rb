@@ -104,13 +104,23 @@ module Clot
       select = "<select id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>"
       select += prompt
       collection.each do |item|
-        select += "<option value=\"#{item.id}\"#{get_selection_value(value, item)}>#{item.collection_label}</option>"
+        @_id = @_label = item.to_s
+        if item.respond_to?(:id) && item.respond_to?(:collection_label)
+          @_id = item.id
+          @_label = item.collection_label
+        end
+        select += "<option value=\"#{@_id}\"#{get_selection_value(value, item)}>#{@_label}</option>"
+
       end
       select += "</select>"
     end
 
-     def get_selection_value(value,item)
-       value == item.id ? ' selected="true"' : ''
+    def get_selection_value(value,item)
+        matched_value = item.to_s
+        if item.respond_to?(:collection_label)
+          matched_value = item.id
+        end
+        value.to_s == matched_value.to_s ? ' selected="true"' : ''
     end
 
     def get_error_class(errors)

@@ -132,20 +132,25 @@ module Clot
       unless tag.collection_name = shift_name(args)
         raise SyntaxError.new "need to have collection in form of :collection_name"
       end
-
       load_params(tag,args)
       tag
     end
 
     def output_tag(type, name, value, errors, context)
+
       case type
-        when :select: form_select_item name, value, context[@collection_name], errors, @prompt
+        when :select:
+          coll = context[@collection_name]
+          if @collection_name.match /\[(.*)\]/
+            coll = $1.split " "
+          end
+          form_select_item name, value, coll, errors, @prompt
       end
     end
 
   end
 
-  class LiquidFormFor < LiquidForm
+  class LiquidFormFor < LiquidForm                                                       
 
     def roll_tags(context)
       @nodelist.each do |node|

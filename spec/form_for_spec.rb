@@ -92,6 +92,23 @@ describe "Form For" do
       template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
+    it "should dynamically create a select based on array" do
+      user_drop1 = get_drop @@user_default_values
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
+      expected += "<option value=\"1\" selected=\"true\">1</option><option value=\"two\">two</option></select></form>"
+      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :options %}{% endformfor %}'
+      template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'options' => [1, "two"])
+    end
+
+    it "should dynamically create a select based on inputted array" do
+      user_drop1 = get_drop @@user_default_values
+      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
+      expected += "<option value=\"1\" selected=\"true\">1</option><option value=\"two\">two</option></select></form>"
+      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :[1 two] %}{% endformfor %}'
+      template.should parse_with_atributes_to(expected, 'user' => user_drop1)
+    end
+
+
     it "should allow a prompt" do
       user_drop1 = get_drop @@user_default_values
       user_drop2 = get_drop @@user_default_values.merge(:id => 2)
