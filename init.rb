@@ -1,6 +1,5 @@
 require 'clot/url_filters'
 require 'clot/form_for'
-require 'clot/nested_form_for'
 require 'clot/yield'
 require 'clot/if_content_for'
 require 'extras/liquid_view'
@@ -10,7 +9,6 @@ Liquid::Template.register_filter Clot::UrlFilters
 Liquid::Template.register_filter Clot::LinkFilters  
 Liquid::Template.register_filter Clot::FormFilters
 Liquid::Template.register_tag('formfor', Clot::LiquidFormFor)
-Liquid::Template.register_tag('nested_formfor', Clot::LiquidNestedFormFor)
 Liquid::Template.register_tag('yield', Clot::Yield)
 Liquid::Template.register_tag('if_content_for', Clot::IfContentFor)
 

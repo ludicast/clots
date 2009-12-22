@@ -143,7 +143,7 @@ describe "Form For" do
   context "when a form has errors" do
     before(:each) do
       @user_drop = get_drop @@user_default_values
-      @user_drop.stub!(:errors, :return => ActiveRecord::Errors.new(@user_drop))
+      @user_drop.stub!(:errors).and_return(ActiveRecord::Errors.new(@user_drop))
     end
 
     it "should show generic error for drop" do
