@@ -12,15 +12,29 @@ class LinksBlock < Liquid::Block
     super
   end
 
+  def raw_link(link, label)
+    "<a href=\"#{link}\">#{label}</a>"
+  end
+
+  def tag_generator(params)
+    link_label = link = params[0]
+    link = "/#{link}"
+    raw_link link,link_label
+  end
+
   def link_tag(params)
     params = split_params(params)
-    link_label = link = params[0][1..-1]
-    link = "/#{link}"
-    @link_exists ? separator = (GenericTagFactory[:list_item_separator] || "") : separator = ""
-    @link_exists = true
-    prefix = GenericTagFactory[:list_item_open_tag] || ""
-    postfix = GenericTagFactory[:list_item_close_tag] || ""    
-    @nodelist << "#{separator}#{prefix}<a href=\"#{link}\">#{link_label}</a>#{postfix}"
+    tag = tag_generator(params)
+
+    filter = GenericTagFactory[:link_filter] || lambda{|link| link}
+    tag = filter.call tag
+    unless tag.blank? || !tag
+      @link_exists ? separator = (GenericTagFactory[:list_item_separator] || "") : separator = ""
+      @link_exists = true
+      prefix = GenericTagFactory[:list_item_open_tag] || ""
+      postfix = GenericTagFactory[:list_item_close_tag] || ""
+      @nodelist << "#{separator}#{prefix}#{tag}#{postfix}"
+    end
   end
 
   def unknown_tag(name, params, tokens)
@@ -64,6 +78,17 @@ def set_separator
   GenericTagFactory[:list_item_separator] = ","
 end
 
+def set_filter
+  GenericTagFactory[:link_filter] = lambda { |link|
+    case link
+      when /bad1/: ""
+      when /bad2/: nil
+      when /bad3/: false
+      else link
+    end
+  }
+end
+
 
 describe "when using links" do
   include Clot::UrlFilters
@@ -78,11 +103,25 @@ describe "when using links" do
     GenericTagFactory[:list_close_tag] = ""
     GenericTagFactory[:list_item_open_tag] = ""
     GenericTagFactory[:list_item_close_tag] = ""
-    GenericTagFactory[:list_item_separator] = ""  
+    GenericTagFactory[:list_item_separator] = ""
+    GenericTagFactory[:link_filter] = lambda{|link| link}
   end
+
+  context "with multiple separated that are filtered" do
+    before do
+      @links = "{% links %}{% link bad1 %}{% link hello %}{% link bad2 %}{% link goodbye %}{% link bad3 %}{% endlinks %}"
+      set_separator
+      set_filter
+    end
+
+    it "should remove filtered links" do
+      @links.should parse_to("<a href=\"/hello\">hello</a>,<a href=\"/goodbye\">goodbye</a>")
+    end
+  end
+
   context "with multiple links" do
     before do
-      @links = "{% links %}{% link :hello %}{% link :goodbye %}{% endlinks %}"
+      @links = "{% links %}{% link hello %}{% link goodbye %}{% endlinks %}"
     end
     it "should put the links adjacent to them" do
       @links.should parse_to("<a href=\"/hello\">hello</a><a href=\"/goodbye\">goodbye</a>")
@@ -100,7 +139,7 @@ describe "when using links" do
 
   context "with a single link" do
     before do
-      @links = "{% links %}{% link :hello %}{% endlinks %}"
+      @links = "{% links %}{% link hello %}{% endlinks %}"
     end
     it "should print out link by self" do
       @links.should parse_to("<a href=\"/hello\">hello</a>")
