@@ -16,10 +16,30 @@ class LinksBlock < Liquid::Block
     "<a href=\"#{link}\">#{label}</a>"
   end
 
+  def apply_params(params)
+    params.each do |pair|
+      pair_data = pair.split ":"
+      case pair_data[0]
+        when "label": @link_label = pair_data[1]
+        when "new"
+          @link_label ||= "create"
+          @link = "/#{pair_data[1]}/new"
+        when "index"
+          @link_label ||= "index"
+          @link = "/#{pair_data[1]}"
+      end
+
+
+    end
+  end
+
   def tag_generator(params)
-    link_label = link = params[0]
-    link = "/#{link}"
-    raw_link link,link_label
+    unless params[0].match /:/
+      @link_label = params.shift
+      @link = "/#{@link_label}"
+    end
+    apply_params(params)
+    raw_link @link,@link_label
   end
 
   def link_tag(params)
@@ -47,6 +67,7 @@ class LinksBlock < Liquid::Block
 
   def get_nav_body(context)
     context.stack do
+ #     @context = context
       render_all(@nodelist, context) * ""
     end
   end
@@ -152,14 +173,28 @@ describe "when using links" do
         @links.should parse_to("<bar><a href=\"/hello\">hello</a></bar>")
       end
     end
+
   end
+
+  context "When a link has a set label" do
+    before do
+      @links = "{% links %}{% link hello, label:Hi There %}{% endlinks %}"
+    end
+
+    it "should have new label" do
+      @links.should parse_to("<a href=\"/hello\">Hi There</a>")
+    end
+  end
+
   context "with empty tags" do
     before do
       @links = "{% links %}{% endlinks %}"
     end
+
     it "should default to empty" do
       @links.should parse_to("")
     end
+
     context "when outer tags are set" do
       before do
         set_list_tags
@@ -170,3 +205,44 @@ describe "when using links" do
     end
   end
 end
+
+
+context "for restful tags" do
+  context "with new param without label" do
+    before do
+      @links = "{% links %}{% link new:goods %}{% endlinks %}"
+    end
+    it "should generate new parameter" do
+      @links.should parse_to("<a href=\"/goods/new\">create</a>")
+    end
+  end
+  context "with new param with label" do
+    before do
+      @links = "{% links %}{% link new one,new:goods %}{% endlinks %}"
+    end
+    it "should generate new with label" do
+      @links.should parse_to("<a href=\"/goods/new\">new one</a>")
+    end
+  end
+
+  context "with index param without label" do
+    before do
+      @links = "{% links %}{% link index:goods %}{% endlinks %}"
+    end
+    it "should generate index parameter" do
+      @links.should parse_to("<a href=\"/goods\">index</a>")
+    end
+  end
+  context "with index param with label" do
+    before do
+      @links = "{% links %}{% link bads,index:goods %}{% endlinks %}"
+    end
+    it "should generate index parameter" do
+      @links.should parse_to("<a href=\"/goods\">bads</a>")
+    end
+  end
+
+  
+end
+
+
