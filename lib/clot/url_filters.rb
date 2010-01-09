@@ -4,11 +4,16 @@ module Clot
    # include ActionView::Helpers::TagHelper
 
     #get url from object
-    def object_url(target, class_name = "")
+    def self.object_url(target, class_name = "")
       if (class_name.blank?)
         class_name = target.dropped_class.to_s.tableize
       end
       '/' + class_name + "/" + target.id.to_s
+    end
+
+
+    def object_url(target, class_name = "")
+      Clot::UrlFilters.object_url(target,class_name)
     end
     
     #get url from object and nested object

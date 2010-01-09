@@ -1,14 +1,82 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-class LinksBlock < Liquid::Block
-  attr_accessor :links
+class LinkItem < Liquid::Tag
+  cattr_accessor :has_predecessor
 
-  def split_params(params)
-    params.split(",").map(&:strip)
+  def render(context)
+    tag_generator(@params,context)
+    LinkItem.has_predecessor ||= {}
+    separator = ""
+    if LinkItem.has_predecessor[context['block_id']]
+      separator = GenericTagFactory[:list_item_separator] || ""
+    end
+
+    prefix = GenericTagFactory[:list_item_open_tag] || ""
+    postfix = GenericTagFactory[:list_item_close_tag] || ""
+    link = separator + prefix + raw_link(@link, @label) + postfix
+    filter = GenericTagFactory[:link_filter] || lambda{|link| link}
+    tag = filter.call link
+    unless tag.blank? || !tag
+      LinkItem.has_predecessor[context['block_id']] = true
+      link
+    end
   end
 
   def initialize(name, params, tokens)
-    @links = []
+    @params = split_params(params)
+    super
+  end
+
+  def split_params(params)
+    params.split(",").map(&:strip)
+  end  
+
+  def tag_generator(params,context)
+    unless params[0].match /:/
+      @label = params.shift
+      @link = "/#{@label}"
+    end
+    apply_params(params,context)
+  end
+
+  def raw_link(link, label)
+    "<a href=\"#{link}\">#{label}</a>"
+  end
+
+  def apply_params(params,context)
+    params.each do |pair|
+      pair_data = pair.split ":"
+      case pair_data[0]
+        when "label":
+          @label = pair_data[1]
+        when "new"
+          @label ||= "create"
+          @link = "/#{pair_data[1]}/new"
+        when "index"
+          @label ||= "index"
+          @link = "/#{pair_data[1]}"
+        when "view"
+          @label ||= "view"
+          obj = context[pair_data[1]]
+          @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}"
+        when "edit"
+          @label ||= "edit"
+          obj = context[pair_data[1]]
+          @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/edit"
+
+      end
+    end
+  end  
+
+end
+Liquid::Template.register_tag('link', LinkItem)
+
+class LinksBlock < Liquid::Block
+  attr_accessor :links
+
+
+
+  def initialize(name, params, tokens)
     super
   end
 
@@ -16,22 +84,6 @@ class LinksBlock < Liquid::Block
     "<a href=\"#{link}\">#{label}</a>"
   end
 
-  def apply_params(params)
-    params.each do |pair|
-      pair_data = pair.split ":"
-      case pair_data[0]
-        when "label": @link_label = pair_data[1]
-        when "new"
-          @link_label ||= "create"
-          @link = "/#{pair_data[1]}/new"
-        when "index"
-          @link_label ||= "index"
-          @link = "/#{pair_data[1]}"
-      end
-
-
-    end
-  end
 
   def tag_generator(params)
     unless params[0].match /:/
@@ -39,7 +91,7 @@ class LinksBlock < Liquid::Block
       @link = "/#{@link_label}"
     end
     apply_params(params)
-    raw_link @link,@link_label
+    raw_link @link, @link_label
   end
 
   def link_tag(params)
@@ -59,6 +111,8 @@ class LinksBlock < Liquid::Block
 
   def unknown_tag(name, params, tokens)
     if name == "link"
+      puts "SHOULDN'T BE HERE"
+
       link_tag(params)
     else
       super
@@ -67,7 +121,7 @@ class LinksBlock < Liquid::Block
 
   def get_nav_body(context)
     context.stack do
- #     @context = context
+      context['block_id'] = self.object_id
       render_all(@nodelist, context) * ""
     end
   end
@@ -82,7 +136,7 @@ class LinksBlock < Liquid::Block
 end
 
 
-Liquid::Template.register_tag('links', LinksBlock) 
+Liquid::Template.register_tag('links', LinksBlock)
 GenericTagFactory = {}
 
 def set_list_tags
@@ -102,10 +156,14 @@ end
 def set_filter
   GenericTagFactory[:link_filter] = lambda { |link|
     case link
-      when /bad1/: ""
-      when /bad2/: nil
-      when /bad3/: false
-      else link
+      when /bad1/:
+        ""
+      when /bad2/:
+        nil
+      when /bad3/:
+        false
+      else
+        link
     end
   }
 end
@@ -115,11 +173,12 @@ describe "when using links" do
   include Clot::UrlFilters
   include Clot::LinkFilters
 
-  include Liquid  
+  include Liquid
 
 
   before do
     @context = {}
+    LinkItem.has_predecessor = false
     GenericTagFactory[:list_open_tag] = ""
     GenericTagFactory[:list_close_tag] = ""
     GenericTagFactory[:list_item_open_tag] = ""
@@ -127,7 +186,6 @@ describe "when using links" do
     GenericTagFactory[:list_item_separator] = ""
     GenericTagFactory[:link_filter] = lambda{|link| link}
   end
-
   context "with multiple separated that are filtered" do
     before do
       @links = "{% links %}{% link bad1 %}{% link hello %}{% link bad2 %}{% link goodbye %}{% link bad3 %}{% endlinks %}"
@@ -139,7 +197,7 @@ describe "when using links" do
       @links.should parse_to("<a href=\"/hello\">hello</a>,<a href=\"/goodbye\">goodbye</a>")
     end
   end
-
+  
   context "with multiple links" do
     before do
       @links = "{% links %}{% link hello %}{% link goodbye %}{% endlinks %}"
@@ -155,8 +213,17 @@ describe "when using links" do
       it "should apply separator" do
         @links.should parse_to("<a href=\"/hello\">hello</a>,<a href=\"/goodbye\">goodbye</a>")
       end
+      context "when two link blocks are used" do
+        before do
+          @links += @links
+        end
+        it "should not use separator at beginning" do
+          @links.should parse_to("<a href=\"/hello\">hello</a>,<a href=\"/goodbye\">goodbye</a><a href=\"/hello\">hello</a>,<a href=\"/goodbye\">goodbye</a>")          
+        end
+      end
     end
   end
+
 
   context "with a single link" do
     before do
@@ -208,6 +275,7 @@ end
 
 
 context "for restful tags" do
+
   context "with new param without label" do
     before do
       @links = "{% links %}{% link new:goods %}{% endlinks %}"
@@ -224,7 +292,6 @@ context "for restful tags" do
       @links.should parse_to("<a href=\"/goods/new\">new one</a>")
     end
   end
-
   context "with index param without label" do
     before do
       @links = "{% links %}{% link index:goods %}{% endlinks %}"
@@ -241,8 +308,69 @@ context "for restful tags" do
       @links.should parse_to("<a href=\"/goods\">bads</a>")
     end
   end
+  context "for singleton resources" do
+    before do
+      @user_drop = get_drop @@user_default_values
+    end
+    context "with view param without label" do
+      before do
+        @links = "{% links %}{% link view:user %}{% endlinks %}"
+      end
+      it "should generate view parameter" do
+        @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">view</a>",
+                                              'user' => @user_drop)
+      end
+    end
+    context "with view param with label" do
+      before do
+        @links = "{% links %}{% link bads,view:user %}{% endlinks %}"
+      end
+      it "should generate view parameter" do
+        @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">bads</a>",
+                                              'user' => @user_drop)
+      end
+    end
+    context "with edit param without label" do
+      before do
+        @links = "{% links %}{% link edit:user %}{% endlinks %}"
+      end
+      it "should generate edit parameter" do
+        @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">edit</a>",
+                                              'user' => @user_drop)
+      end
+    end
+    context "with edit param with label" do
+      before do
+        @links = "{% links %}{% link bads,edit:user %}{% endlinks %}"
+      end
+      it "should generate edit parameter" do
+        @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">bads</a>",
+                                              'user' => @user_drop)
+      end
+    end
+           %{
+    context "with delete param without label" do
+      before do
+        @links = "{% links %}{% link delete:user %}{% endlinks %}"
+      end
+      it "should generate delte parameter" do
+        @links.should parse_with_atributes_to("<a href=\"\">edit</a>",
+                                              'user' => @user_drop)
+      end
+    end
+    context "with delete param with label" do
+      before do
+        @links = "{% links %}{% link bads,delete:user %}{% endlinks %}"
+      end
+      it "should generate delete parameter" do
+        @links.should parse_with_atributes_to("<a href=\"\">bads</a>",
+                                              'user' => @user_drop)
+      end
+    end      }
 
-  
+  end
+
+
 end
 
 
