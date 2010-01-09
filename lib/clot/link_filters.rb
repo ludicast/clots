@@ -1,7 +1,7 @@
 module Clot
   module LinkFilters
     include ActionView::Helpers::TagHelper
-    
+
     def edit_link(target, message = "Edit", class_name = "")
       url = object_url target, class_name
       content_tag :a, message, :href => url + "/edit"
@@ -15,13 +15,21 @@ module Clot
     
     def delete_link(target, message = "Delete", class_name = "")
       url = object_url target, class_name
+      gen_delete_link(url,message)
+    end
+
+    def gen_delete_link(url, message = nil)
+      content_tag :a, message, :href => url, :onclick => gen_delete_onclick 
+    end
+
+    def gen_delete_onclick
       if @context.has_key? 'auth_token'
         token = @context['auth_token']
         token_string = "var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', '" + token + "') ;f.appendChild(s);"
       else
         token_string = ""
       end
-      content_tag :a, message, :href => url, :onclick => "if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);" + token_string + "f.submit(); };return false;"
+      "if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);" + token_string + "f.submit(); };return false;"
     end
 
     def index_link(controller, message = nil)
