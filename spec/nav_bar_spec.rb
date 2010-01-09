@@ -175,7 +175,33 @@ describe "when using links" do
         @links.should parse_to("<a href=\"/goods\">bads</a>")
       end
     end
-    context "for singleton resources" do
+    context "for nested resources" do
+      before do
+        @user_drop = get_drop @@user_default_values
+      end
+      context "for index without label" do
+        before do
+          @links = "{% links %}{% link nested_index:user:tags %}{% endlinks %}"
+        end
+        it "should generate link" do
+          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">Index</a>",
+                                                'user' => @user_drop)
+        end
+      end
+      context "for index with assigned label" do
+        before do
+          @links = "{% links %}{% link nested_index:user:tags,label:foo %}{% endlinks %}"
+        end
+        it "should generate link with assigned label" do
+          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">foo</a>",
+                                                'user' => @user_drop)
+        end        
+
+      end
+
+    end
+
+    context "for resource models" do
       before do
         @user_drop = get_drop @@user_default_values
       end

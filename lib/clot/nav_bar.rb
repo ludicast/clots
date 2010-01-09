@@ -62,6 +62,10 @@ module Clot
             @label ||= "View"
             obj = context[pair_data[1]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}"
+          when "nested_index"
+            @label ||= "Index"
+            obj = context[pair_data[1]]
+            @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{pair_data[2]}"
           when "edit"
             @label ||= "Edit"
             obj = context[pair_data[1]]
