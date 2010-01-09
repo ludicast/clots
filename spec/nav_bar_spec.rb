@@ -20,7 +20,7 @@ def set_separator
 end
 
 def set_filter
-  GenericTagFactory[:link_filter] = lambda { |link|
+  GenericTagFactory[:link_filter] = lambda { |link, context|
     case link
       when /bad1/:
         ""
@@ -50,7 +50,7 @@ describe "when using links" do
     GenericTagFactory[:list_item_open_tag] = ""
     GenericTagFactory[:list_item_close_tag] = ""
     GenericTagFactory[:list_item_separator] = ""
-    GenericTagFactory[:link_filter] = lambda{|link| link}
+    GenericTagFactory[:link_filter] = lambda{|link, context| link}
   end
   context "with multiple separated that are filtered" do
     before do

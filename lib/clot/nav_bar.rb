@@ -16,8 +16,8 @@ module Clot
       prefix = GenericTagFactory[:list_item_open_tag] || ""
       postfix = GenericTagFactory[:list_item_close_tag] || ""
       link = separator + prefix + raw_link + postfix
-      filter = GenericTagFactory[:link_filter] || lambda{|link| link}
-      tag = filter.call link
+      filter = GenericTagFactory[:link_filter] || lambda{|link,context| link}
+      tag = filter.call link, context
       unless tag.blank? || !tag
         LinkItem.has_predecessor[context['block_id']] = true
         link
