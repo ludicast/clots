@@ -3,7 +3,7 @@ require 'clot/nav_bar'
 
 Liquid::Template.register_tag('link', Clot::LinkItem)
 Liquid::Template.register_tag('links', Clot::LinksBlock)
-
+Liquid::Template.register_tag('link_separator', Clot::LinkSeparator)
 
 def set_list_tags
   GenericTagFactory[:list_open_tag] = "<foo>"
@@ -52,6 +52,24 @@ describe "when using links" do
     GenericTagFactory[:list_item_separator] = ""
     GenericTagFactory[:link_filter] = lambda{|link, context| link}
   end
+
+  context "for link separators" do
+    before do
+      @separator = "{% link_separator %}"
+    end
+    it "should default to blank" do
+      @separator.should parse_to("")
+    end
+    context "when set" do
+      before do
+        set_separator
+      end
+      it "should set separator" do
+        @separator.should parse_to(",")        
+      end
+    end
+  end
+
   context "with multiple separated that are filtered" do
     before do
       @links = "{% links %}{% link bad1 %}{% link hello %}{% link bad2 %}{% link goodbye %}{% link bad3 %}{% endlinks %}"

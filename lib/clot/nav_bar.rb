@@ -103,4 +103,14 @@ module Clot
   end
 end
 
+
+module Clot
+  class LinkSeparator < Liquid::Tag
+    def render(context)
+      GenericTagFactory[:list_item_separator] || ""
+    end
+  end
+end
+
+
 GenericTagFactory = {}
