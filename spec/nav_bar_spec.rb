@@ -277,11 +277,7 @@ describe "when using links" do
           @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">bads</a>",
                                                 'user' => @user_drop)
         end
-
-
-  
       end
-
     end
 
   end

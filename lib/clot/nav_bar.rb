@@ -87,9 +87,12 @@ end
 
 module Clot
   class LinksBlock < Liquid::Block
+
+    cattr_accessor :link_block
     def get_nav_body(context)
       context.stack do
-        context['block_id'] = self.object_id
+        LinksBlock.link_block ||= 1
+        context['block_id'] = LinksBlock.link_block += 1
         render_all(@nodelist, context) * ""
       end
     end
