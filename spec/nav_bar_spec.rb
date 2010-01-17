@@ -33,7 +33,7 @@ def set_filter
     end
   }
 end
-
+AlternativeFactory = {}
 
 describe "when using links" do
   include Clot::UrlFilters
@@ -52,6 +52,27 @@ describe "when using links" do
     GenericTagFactory[:list_item_separator] = ""
     GenericTagFactory[:link_filter] = lambda{|link, context| link}
   end
+
+  context "with altemative factory" do
+    before do
+
+      AlternativeFactory[:list_open_tag] = "<ul>"
+      AlternativeFactory[:list_close_tag] = "</ul>"
+      AlternativeFactory[:list_item_open_tag] = "<li>"
+      AlternativeFactory[:list_item_close_tag] = "</li>"
+      AlternativeFactory[:list_item_separator] = "<br/>---<br/>"
+      AlternativeFactory[:link_filter] = lambda{|link, context|
+        if link.match "luv" then false else true end
+      }
+      @links = "{% links factory_name:AlternativeFactory %}{% link luv %}{% link foo %}{% link bar %}{% link_separator %}{% endlinks %}"
+    end
+    it "should default to blank" do
+      @links.should parse_to(
+        '<ul><li><a href="/foo">foo</a></li><br/>---<br/><li><a href="/bar">bar</a></li><br/>---<br/></ul>'
+      )
+    end
+  end
+
 
   context "for link separators" do
     before do

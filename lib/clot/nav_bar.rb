@@ -1,22 +1,30 @@
 module Clot
+  module TagHelpers
+    def split_params(params)
+      params.split(",").map(&:strip)
+    end
+  end
+
   class LinkItem < Liquid::Tag
-    include Clot::UrlFilters
-    include Clot::LinkFilters
+    include UrlFilters
+    include LinkFilters
+    include TagHelpers
 
     cattr_accessor :has_predecessor
 
     def render(context)
+      @tag_factory = context['tag_factory']
       tag_generator(@params, context)
       LinkItem.has_predecessor ||= {}
       separator = ""
       if LinkItem.has_predecessor[context['block_id']]
-        separator = GenericTagFactory[:list_item_separator] || ""
+        separator = @tag_factory[:list_item_separator] || ""
       end
 
-      prefix = GenericTagFactory[:list_item_open_tag] || ""
-      postfix = GenericTagFactory[:list_item_close_tag] || ""
+      prefix = @tag_factory[:list_item_open_tag] || ""
+      postfix = @tag_factory[:list_item_close_tag] || ""
       link = separator + prefix + raw_link + postfix
-      filter = GenericTagFactory[:link_filter] || lambda{|link,context| link}
+      filter = @tag_factory[:link_filter] || lambda{|link,context| link}
       tag = filter.call link, context
       unless tag.blank? || !tag
         LinkItem.has_predecessor[context['block_id']] = true
@@ -27,10 +35,6 @@ module Clot
     def initialize(name, params, tokens)
       @params = split_params(params)
       super
-    end
-
-    def split_params(params)
-      params.split(",").map(&:strip)
     end
 
     def tag_generator(params, context)
@@ -87,33 +91,48 @@ end
 
 module Clot
   class LinksBlock < Liquid::Block
-
+    include TagHelpers
     cattr_accessor :link_block
+
+    def initialize(name, params, tokens)
+      @params = split_params(params)
+      super
+    end
+    
     def get_nav_body(context)
       context.stack do
         LinksBlock.link_block ||= 1
         context['block_id'] = LinksBlock.link_block += 1
+        context['tag_factory'] = @tag_factory
         render_all(@nodelist, context) * ""
       end
     end
 
     def render(context)
-      result = GenericTagFactory[:list_open_tag] || ""
+      @tag_factory = GenericTagFactory
+      @params.each do |pair|
+        pair_data = pair.split ":"
+        case pair_data[0]
+          when "factory_name": @tag_factory = pair_data[1].constantize
+        end
+
+      end
+      result = @tag_factory[:list_open_tag] || ""
+      context['tag_factory'] = @tag_factory
       result += get_nav_body(context)
-      result += GenericTagFactory[:list_close_tag] || ""
+      result += @tag_factory[:list_close_tag] || ""
       result
     end
   end
 end
 
-
 module Clot
   class LinkSeparator < Liquid::Tag
     def render(context)
-      GenericTagFactory[:list_item_separator] || ""
+      factory = context['tag_factory'] || GenericTagFactory
+      factory[:list_item_separator] || ""
     end
   end
 end
-
 
 GenericTagFactory = {}

@@ -77,7 +77,6 @@ describe "Link Filters" do
         test_link = new_link "contents"
         test_link.should == '<a href="/contents/new">New Content</a>'
       end
-
     end
 
   end
