@@ -5,14 +5,7 @@ module Clot
 
 
     def set_attributes
-      @value_string = nil
-      @class_string = ""
-      @size_string = ""
-      @max_length_string = ""
-      @disabled_string = ""
       @id_string = @name_string = @params.shift
-
-      @accept_string = ""
 
       if @params[0] && ! @params[0].match(/:/)
         @value_string = @params.shift
@@ -99,10 +92,8 @@ module Clot
       super
     end
     def render(context)
-      @col_string = ""
-      @row_string = ""
       set_attributes
-      %{<textarea #{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
+      %{<textarea #{@disabled_string}#{@class_string}#{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
     end
   end
 end
@@ -137,13 +128,14 @@ describe "tags for forms that don't use models" do
       tag.should parse_to('<textarea cols="25" id="body" name="body" rows="10"></textarea>')
     end    
 
-    #text_area_tag 'description', "Description goes here.", :disabled => true
-    # => <textarea disabled="disabled" id="description" name="description">Description goes here.</textarea>
-
-    #text_area_tag 'comment', nil, :class => 'comment_input'
-    # => <textarea class="comment_input" id="comment" name="comment"></textarea>
-
-
+    it "should set disabled" do
+      tag = "{% text_area_tag description,Description goes here.,disabled:true %}"
+      tag.should parse_to('<textarea disabled="disabled" id="description" name="description">Description goes here.</textarea>')
+    end
+    it "should set css class" do
+      tag = "{% text_area_tag comment,class:comment_input %}"
+      tag.should parse_to('<textarea class="comment_input" id="comment" name="comment"></textarea>')
+    end
   end
 
   context "for file_field_tag" do
