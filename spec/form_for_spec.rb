@@ -10,6 +10,9 @@ describe "Form For" do
     @context = {}    
   end
 
+  context "for basic subtags" do
+
+  end
 
   context "edit form" do
     it "should be have hidden method of PUT" do

@@ -5,6 +5,7 @@ module Clot
     include Clot::FormFilters
 
     Syntax = /([^\s]+)\s+/
+
     def initialize(tag_name, markup, tokens)
       if markup =~ Syntax
         @form_object = $1
@@ -30,7 +31,7 @@ module Clot
       result += get_form_footer
       result
     end
-    
+
     def syntax_error
       raise SyntaxError.new("Syntax Error in form tag")
     end
@@ -44,7 +45,7 @@ module Clot
 
     def get_form_footer
       "</form>"
-    end      
+    end
   end
 
   class LiquidFormElementTag < Struct.new(:tag_name, :type, :params)
@@ -55,8 +56,9 @@ module Clot
 
     attr_accessor :model, :class_name
     attr_accessor :prompt
+
     def self.shift_name(args)
-      (args.shift)[/[:](.+)/,1]
+      (args.shift)[/[:](.+)/, 1]
     end
 
     def self.split_params(params)
@@ -71,7 +73,7 @@ module Clot
       unless tag_name = shift_name(args)
         raise SyntaxError.new "need to have fieldname in form of :field_name"
       end
-      [args,tag_name]
+      [args, tag_name]
     end
 
     def self.load_params(tag, args)
@@ -84,10 +86,10 @@ module Clot
         end
       end
     end
-    
+
     def render(context)
       errors = @model.errors.on(tag_name)
-      name_string = @class_name  + "[" + tag_name.to_s + "]"
+      name_string = @class_name + "[" + tag_name.to_s + "]"
       tag_text = output_tag type, name_string, @model[tag_name], errors, context
       params.each do |param|
         tag_text = set_param tag_text, param[:key], param[:value]
@@ -107,16 +109,19 @@ module Clot
     def self.get_tag(type, params)
       args, tag_name = parse_params(params)
       tag = self.new(tag_name, type, [])
-      load_params(tag,args)
+      load_params(tag, args)
       tag
     end
-    
+
 
     def output_tag(type, name, value, errors, context)
       case type
-        when :field:  form_input_item name, value, errors
-        when :text:   form_text_item name, value, errors
-        when :file:   form_file_item name, errors
+        when :field:
+          form_input_item name, value, errors
+        when :text:
+          form_text_item name, value, errors
+        when :file:
+          form_file_item name, errors
       end
     end
 
@@ -125,14 +130,14 @@ module Clot
   class LiquidCollectionTag < LiquidFormElementTag
     attr_accessor :collection_name
 
-    
+
     def self.get_tag(type, params)
       args, tag_name = parse_params(params)
       tag = self.new(tag_name, type, [])
       unless tag.collection_name = shift_name(args)
         raise SyntaxError.new "need to have collection in form of :collection_name"
       end
-      load_params(tag,args)
+      load_params(tag, args)
       tag
     end
 
@@ -150,14 +155,14 @@ module Clot
 
   end
 
-  class LiquidFormFor < LiquidForm                                                       
+  class LiquidFormFor < LiquidForm
 
     def roll_tags(context)
       @nodelist.each do |node|
         if (node.respond_to? :model=)
           node.model = @model
         end
-        if (node.respond_to? :class_name=)        
+        if (node.respond_to? :class_name=)
           node.class_name = @class_name
         end
       end
@@ -174,7 +179,7 @@ module Clot
     end
 
 
-    private 
+    private
 
     def set_method
       if @model.nil? || @model.source.nil? || @model.source.new_record?
@@ -183,7 +188,7 @@ module Clot
         @activity = "edit"
       end
     end
-    
+
     def set_form_action
       if @activity == "edit"
         if @attributes["obj_class"]
@@ -203,7 +208,7 @@ module Clot
         @form_action += '/' + @attributes["post_method"]
         @activity = @attributes["post_method"]
       end
-      
+
     end
 
     def set_class
@@ -217,7 +222,7 @@ module Clot
       else
         @class_name = drop_class_to_table_item @model.class
       end
-            
+
     end
 
     def set_upload
@@ -225,7 +230,7 @@ module Clot
         @upload_info = ' enctype="multipart/form-data"'
       else
         @upload_info = ''
-      end      
+      end
     end
 
     def set_model(context)
@@ -235,7 +240,7 @@ module Clot
     def set_variables(context)
       set_model(context)
       set_method
-      set_form_action      
+      set_form_action
       set_class
       set_upload
     end
@@ -257,7 +262,7 @@ module Clot
       if @model and @model.errors.count > 0
         result += '<div id="error-explanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'
 
-        @model.errors.each do |attr,msg|
+        @model.errors.each do |attr, msg|
           result += "<li>"
           result += attr + " - " + msg.to_s
           result += "</li>"
@@ -266,6 +271,6 @@ module Clot
       end
       result
     end
-    
+
   end
 end

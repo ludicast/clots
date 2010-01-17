@@ -1,14 +1,9 @@
 module Clot
-  module TagHelpers
-    def split_params(params)
-      params.split(",").map(&:strip)
-    end
-  end
 
   class LinkItem < Liquid::Tag
     include UrlFilters
     include LinkFilters
-    include TagHelpers
+    include TagHelper
 
     cattr_accessor :has_predecessor
 
@@ -91,7 +86,7 @@ end
 
 module Clot
   class LinksBlock < Liquid::Block
-    include TagHelpers
+    include TagHelper
     cattr_accessor :link_block
 
     def initialize(name, params, tokens)

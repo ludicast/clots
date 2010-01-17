@@ -53,7 +53,8 @@ describe "when using links" do
     GenericTagFactory[:link_filter] = lambda{|link, context| link}
   end
 
-  context "with altemative factory" do
+  context "with alternative factory" do
+
     before do
 
       AlternativeFactory[:list_open_tag] = "<ul>"
@@ -66,11 +67,13 @@ describe "when using links" do
       }
       @links = "{% links factory_name:AlternativeFactory %}{% link luv %}{% link foo %}{% link bar %}{% link_separator %}{% endlinks %}"
     end
+
     it "should default to blank" do
       @links.should parse_to(
         '<ul><li><a href="/foo">foo</a></li><br/>---<br/><li><a href="/bar">bar</a></li><br/>---<br/></ul>'
       )
     end
+
   end
 
 
