@@ -45,7 +45,7 @@ describe "Form For" do
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><input type="text" id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" value="My Name"/></form>'
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% field :name %}{% endformfor %}'
       template.should parse_to(expected)
-    end    
+    end
 
     it "should set the tags appropriately" do
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><br/><input type="text" id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" value="My Name"/><hr/></form>'

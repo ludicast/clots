@@ -1,45 +1,64 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 module Clot
-  class InputTag < Liquid::Tag
-    def render(context)
-      value_string = ""
-      class_string = ""
-      size_string = ""
-      max_length_string = ""
-      disabled_string = ""
-      id_string = name_string = @params.shift
+  module AttributeSetter
 
-      accept_string = ""      
+
+    def set_attributes
+      @value_string = nil
+      @class_string = ""
+      @size_string = ""
+      @max_length_string = ""
+      @disabled_string = ""
+      @id_string = @name_string = @params.shift
+
+      @accept_string = ""
 
       if @params[0] && ! @params[0].match(/:/)
-        value_string = %{value="#{@params.shift}" }
+        @value_string = @params.shift
       end
       @params.each do |pair|
         pair = pair.split /:/
         case pair[0]
           when "value"
-            value_string = %{value="#{pair[1]}" }
+            @value_string = pair[1]
           when "accept"
-            accept_string = %{accept="#{CGI::unescape pair[1]}" }
+            @accept_string = %{accept="#{CGI::unescape pair[1]}" }
           when "class"
-            class_string = %{class="#{pair[1]}" }
-          when "size"
-            size_string = %{size="#{pair[1]}" }
+            @class_string = %{class="#{pair[1]}" }
           when "maxlength"
-            max_length_string = %{maxlength="#{pair[1]}" }
+            @max_length_string = %{maxlength="#{pair[1]}" }
           when "disabled"
-            disabled_string = %{disabled="#{if (pair[1] == "true") then 'disabled' end}" }
+            @disabled_string = %{disabled="#{if (pair[1] == "true") then 'disabled' end}" }
+          else
+            personal_attributes(pair[0], pair[1])
         end
-
       end
-      %{<input #{accept_string}#{disabled_string}#{class_string}id="#{id_string}" #{max_length_string}name="#{name_string}" #{size_string}type="#{@type}" #{value_string}/>}
+    end
+  end
+
+  class InputTag < Liquid::Tag
+    include AttributeSetter
+    include TagHelper
+
+    def personal_attributes(name,value)
+      case name
+        when "size"
+          @size_string = %{size="#{value}" }
+      end
+    end
+
+    def render(context)
+      set_attributes
+      unless @value_string.nil?
+        @value_string = %{value="#{@value_string}" }
+      end
+      %{<input #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@size_string}type="#{@type}" #{@value_string}/>}
     end
   end
 
 
   class TextFieldTag < InputTag
-    include TagHelper
 
     def initialize(name, params, tokens)
       @params = split_params(params)
@@ -49,22 +68,83 @@ module Clot
   end
 
   class FileFieldTag < InputTag
-    include TagHelper
 
     def initialize(name, params, tokens)
       @params = split_params(params)
       @type = "file"
       super
     end
+  end
 
+  class TextAreaTag < Liquid::Tag
+    include AttributeSetter
+    include TagHelper
+
+    def personal_attributes(name,value)
+
+      case name
+        when "cols"
+          @col_string = %{cols="#{value}" }
+        when "rows"
+          @row_string = %{ rows="#{value}"}
+        when "size"
+          size_array = value.split /x/
+          @col_string = %{cols="#{size_array[0]}" }
+          @row_string = %{ rows="#{size_array[1]}"}    
+      end
+    end    
+
+    def initialize(name, params, tokens)
+      @params = split_params(params)
+      super
+    end
+    def render(context)
+      @col_string = ""
+      @row_string = ""
+      set_attributes
+      %{<textarea #{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
+    end
   end
 end
 
 
 Liquid::Template.register_tag('text_field_tag', Clot::TextFieldTag)
 Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
+Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
 
 describe "tags for forms that don't use models" do
+
+  context "for text_area_tag" do
+
+    it "should create text area" do
+      tag = "{% text_area_tag post %}"
+      tag.should parse_to('<textarea id="post" name="post"></textarea>')
+    end
+
+
+    it "should create text area with input" do
+      tag = "{% text_area_tag bio,This is my biography. %}"
+      tag.should parse_to('<textarea id="bio" name="bio">This is my biography.</textarea>')
+    end
+
+    it "should create text area with will cols and rows" do
+      tag = "{% text_area_tag body,rows:10,cols:25 %}"
+      tag.should parse_to('<textarea cols="25" id="body" name="body" rows="10"></textarea>')
+    end
+
+    it "should create text area with input" do
+      tag = "{% text_area_tag body,size:25x10 %}"
+      tag.should parse_to('<textarea cols="25" id="body" name="body" rows="10"></textarea>')
+    end    
+
+    #text_area_tag 'description', "Description goes here.", :disabled => true
+    # => <textarea disabled="disabled" id="description" name="description">Description goes here.</textarea>
+
+    #text_area_tag 'comment', nil, :class => 'comment_input'
+    # => <textarea class="comment_input" id="comment" name="comment"></textarea>
+
+
+  end
 
   context "for file_field_tag" do
     it "should have generic name" do
