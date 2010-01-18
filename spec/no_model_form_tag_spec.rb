@@ -19,6 +19,8 @@ module Clot
             @accept_string = %{accept="#{CGI::unescape pair[1]}" }
           when "class"
             @class_string = %{class="#{pair[1]}" }
+          when "onchange"
+            @onchange_string = %{onchange="#{pair[1]}" }
           when "maxlength"
             @max_length_string = %{maxlength="#{pair[1]}" }
           when "disabled"
@@ -46,10 +48,18 @@ module Clot
       unless @value_string.nil?
         @value_string = %{value="#{@value_string}" }
       end
-      %{<input #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@size_string}type="#{@type}" #{@value_string}/>}
+      %{<input #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
     end
   end
 
+  class HiddenFieldTag < InputTag
+
+    def initialize(name, params, tokens)
+      @params = split_params(params)
+      @type = "hidden"
+      super
+    end
+  end
 
   class TextFieldTag < InputTag
 
@@ -123,10 +133,28 @@ end
 
 Liquid::Template.register_tag('select_tag', Clot::SelectTag)
 Liquid::Template.register_tag('text_field_tag', Clot::TextFieldTag)
+Liquid::Template.register_tag('hidden_field_tag', Clot::HiddenFieldTag)
 Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
 Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
 
 describe "tags for forms that don't use models" do
+  context "for hidden_field_tag" do
+    it "generates basic tag" do
+      tag = "{% hidden_field_tag tags_list %}"
+      tag.should parse_to('<input id="tags_list" name="tags_list" type="hidden" />')
+    end
+
+    it "generates basic tag with value" do
+      tag = "{% hidden_field_tag token,VUBJKB23UIVI1UU1VOBVI@ %}"
+      tag.should parse_to('<input id="token" name="token" type="hidden" value="VUBJKB23UIVI1UU1VOBVI@" />')
+    end
+
+    it "can have onchange attribute" do
+      tag = "{% hidden_field_tag collected_input,,onchange:alert('Input collected!') %}"
+      tag.should parse_to(%{<input id="collected_input" name="collected_input" onchange="alert('Input collected!')" type="hidden" value="" />})
+    end
+  
+  end
 
   context "for select_tag" do
     it "should use single option" do
