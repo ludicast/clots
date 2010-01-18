@@ -72,7 +72,6 @@ module Clot
   class TextAreaTag < Liquid::Tag
     include AttributeSetter
     include TagHelper
-
     def personal_attributes(name,value)
 
       case name
@@ -91,19 +90,77 @@ module Clot
       @params = split_params(params)
       super
     end
+
     def render(context)
       set_attributes
       %{<textarea #{@disabled_string}#{@class_string}#{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
     end
   end
+
+  class SelectTag < Liquid::Tag
+    include AttributeSetter
+    include TagHelper
+
+    def personal_attributes(name,value)
+      case name
+        when 'multiple'
+          @multiple_string = %{multiple="#{value == "true" ? "multiple" : ""}" }
+      end
+    end
+
+    def initialize(name, params, tokens)
+      @params = split_params(params)
+      super
+    end    
+
+    def render(context)
+      set_attributes
+      %{<select #{@disabled_string}#{@class_string}id="#{@id_string}" #{@multiple_string}name="#{@name_string}#{unless @multiple_string.nil? then '[]' end}">#{@value_string}</select>}
+    end
+    
+  end
 end
 
-
+Liquid::Template.register_tag('select_tag', Clot::SelectTag)
 Liquid::Template.register_tag('text_field_tag', Clot::TextFieldTag)
 Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
 Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
 
 describe "tags for forms that don't use models" do
+
+  context "for select_tag" do
+    it "should use single option" do
+      tag = "{% select_tag people,<option>David</option> %}"
+      tag.should parse_to('<select id="people" name="people"><option>David</option></select>');
+    end
+
+    it "should use multiple options" do
+      tag = "{% select_tag count,<option>1</option><option>2</option><option>3</option><option>4</option> %}"
+      tag.should parse_to('<select id="count" name="count"><option>1</option><option>2</option><option>3</option><option>4</option></select>');
+    end
+
+    it "should allow multiple selections" do
+      tag = "{% select_tag colors,<option>Red</option><option>Green</option><option>Blue</option>,multiple:true %}"
+      tag.should parse_to('<select id="colors" multiple="multiple" name="colors[]"><option>Red</option><option>Green</option><option>Blue</option></select>');
+
+    end
+
+    it "should have selected options" do
+      tag = %{{% select_tag locations,<option>Home</option><option selected="selected">Work</option><option>Out</option> %}}
+      tag.should parse_to(%{<select id="locations" name="locations"><option>Home</option><option selected="selected">Work</option><option>Out</option></select>})
+    end
+
+    it "should allow the setting of classes and multiple selections" do
+      tag = %{{% select_tag access,<option>Read</option><option>Write</option>,multiple:true,class:form_input %}}
+      tag.should parse_to('<select class="form_input" id="access" multiple="multiple" name="access[]"><option>Read</option><option>Write</option></select>')
+    end
+
+    it "should allow disabled" do
+      tag = "{% select_tag destination,<option>NYC</option><option>Paris</option><option>Rome</option>,disabled:true %}"
+      tag.should parse_to('<select disabled="disabled" id="destination" name="destination"><option>NYC</option><option>Paris</option><option>Rome</option></select>')
+    end
+    
+  end
 
   context "for text_area_tag" do
 
