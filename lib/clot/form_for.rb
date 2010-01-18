@@ -1,8 +1,8 @@
 module Clot
   class LiquidForm < Liquid::Block
-    include Clot::UrlFilters
-    include Clot::LinkFilters
-    include Clot::FormFilters
+    include UrlFilters
+    include LinkFilters
+    include FormFilters
 
     Syntax = /([^\s]+)\s+/
 
@@ -38,7 +38,6 @@ module Clot
 
     def get_form_body(context)
       context.stack do
-        roll_tags(context)
         render_all(@nodelist, context) * ""
       end
     end
@@ -46,13 +45,29 @@ module Clot
     def get_form_footer
       "</form>"
     end
+
+    def set_upload
+      if @attributes["uploading"] || @attributes["multipart"] == "true"
+        @upload_info = ' enctype="multipart/form-data"'
+      else
+        @upload_info = ''
+      end
+    end
+
+    def set_variables(context)
+      set_controller_action
+      set_form_action
+      set_class
+      set_upload
+    end
+
   end
 
   class LiquidFormElementTag < Struct.new(:tag_name, :type, :params)
 
-    include Clot::UrlFilters
-    include Clot::LinkFilters
-    include Clot::FormFilters
+    include UrlFilters
+    include LinkFilters
+    include FormFilters
 
     attr_accessor :model, :class_name
     attr_accessor :prompt
@@ -88,6 +103,8 @@ module Clot
     end
 
     def render(context)
+      @model = context['form_model']
+      @class_name = context['form_class_name']
       errors = @model.errors.on(tag_name)
       name_string = @class_name + "[" + tag_name.to_s + "]"
       tag_text = output_tag type, name_string, @model[tag_name], errors, context
@@ -157,14 +174,11 @@ module Clot
 
   class LiquidFormFor < LiquidForm
 
-    def roll_tags(context)
-      @nodelist.each do |node|
-        if (node.respond_to? :model=)
-          node.model = @model
-        end
-        if (node.respond_to? :class_name=)
-          node.class_name = @class_name
-        end
+    def get_form_body(context)
+      context.stack do
+        context['form_model'] =  @model
+        context['form_class_name'] =  @class_name
+        render_all(@nodelist, context) * ""
       end
     end
 
@@ -181,7 +195,7 @@ module Clot
 
     private
 
-    def set_method
+    def set_controller_action
       if @model.nil? || @model.source.nil? || @model.source.new_record?
         @activity = "new"
       else
@@ -225,24 +239,8 @@ module Clot
 
     end
 
-    def set_upload
-      if @attributes["uploading"]
-        @upload_info = ' enctype="multipart/form-data"'
-      else
-        @upload_info = ''
-      end
-    end
-
     def set_model(context)
       @model = context[@form_object] || nil
-    end
-
-    def set_variables(context)
-      set_model(context)
-      set_method
-      set_form_action
-      set_class
-      set_upload
     end
 
     def get_form_header(context)
@@ -270,6 +268,11 @@ module Clot
         result += "</ul></div>"
       end
       result
+    end
+
+    def set_variables(context)
+      set_model(context)
+      super
     end
 
   end

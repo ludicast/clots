@@ -107,6 +107,21 @@ module Clot
     end
   end
 
+  class SubmitTag < Liquid::Tag
+    include AttributeSetter
+    include TagHelper
+
+    def render(context)
+      set_attributes
+      %{<input type="submit" name="submit" value="Save" />}
+    end
+
+    def initialize(name, params, tokens)
+      @params = split_params(params)
+      super
+    end
+  end
+
   class SelectTag < Liquid::Tag
     include AttributeSetter
     include TagHelper
@@ -136,8 +151,16 @@ Liquid::Template.register_tag('text_field_tag', Clot::TextFieldTag)
 Liquid::Template.register_tag('hidden_field_tag', Clot::HiddenFieldTag)
 Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
 Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
+Liquid::Template.register_tag('submit_tag', Clot::SubmitTag)
 
 describe "tags for forms that don't use models" do
+  context "for submit_tag" do
+    it "should take label" do
+      tag = "{% submit_tag Save %}"
+      tag.should parse_to('<input type="submit" name="submit" value="Save" />')
+    end
+  end
+
   context "for hidden_field_tag" do
     it "generates basic tag" do
       tag = "{% hidden_field_tag tags_list %}"
@@ -146,6 +169,11 @@ describe "tags for forms that don't use models" do
 
     it "generates basic tag with value" do
       tag = "{% hidden_field_tag token,VUBJKB23UIVI1UU1VOBVI@ %}"
+      tag.should parse_to('<input id="token" name="token" type="hidden" value="VUBJKB23UIVI1UU1VOBVI@" />')
+    end
+
+    it "trims whitespace near commas" do
+      tag = "{% hidden_field_tag token , VUBJKB23UIVI1UU1VOBVI@ %}"
       tag.should parse_to('<input id="token" name="token" type="hidden" value="VUBJKB23UIVI1UU1VOBVI@" />')
     end
 
