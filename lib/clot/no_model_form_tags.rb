@@ -10,6 +10,10 @@ module Clot
       end
     end
 
+    def personal_attributes(name,value)
+      "ERROR   ++++++++++++++++++ : called with #{name} : #{value}"
+    end
+
 
     def set_attributes(context)
       set_primary_attributes(context)
@@ -47,7 +51,7 @@ module Clot
 
     def render(context)
       set_attributes(context)
-      render_string(context)
+      render_string
     end
 
   end
@@ -62,7 +66,7 @@ module Clot
       end
     end
 
-    def render_string(context)
+    def render_string
       unless @value_string.nil?
         @value_string = %{value="#{@value_string}" }
       end
@@ -109,7 +113,7 @@ module Clot
       end
     end
 
-    def render_string(context)
+    def render_string
       %{<textarea #{@disabled_string}#{@class_string}#{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
     end
   end
@@ -118,7 +122,10 @@ module Clot
 
     def personal_attributes(name,value)
       case name
-        when "name": if value.nil? then @commit_name_string = '' end
+        when "name"
+          if value.nil? then @commit_name_string = '' end
+        when "disable_with"
+          @onclick_string = %{onclick="this.disabled=true;this.value='#{value}';this.form.submit();" }
       end
     end
 
@@ -128,9 +135,9 @@ module Clot
       end
     end
 
-    def render_string(context)
+    def render_string
 
-      %{<input #{@class_string}#{@disabled_string}type="submit" #{@commit_name_string}value="#{@value_string}" />}
+      %{<input #{@class_string}#{@onclick_string}#{@disabled_string}type="submit" #{@commit_name_string}value="#{@value_string}" />}
     end
 
     def initialize(name, params, tokens)
@@ -149,7 +156,7 @@ module Clot
       end
     end
 
-    def render_string(context)
+    def render_string
       %{<select #{@disabled_string}#{@class_string}id="#{@id_string}" #{@multiple_string}name="#{@name_string}#{unless @multiple_string.nil? then '[]' end}">#{@value_string}</select>}
     end
 
@@ -157,7 +164,7 @@ module Clot
 
 
   class LabelTag < ClotTag
-    def render_string(context)
+    def render_string
       @value_string ||= @name_string.capitalize
       %{<label #{@class_string}for="#{@name_string}">#{@value_string}</label>}
     end
@@ -172,10 +179,9 @@ module Clot
           @checked_value = %{checked="checked" }
         end
       end
-
     end
 
-    def render_string(context)
+    def render_string
       @value_string ||= 1
       %{<input #{@disabled_string}#{@class_string}#{@checked_value}id="#{@name_string}" name="#{@name_string}" type="checkbox" value="#{@value_string}" />}
     end

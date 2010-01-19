@@ -30,9 +30,12 @@ describe "tags for forms that don't use models" do
     it "should be able to have class applied" do
       tag = "{% submit_tag '',class:'form_submit' %}"
       tag.should parse_to('<input class="form_submit" type="submit" name="commit" value="" />')
-
     end
 
+    it "should support disable_with" do
+      tag = "{% submit_tag 'Edit',disable_with:'Editing...',class:'edit-button' %}"
+      tag.should parse_to(%{<input class="edit-button" onclick="this.disabled=true;this.value='Editing...';this.form.submit();" type="submit" name="commit" value="Edit" />})
+    end
 
   end
 
