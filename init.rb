@@ -3,6 +3,7 @@ require 'clot/form_for'
 require 'clot/deprecated'
 require 'clot/yield'
 require 'clot/if_content_for'
+require 'clot/no_model_form_tags'
 require 'extras/liquid_view'
 
 
@@ -12,6 +13,8 @@ Liquid::Template.register_filter Clot::FormFilters
 Liquid::Template.register_tag('formfor', Clot::LiquidFormFor)
 Liquid::Template.register_tag('yield', Clot::Yield)
 Liquid::Template.register_tag('if_content_for', Clot::IfContentFor)
+Liquid::Template.register_tag('form_tag', Clot::FormTag)
+Liquid::Template.register_tag('submit_tag', Clot::SubmitTag)
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 
@@ -22,9 +25,8 @@ LiquidView.class_eval do
     @new_assigns = {}
 
     @new_assigns['controller_name'] = @view.controller.controller_name
-    
     @new_assigns['action_name'] = @view.controller.action_name
-    
+
     if @view.controller.send :protect_against_forgery?      
       @new_assigns['auth_token'] = @view.controller.send :form_authenticity_token
     end

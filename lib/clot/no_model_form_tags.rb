@@ -1,18 +1,8 @@
 module Clot
   module AttributeSetter
-    def resolve_value(value,context)
-      if value.match /^(["'])(.*)\1$/
-        $2
-      elsif value.match(/^(\d+)$/) || value.match(/^true$/) || value.match(/^false$/)
-        value
-      else
-        context[value]
-      end
-    end
 
     def set_primary_attributes(context)
       @id_string = @name_string = resolve_value(@params.shift,context)
-
       if @params[0] && ! @params[0].match(/:/)
         @value_string = resolve_value(@params.shift,context)
       end
@@ -37,7 +27,7 @@ module Clot
           when "maxlength"
             @max_length_string = %{maxlength="#{value}" }
           when "disabled"
-            @disabled_string = %{disabled="#{if (value == "true" || value == "disabled") then 'disabled' end}" }
+            @disabled_string = %{disabled="#{if (value == true || value == "disabled") then 'disabled' end}" }
           else
             personal_attributes(pair[0], value)
         end
@@ -124,6 +114,12 @@ module Clot
     include AttributeSetter
     include TagHelper
 
+    def personal_attributes(name,value)
+      case name
+        when "name": if value.nil? then @commit_name_string = '' end
+      end
+    end
+
     def set_primary_attributes(context)
       if @params[0] && ! @params[0].match(/:/)
         @value_string = resolve_value @params.shift, context
@@ -132,12 +128,14 @@ module Clot
 
     def render(context)
       set_attributes(context)
-      %{<input #{@class_string}#{@disabled_string}type="submit" name="commit" value="#{@value_string}" />}
+
+      %{<input #{@class_string}#{@disabled_string}type="submit" #{@commit_name_string}value="#{@value_string}" />}
     end
 
     def initialize(name, params, tokens)
       @params = split_params(params)
       @value_string = "Save changes"
+      @commit_name_string = 'name="commit" '
       super
     end
   end

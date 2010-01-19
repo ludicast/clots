@@ -12,6 +12,11 @@ describe "tags for forms that don't use models" do
       tag.should parse_to('<input type="submit" name="commit" value="Save" />')
     end
 
+    it "should take name of nil" do
+      tag = "{% submit_tag 'Save',name:nil %}"
+      tag.should parse_to('<input type="submit" value="Save" />')
+    end
+
     it "should take label from variable" do
       tag = "{% submit_tag save_var %}"
       tag.should parse_with_vars_to('<input type="submit" name="commit" value="Save Me!" />', 'save_var' => 'Save Me!')
@@ -82,7 +87,7 @@ describe "tags for forms that don't use models" do
     end
 
     it "should allow disabled" do
-      tag = "{% select_tag 'destination','<option>NYC</option><option>Paris</option><option>Rome</option>',disabled:'true' %}"
+      tag = "{% select_tag 'destination','<option>NYC</option><option>Paris</option><option>Rome</option>',disabled:true %}"
       tag.should parse_to('<select disabled="disabled" id="destination" name="destination"><option>NYC</option><option>Paris</option><option>Rome</option></select>')
     end
     
@@ -186,5 +191,10 @@ describe "tags for forms that don't use models" do
       tag = "{% text_field_tag 'ip','0.0.0.0',maxlength:15,size:20,class:'ip-input' %}"
       tag.should parse_to('<input class="ip-input" id="ip" maxlength="15" name="ip" size="20" type="text" value="0.0.0.0" />')
     end
+    
+  end
+
+  context "for label_tag" do
+
   end
 end

@@ -3,6 +3,7 @@ module Clot
     include UrlFilters
     include LinkFilters
     include FormFilters
+    include TagHelper
 
     Syntax = /([^\s]+)\s+/
 
@@ -130,6 +131,7 @@ module Clot
       if @activity == "edit"
         result += '<input type="hidden" name="_method" value="PUT"/>'
       end
+
 
       if context.has_key? 'auth_token'
         result += '<input name="authenticity_token" type="hidden" value="' + context['auth_token'] + '"/>'

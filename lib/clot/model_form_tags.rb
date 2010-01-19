@@ -1,6 +1,5 @@
 module Clot
   module ModelTag
-
     def set_primary_attributes(context)
       @item = context['form_model']
       if @item
