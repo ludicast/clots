@@ -12,6 +12,12 @@ describe "tags for forms that don't use models" do
       tag.should parse_to('<input type="submit" name="commit" value="Save" />')
     end
 
+    it "should take parse information from environment" do
+      user = get_drop @@user_default_values
+      tag = "{% submit_tag user.name %}"
+      tag.should parse_with_vars_to(%{<input type="submit" name="commit" value="#{user.name}" />}, 'user' => user)
+    end
+
     it "should take name of nil" do
       tag = "{% submit_tag 'Save',name:nil %}"
       tag.should parse_to('<input type="submit" value="Save" />')

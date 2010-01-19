@@ -1,8 +1,5 @@
 module Clot
-
-
   module AttributeSetter
-
     def set_primary_attributes(context)
       @id_string = @name_string = resolve_value(@params.shift,context)
       if @params[0] && ! @params[0].match(/:/)
@@ -136,7 +133,6 @@ module Clot
     end
 
     def render_string
-
       %{<input #{@class_string}#{@onclick_string}#{@disabled_string}type="submit" #{@commit_name_string}value="#{@value_string}" />}
     end
 
