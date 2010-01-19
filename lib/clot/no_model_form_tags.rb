@@ -1,4 +1,6 @@
 module Clot
+
+
   module AttributeSetter
 
     def set_primary_attributes(context)
@@ -35,9 +37,23 @@ module Clot
     end
   end
 
-  class InputTag < Liquid::Tag
+  class ClotTag < Liquid::Tag
     include AttributeSetter
     include TagHelper
+    def initialize(name, params, tokens)
+      @params = split_params(params)
+      super
+    end
+
+    def render(context)
+      set_attributes(context)
+      render_string(context)
+    end
+
+  end
+
+
+  class InputTag < ClotTag
 
     def personal_attributes(name,value)
       case name
@@ -46,8 +62,7 @@ module Clot
       end
     end
 
-    def render(context)
-      set_attributes(context)
+    def render_string(context)
       unless @value_string.nil?
         @value_string = %{value="#{@value_string}" }
       end
@@ -58,7 +73,6 @@ module Clot
   class HiddenFieldTag < InputTag
 
     def initialize(name, params, tokens)
-      @params = split_params(params)
       @type = "hidden"
       super
     end
@@ -67,7 +81,6 @@ module Clot
   class TextFieldTag < InputTag
 
     def initialize(name, params, tokens)
-      @params = split_params(params)
       @type = "text"
       super
     end
@@ -76,15 +89,12 @@ module Clot
   class FileFieldTag < InputTag
 
     def initialize(name, params, tokens)
-      @params = split_params(params)
       @type = "file"
       super
     end
   end
 
-  class TextAreaTag < Liquid::Tag
-    include AttributeSetter
-    include TagHelper
+  class TextAreaTag < ClotTag
     def personal_attributes(name,value)
 
       case name
@@ -99,20 +109,12 @@ module Clot
       end
     end
 
-    def initialize(name, params, tokens)
-      @params = split_params(params)
-      super
-    end
-
-    def render(context)
-      set_attributes(context)
+    def render_string(context)
       %{<textarea #{@disabled_string}#{@class_string}#{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
     end
   end
 
-  class SubmitTag < Liquid::Tag
-    include AttributeSetter
-    include TagHelper
+  class SubmitTag < ClotTag
 
     def personal_attributes(name,value)
       case name
@@ -126,23 +128,19 @@ module Clot
       end
     end
 
-    def render(context)
-      set_attributes(context)
+    def render_string(context)
 
       %{<input #{@class_string}#{@disabled_string}type="submit" #{@commit_name_string}value="#{@value_string}" />}
     end
 
     def initialize(name, params, tokens)
-      @params = split_params(params)
       @value_string = "Save changes"
       @commit_name_string = 'name="commit" '
       super
     end
   end
 
-  class SelectTag < Liquid::Tag
-    include AttributeSetter
-    include TagHelper
+  class SelectTag < ClotTag
 
     def personal_attributes(name,value)
       case name
@@ -151,15 +149,33 @@ module Clot
       end
     end
 
-    def initialize(name, params, tokens)
-      @params = split_params(params)
-      super
-    end
-
-    def render(context)
-      set_attributes(context)
+    def render_string(context)
       %{<select #{@disabled_string}#{@class_string}id="#{@id_string}" #{@multiple_string}name="#{@name_string}#{unless @multiple_string.nil? then '[]' end}">#{@value_string}</select>}
     end
 
   end
+
+
+  class LabelTag < ClotTag
+    def render_string(context)
+      @value_string ||= @name_string.capitalize
+      %{<label #{@class_string}for="#{@name_string}">#{@value_string}</label>}
+    end
+  end
+
+  class CheckBoxTag < ClotTag
+    def set_primary_attributes(context)
+      super context
+      if @params[0] && ! @params[0].match(/:/)
+        @checked_value = %{checked="#{resolve_value(@params.shift,context) ? 'checked' : ''}" }
+      end
+    end
+
+    def render_string(context)
+      @value_string ||= 1
+      %{<input #{@checked_value}id="#{@name_string}" name="#{@name_string}" type="checkbox" value="#{@value_string}" />}
+    end
+  end
+
+
 end

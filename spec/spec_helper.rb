@@ -213,6 +213,8 @@ Liquid::Template.register_tag('hidden_field_tag', Clot::HiddenFieldTag)
 Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
 Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
 Liquid::Template.register_tag('submit_tag', Clot::SubmitTag)
+Liquid::Template.register_tag('label_tag', Clot::LabelTag)
+Liquid::Template.register_tag('check_box_tag', Clot::CheckBoxTag)
 
 Liquid::Template.register_tag('text_field', Clot::TextField)
 Liquid::Template.register_tag('text_area', Clot::TextArea)

@@ -195,6 +195,44 @@ describe "tags for forms that don't use models" do
   end
 
   context "for label_tag" do
-
+    it "assigns default value" do
+      tag = "{% label_tag 'name' %}"
+      tag.should parse_to('<label for="name">Name</label>')
+    end
+    it "allows alternative value" do
+      tag = "{% label_tag 'name', 'Your Name' %}"
+      tag.should parse_to('<label for="name">Your Name</label>')
+    end
+    it "allows class to be assigned" do
+      tag = "{% label_tag 'name',class:'small_label' %}"
+      tag.should parse_to('<label class="small_label" for="name">Name</label>')
+    end
   end
+
+  context "for check_box_tag" do
+
+    it "should generate basic checkbox" do
+      tag = "{% check_box_tag 'accept' %}"
+      tag.should parse_to('<input id="accept" name="accept" type="checkbox" value="1" />')
+    end
+
+    it "should take alternate values" do
+      tag = "{% check_box_tag 'rock', 'rock music' %}"
+      tag.should parse_to('<input id="rock" name="rock" type="checkbox" value="rock music" />')
+    end
+    
+    it "should take parameter for checked" do
+      tag = "{% check_box_tag 'receive_email', 'yes', true %}"
+      tag.should parse_to('<input checked="checked" id="receive_email" name="receive_email" type="checkbox" value="yes" />')
+    end
+=begin
+    check_box_tag 'tos', 'yes', false, :class => 'accept_tos'
+    # => <input class="accept_tos" id="tos" name="tos" type="checkbox" value="yes" />
+
+    check_box_tag 'eula', 'accepted', false, :disabled => true
+    # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
+
+=end
+  end
+
 end

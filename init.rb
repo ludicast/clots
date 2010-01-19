@@ -10,6 +10,7 @@ require 'extras/liquid_view'
 Liquid::Template.register_filter Clot::UrlFilters  
 Liquid::Template.register_filter Clot::LinkFilters  
 Liquid::Template.register_filter Clot::FormFilters
+
 Liquid::Template.register_tag('formfor', Clot::LiquidFormFor)
 Liquid::Template.register_tag('yield', Clot::Yield)
 Liquid::Template.register_tag('if_content_for', Clot::IfContentFor)
