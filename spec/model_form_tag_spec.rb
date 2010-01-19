@@ -8,7 +8,7 @@ describe "tags for forms that use models" do
 
   def parse_form_tag_to(inner_code)
       template = "{% formfor liquid_demo_model %}#{@tag}{% endformfor %}"
-      expected = "<form>#{inner_code}</form>"
+      expected = %{<form method="POST" action="#{object_url @user}"><input type="hidden" name="_method" value="PUT"/>#{inner_code}</form>}
       template.should parse_with_atributes_to(expected, 'liquid_demo_model' => @user)
   end
 
@@ -28,7 +28,10 @@ describe "tags for forms that use models" do
       end
     end
     context "inside of form" do
-
+      it "should take regular name" do
+        @tag = "{% text_field name %}"
+        parse_form_tag_to %{<input id="liquid_demo_model_name" name="liquid_demo_model[name]" type="text" value="#{@user.name}" />}
+      end
     end
 
   end
