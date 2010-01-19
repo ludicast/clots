@@ -188,7 +188,7 @@ Spec::Matchers.define :parse_to do |expected|
 
 end
 
-Spec::Matchers.define :parse_with_atributes_to do |expected,attributes|
+Spec::Matchers.define :parse_with_vars_to do |expected,attributes|
   match do |template|
     expected.should == Template.parse(template).render(attributes)
   end

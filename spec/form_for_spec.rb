@@ -11,7 +11,7 @@ describe "Form For" do
       text_drop = mock_drop @@text_content_default_values
       expected = '<form method="POST" action="' + (object_url text_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
       template = '{% formfor text %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'text' => text_drop)
+      template.should parse_with_vars_to(expected, 'text' => text_drop)
     end
   end
 
@@ -20,7 +20,7 @@ describe "Form For" do
       text_drop = mock_drop @@text_content_default_values
       expected = '<form method="POST" action="' + (object_url text_drop) + '/no_no_no"></form>'
       template = '{% formfor text post_method:no_no_no %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'text' => text_drop)
+      template.should parse_with_vars_to(expected, 'text' => text_drop)
     end
   end
 
@@ -30,7 +30,7 @@ describe "Form For" do
       user_drop = get_drop @@user_default_values
       expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + user_drop.login + '"/></form>'
       template = '{% formfor liquid_demo_model %}{% field :login %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'liquid_demo_model' => user_drop)
+      template.should parse_with_vars_to(expected, 'liquid_demo_model' => user_drop)
     end
 
     it "should dynamically create an input box" do
@@ -84,7 +84,7 @@ describe "Form For" do
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
       expected += "<option value=\"#{user_drop1.id}\" selected=\"true\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select></form>"
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :users %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
+      template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
     it "should dynamically create a select based on array" do
@@ -92,7 +92,7 @@ describe "Form For" do
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
       expected += "<option value=\"1\" selected=\"true\">1</option><option value=\"two\">two</option></select></form>"
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :options %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'options' => [1, "two"])
+      template.should parse_with_vars_to(expected, 'user' => user_drop1, 'options' => [1, "two"])
     end
 
     it "should dynamically create a select based on inputted array" do
@@ -100,7 +100,7 @@ describe "Form For" do
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
       expected += "<option value=\"1\" selected=\"true\">1</option><option value=\"two\">two</option></select></form>"
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :[1 two] %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => user_drop1)
+      template.should parse_with_vars_to(expected, 'user' => user_drop1)
     end
 
 
@@ -111,7 +111,7 @@ describe "Form For" do
       expected += "<option>nada to see</option>"
       expected += "<option value=\"#{user_drop1.id}\" selected=\"true\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select></form>"
       template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% select :friend_id, :users, _prompt:nada to see %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
+      template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
   end
@@ -121,7 +121,7 @@ describe "Form For" do
       user_drop = get_drop @@user_default_values
       expected = '<form method="POST" class="tester" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
       template = '{% formfor user class:tester %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => user_drop)
+      template.should parse_with_vars_to(expected, 'user' => user_drop)
     end
   end
 
@@ -145,14 +145,14 @@ describe "Form For" do
       @user_drop.errors.add("error")
       expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>1 error(s) occurred while processing information</h2><ul><li>error - is invalid</li></ul></div></form>'
       template = '{% formfor user class:tester %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => @user_drop)
+      template.should parse_with_vars_to(expected, 'user' => @user_drop)
     end
 
     it "should show error around relevant form item" do
       @user_drop.errors.add("login", "login already used")
       expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>1 error(s) occurred while processing information</h2><ul><li>login - login already used</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
       template = '{% formfor user class:tester %}{% field :login %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => @user_drop)
+      template.should parse_with_vars_to(expected, 'user' => @user_drop)
     end
 
     it "should show multiple errors for multiple categories" do
@@ -161,7 +161,7 @@ describe "Form For" do
       @user_drop.errors.add("login", "login too short")
       expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>3 error(s) occurred while processing information</h2><ul><li>login - login already used</li><li>login - login too short</li><li>error - is invalid</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
       template = '{% formfor user class:tester %}{% field :login %}{% endformfor %}'
-      template.should parse_with_atributes_to(expected, 'user' => @user_drop)
+      template.should parse_with_vars_to(expected, 'user' => @user_drop)
     end
   end
 

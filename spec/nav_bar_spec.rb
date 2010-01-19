@@ -226,7 +226,7 @@ describe "when using links" do
           @links = "{% links %}{% link nested_index:user:tags %}{% endlinks %}"
         end
         it "should generate link" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">Index</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">Index</a>",
                                                 'user' => @user_drop)
         end
       end
@@ -235,7 +235,7 @@ describe "when using links" do
           @links = "{% links %}{% link nested_index:user:tags,label:foo %}{% endlinks %}"
         end
         it "should generate link with assigned label" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">foo</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">foo</a>",
                                                 'user' => @user_drop)
         end        
 
@@ -252,7 +252,7 @@ describe "when using links" do
           @links = "{% links %}{% link view:user %}{% endlinks %}"
         end
         it "should generate view parameter" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">View</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">View</a>",
                                                 'user' => @user_drop)
         end
       end
@@ -261,7 +261,7 @@ describe "when using links" do
           @links = "{% links %}{% link bads,view:user %}{% endlinks %}"
         end
         it "should generate view parameter" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">bads</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">bads</a>",
                                                 'user' => @user_drop)
         end
       end
@@ -270,7 +270,7 @@ describe "when using links" do
           @links = "{% links %}{% link edit:user %}{% endlinks %}"
         end
         it "should generate edit parameter" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">Edit</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">Edit</a>",
                                                 'user' => @user_drop)
         end
       end
@@ -279,7 +279,7 @@ describe "when using links" do
           @links = "{% links %}{% link bads,edit:user %}{% endlinks %}"
         end
         it "should generate edit parameter" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">bads</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">bads</a>",
                                                 'user' => @user_drop)
         end
       end
@@ -289,7 +289,7 @@ describe "when using links" do
           @links = "{% links %}{% link delete:user %}{% endlinks %}"
         end
         it "should generate delte parameter" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">Delete</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">Delete</a>",
                                                 'user' => @user_drop)
         end
       end
@@ -298,7 +298,7 @@ describe "when using links" do
           @links = "{% links %}{% link bads,delete:user %}{% endlinks %}"
         end
         it "should generate delete parameter" do
-          @links.should parse_with_atributes_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">bads</a>",
+          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">bads</a>",
                                                 'user' => @user_drop)
         end
       end

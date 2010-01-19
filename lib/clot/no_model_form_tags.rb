@@ -1,10 +1,20 @@
 module Clot
   module AttributeSetter
+    def resolve_value(value,context)
+      if value.match /^(["'])(.*)\1$/
+        $2
+      elsif value.match(/^(\d+)$/) || value.match(/^true$/) || value.match(/^false$/)
+        value
+      else
+        context[value]
+      end
+    end
+
     def set_primary_attributes(context)
-      @id_string = @name_string = @params.shift
+      @id_string = @name_string = resolve_value(@params.shift,context)
 
       if @params[0] && ! @params[0].match(/:/)
-        @value_string = @params.shift
+        @value_string = resolve_value(@params.shift,context)
       end
     end
 
@@ -14,21 +24,22 @@ module Clot
       
       @params.each do |pair|
         pair = pair.split /:/
+        value = resolve_value(pair[1],context)
         case pair[0]
           when "value"
-            @value_string = pair[1]
+            @value_string = value
           when "accept"
-            @accept_string = %{accept="#{CGI::unescape pair[1]}" }
+            @accept_string = %{accept="#{CGI::unescape value}" }
           when "class"
-            @class_string = %{class="#{pair[1]}" }
+            @class_string = %{class="#{value}" }
           when "onchange"
-            @onchange_string = %{onchange="#{pair[1]}" }
+            @onchange_string = %{onchange="#{value}" }
           when "maxlength"
-            @max_length_string = %{maxlength="#{pair[1]}" }
+            @max_length_string = %{maxlength="#{value}" }
           when "disabled"
-            @disabled_string = %{disabled="#{if (pair[1] == "true" || pair[1] == "disabled") then 'disabled' end}" }
+            @disabled_string = %{disabled="#{if (value == "true" || value == "disabled") then 'disabled' end}" }
           else
-            personal_attributes(pair[0], pair[1])
+            personal_attributes(pair[0], value)
         end
       end
     end
@@ -113,13 +124,20 @@ module Clot
     include AttributeSetter
     include TagHelper
 
+    def set_primary_attributes(context)
+      if @params[0] && ! @params[0].match(/:/)
+        @value_string = resolve_value @params.shift, context
+      end
+    end
+
     def render(context)
       set_attributes(context)
-      %{<input type="submit" name="submit" value="Save" />}
+      %{<input #{@class_string}#{@disabled_string}type="submit" name="commit" value="#{@value_string}" />}
     end
 
     def initialize(name, params, tokens)
       @params = split_params(params)
+      @value_string = "Save changes"
       super
     end
   end

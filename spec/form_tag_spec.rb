@@ -49,8 +49,8 @@ describe "Form Tag" do
   end
 
   it "should take inner tags" do
-    form = "{% form_tag /posts %}<div>{% submit_tag Save %}</div>{% endform_tag %}"
-    form.should parse_to('<form action="/posts" method="post"><div><input type="submit" name="submit" value="Save" /></div></form>')
+    form = "{% form_tag /posts %}<div>{% submit_tag 'Save' %}</div>{% endform_tag %}"
+    form.should parse_to('<form action="/posts" method="post"><div><input type="submit" name="commit" value="Save" /></div></form>')
   end
 
 end

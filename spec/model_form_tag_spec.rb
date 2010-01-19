@@ -9,11 +9,11 @@ describe "tags for forms that use models" do
   def parse_form_tag_to(inner_code)
       template = "{% formfor liquid_demo_model %}#{@tag}{% endformfor %}"
       expected = %{<form method="POST" action="#{object_url @user}"><input type="hidden" name="_method" value="PUT"/>#{inner_code}</form>}
-      template.should parse_with_atributes_to(expected, 'liquid_demo_model' => @user)
+      template.should parse_with_vars_to(expected, 'liquid_demo_model' => @user)
   end
 
   def tag_should_parse_to expected
-    @tag.should parse_with_atributes_to(expected, 'liquid_demo_model' => @user)
+    @tag.should parse_with_vars_to(expected, 'liquid_demo_model' => @user)
   end
   
   before do
@@ -27,15 +27,17 @@ describe "tags for forms that use models" do
         tag_should_parse_to %{<textarea cols="20" id="liquid_demo_model_name" name="liquid_demo_model[name]" rows="40">#{@user.name}</textarea>}
       end      
       it "should take regular size" do
-        @tag = "{% text_area liquid_demo_model,name,size:20x40 %}"
+        @tag = "{% text_area liquid_demo_model,name,size:'20x40' %}"
         tag_should_parse_to %{<textarea cols="20" id="liquid_demo_model_name" name="liquid_demo_model[name]" rows="40">#{@user.name}</textarea>}
       end
       it "should take class and disabled" do
-        @tag = "{% text_area liquid_demo_model,name,class:app_input,disabled:disabled %}"
+        @tag = "{% text_area liquid_demo_model,name,class:'app_input',disabled:'disabled' %}"
         tag_should_parse_to %{<textarea disabled="disabled" class="app_input" id="liquid_demo_model_name" name="liquid_demo_model[name]">#{@user.name}</textarea>}
       end
     end
   end
+
+
 
   context "for text_field" do
     context "outside of form" do
@@ -48,18 +50,19 @@ describe "tags for forms that use models" do
         tag_should_parse_to %{<input id="liquid_demo_model_name" name="liquid_demo_model[name]" size="20" type="text" value="#{@user.name}" />}
       end
       it "should take regular name and class attribute" do
-        @tag = "{% text_field liquid_demo_model,name,class:create_input %}"
+        @tag = "{% text_field liquid_demo_model,name,class:'create_input' %}"
         tag_should_parse_to %{<input class="create_input" id="liquid_demo_model_name" name="liquid_demo_model[name]" type="text" value="#{@user.name}" />}
       end
       it "should take regular name and onchange attribute" do
-        @tag = "{% text_field liquid_demo_model,name,onchange:if $('session[user]').value == 'admin' { alert('Your login can not be admin!'); } %}"
+        @tag = "{% text_field liquid_demo_model,name,onchange:\"if $('session[user]').value == 'admin' { alert('Your login can not be admin!'); }\" %}"
         tag_should_parse_to %{<input id="liquid_demo_model_name" name="liquid_demo_model[name]" onchange="if $('session[user]').value == 'admin' { alert('Your login can not be admin!'); }" type="text" value="#{@user.name}" />}
       end
       it "should take multiple attributes" do
-        @tag = "{% text_field liquid_demo_model,name,size:20,class:create_input %}"
+        @tag = "{% text_field liquid_demo_model,name,size:20,class:'create_input' %}"
         tag_should_parse_to %{<input class="create_input" id="liquid_demo_model_name" name="liquid_demo_model[name]" size="20" type="text" value="#{@user.name}" />}
       end
     end
+
     context "inside of form" do
       it "should take regular name" do
         @tag = "{% text_field name %}"
@@ -70,11 +73,13 @@ describe "tags for forms that use models" do
         parse_form_tag_to %{<input id="liquid_demo_model_name" name="liquid_demo_model[name]" size="20" type="text" value="#{@user.name}" />}
       end
       it "should take regular name and multiple attributes" do
-        @tag = "{% text_field name,size:20,class:code_input %}"
+        @tag = "{% text_field name,size:20,class:'code_input' %}"
         parse_form_tag_to %{<input class="code_input" id="liquid_demo_model_name" name="liquid_demo_model[name]" size="20" type="text" value="#{@user.name}" />}
       end
     end
 
   end
+
+
 
 end
