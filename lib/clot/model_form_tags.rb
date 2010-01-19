@@ -23,4 +23,7 @@ module Clot
   class TextField < TextFieldTag
     include ModelTag
   end
+  class TextArea < TextAreaTag
+    include ModelTag
+  end
 end

@@ -26,7 +26,7 @@ module Clot
           when "maxlength"
             @max_length_string = %{maxlength="#{pair[1]}" }
           when "disabled"
-            @disabled_string = %{disabled="#{if (pair[1] == "true") then 'disabled' end}" }
+            @disabled_string = %{disabled="#{if (pair[1] == "true" || pair[1] == "disabled") then 'disabled' end}" }
           else
             personal_attributes(pair[0], pair[1])
         end

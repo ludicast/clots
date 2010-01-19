@@ -215,3 +215,7 @@ Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
 Liquid::Template.register_tag('submit_tag', Clot::SubmitTag)
 
 Liquid::Template.register_tag('text_field', Clot::TextField)
+Liquid::Template.register_tag('text_area', Clot::TextArea)
+
+require 'clot/form_for'
+require 'clot/deprecated'

@@ -1,5 +1,6 @@
 require 'clot/url_filters'
 require 'clot/form_for'
+require 'clot/deprecated'
 require 'clot/yield'
 require 'clot/if_content_for'
 require 'extras/liquid_view'
