@@ -167,13 +167,17 @@ module Clot
     def set_primary_attributes(context)
       super context
       if @params[0] && ! @params[0].match(/:/)
-        @checked_value = %{checked="#{resolve_value(@params.shift,context) ? 'checked' : ''}" }
+        checked = resolve_value @params.shift, context
+        if checked
+          @checked_value = %{checked="checked" }
+        end
       end
+
     end
 
     def render_string(context)
       @value_string ||= 1
-      %{<input #{@checked_value}id="#{@name_string}" name="#{@name_string}" type="checkbox" value="#{@value_string}" />}
+      %{<input #{@disabled_string}#{@class_string}#{@checked_value}id="#{@name_string}" name="#{@name_string}" type="checkbox" value="#{@value_string}" />}
     end
   end
 

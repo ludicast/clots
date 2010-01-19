@@ -225,14 +225,22 @@ describe "tags for forms that don't use models" do
       tag = "{% check_box_tag 'receive_email', 'yes', true %}"
       tag.should parse_to('<input checked="checked" id="receive_email" name="receive_email" type="checkbox" value="yes" />')
     end
-=begin
-    check_box_tag 'tos', 'yes', false, :class => 'accept_tos'
-    # => <input class="accept_tos" id="tos" name="tos" type="checkbox" value="yes" />
 
-    check_box_tag 'eula', 'accepted', false, :disabled => true
-    # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
+    it "should take class" do
+      tag = "{% check_box_tag 'tos','yes',false,class:'accept_tos' %}"
+      tag.should parse_to('<input class="accept_tos" id="tos" name="tos" type="checkbox" value="yes" />')
+    end
 
-=end
+    it "should let leave off checked param" do
+      tag = "{% check_box_tag 'tos','yes',class:'accept_tos' %}"
+      tag.should parse_to('<input class="accept_tos" id="tos" name="tos" type="checkbox" value="yes" />')
+    end
+
+    it "should let be disabled" do
+      tag = "{% check_box_tag 'eula','accepted',disabled:true %}"
+      tag.should parse_to('<input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />')
+    end
+
   end
 
 end
