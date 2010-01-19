@@ -8,34 +8,33 @@ One of the big benefits of liquid is that it enforces a strict MVC paradign wher
 
 Clots allows a form to be created like so
 
-{% formfor recipe %}
-{{ errors }}
-  <p>
-  	Title: {% field :title %}
-  </p>
-  <p>
-    Description: {% text :description, rows:4, cols:40 %}
-  </p>
-  <p>
-    {{ "Update" | submit_button }}
-  </p>
-{% endformfor %} 
+    {% formfor recipe %}
+    {{ errors }}
+        <p>
+            Title: {% field :title %}
+        </p>
+        <p>
+            Description: {% text :description, rows:4, cols:40 %}
+        </p>
+        <p>
+            {{ "Update" | submit_button }}
+        </p>
+    {% endformfor %}
 
 And generate:
 
-<form method="POST" action="/recipes/1"><input type="hidden"
-name="_method" value="PUT"/><input name="authenticity_token"
-type="hidden" value="31b0e7e9d18e01f0733225060dbcfd06423f1832"/>
-  <p>Title:<input type="text" id="recipe[title]" name="recipe[title]" value="wsws"/>
-  </p>
-  <p>Description:<textarea name="recipe[description]" rows="4"
-cols="40">description of item</textarea>
-  </p>
-  <p>
-    <div class="form-submit-button"><input type="submit"
-value="Update"/></div>
-  </p>
-</form> 
+    <form method="POST" action="/recipes/1">
+        <input type="hidden" name="_method" value="PUT"/><input name="authenticity_token" type="hidden" value="31b0e7e9d18e01f0733225060dbcfd06423f1832"/>
+        <p>
+            Title: <input type="text" id="recipe[title]" name="recipe[title]" value="wsws"/>
+        </p>
+        <p>
+            Description: <textarea name="recipe[description]" rows="4" cols="40">description of item</textarea>
+        </p>
+        <p>
+            <div class="form-submit-button"><input type="submit" value="Update"/></div>
+        </p>
+    </form>
 
 If there were errors, they would both appear at the top of the form and wrap the invalid form items.  You'll note also that CSRF protection is added if enabled.
 
@@ -45,9 +44,9 @@ In order for everything to work correctly, it is necessary that your drops inher
 
 Your Drops inheriting from it can then add additional attributes, just like in Mephisto:
 
-class BookDrop < Clot::Base
-  liquid_attributes << :title << :author_id << :genre_id
-end
+    class BookDrop < Clot::Base
+        liquid_attributes << :title << :author_id << :genre_id
+    end
 
 would provide a drop with access to the title, author_id and genre properties of the underlying ActiveRecord.
 
@@ -87,9 +86,8 @@ The if_content_for block simply checks to see if a given template file exists an
 
 In order to use either of these tags (or the include tag) something similar to this will need to be added as a before_filter on your controller
 
-  Liquid::Template.file_system = Liquid::LocalFileSystem.new( MyController.view_paths )
+    Liquid::Template.file_system = Liquid::LocalFileSystem.new( MyController.view_paths )
   
-
 ## Filters for RESTful routes
 
 We added some filters for restful routes.  They are contained within the url_filters directory.
