@@ -30,13 +30,8 @@ Liquid::Template.register_tag('form_tag', Clot::FormTag)
 
 describe "Form Tag" do
 
-  include Clot::UrlFilters
-  include Clot::FormFilters
   include Liquid
 
-  before(:each) do
-    @context = {}    
-  end
 
   it "should produce blank form tag" do
     form = "{% form_tag /posts %}{% endform_tag %}"

@@ -10,6 +10,9 @@ ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
 
 
 require 'clot/url_filters'
+require 'clot/no_model_form_tags'
+require 'clot/model_form_tags'
+
 class DummyDrop < Clot::BaseDrop; end
 module Spec
   module Rails
@@ -203,3 +206,12 @@ Spec::Matchers.define :parse_with_atributes_to do |expected,attributes|
   end
 
 end
+
+Liquid::Template.register_tag('select_tag', Clot::SelectTag)
+Liquid::Template.register_tag('text_field_tag', Clot::TextFieldTag)
+Liquid::Template.register_tag('hidden_field_tag', Clot::HiddenFieldTag)
+Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
+Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
+Liquid::Template.register_tag('submit_tag', Clot::SubmitTag)
+
+Liquid::Template.register_tag('text_field', Clot::TextField)

@@ -182,8 +182,21 @@ module Clot
       end
     end
 
+
+    def deprecation_message(message)
+      unless RAILS_ENV == 'test'
+        puts message
+      end
+      if false #set to true to validate tests
+        raise Error.new("USING DEPRECATED TAG")
+      end
+    end
+
     def unknown_tag(name, params, tokens)
-      if name == "field" || name == "text" || name == "file"
+      if name == "field"
+        deprecation_message "deprecated...switch to other text_field tag"
+        @nodelist << LiquidFieldTag.get_tag(name.to_sym, params)        
+      elsif name == "text" || name == "file"
         @nodelist << LiquidFieldTag.get_tag(name.to_sym, params)
       elsif name == "select"
         @nodelist << LiquidCollectionTag.get_tag(name.to_sym, params)

@@ -6,11 +6,6 @@ describe "Form For" do
   include Clot::FormFilters
   include Liquid
 
-  before(:each) do
-    @context = {}    
-  end
-
-
   context "edit form" do
     it "should be have hidden method of PUT" do
       text_drop = mock_drop @@text_content_default_values
