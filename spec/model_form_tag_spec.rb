@@ -20,6 +20,13 @@ describe "tags for forms that use models" do
     @user = get_drop @@user_default_values
   end
 
+  context "for checkbox" do
+    context "outside of form" do 
+
+    end
+  end
+
+
   context "for label" do
     context "outside of form" do
       it "should render label for field" do
@@ -39,7 +46,6 @@ describe "tags for forms that use models" do
         @tag = "{% label liquid_demo_model,name, 'A short title',value:'public' %}"
         tag_should_parse_to %{<label for="liquid_demo_model_name_public">A short title</label>}
       end
-
 
     end
 

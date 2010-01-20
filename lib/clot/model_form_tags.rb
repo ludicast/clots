@@ -38,10 +38,6 @@ module Clot
     end
   end
 
-  class Submit < SubmitTag
-    include ModelTag
-  end
-
   class CheckBox < CheckBoxTag
     include ModelTag
 
