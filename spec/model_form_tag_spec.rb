@@ -20,6 +20,34 @@ describe "tags for forms that use models" do
     @user = get_drop @@user_default_values
   end
 
+  context "for label" do
+    context "outside of form" do
+      it "should render label for field" do
+        @tag = "{% label liquid_demo_model,name %}"
+        tag_should_parse_to %{<label for="liquid_demo_model_name">Name</label>}
+      end
+      it "should have alternative titles" do
+        @tag = "{% label liquid_demo_model,name, 'A short title' %}"
+        tag_should_parse_to %{<label for="liquid_demo_model_name">A short title</label>}
+      end
+      it "should take class" do
+        @tag = "{% label liquid_demo_model,name, 'A short title',class:'title_label' %}"
+        tag_should_parse_to %{<label class="title_label" for="liquid_demo_model_name">A short title</label>}
+      end
+
+      it "should take value" do
+        @tag = "{% label liquid_demo_model,name, 'A short title',value:'public' %}"
+        tag_should_parse_to %{<label for="liquid_demo_model_name_public">A short title</label>}
+      end
+
+
+    end
+
+
+
+  end
+
+
   context "for text_area" do
     context "outside of form" do
       it "should take regular cols/rows" do

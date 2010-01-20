@@ -25,4 +25,26 @@ module Clot
   class TextArea < TextAreaTag
     include ModelTag
   end
+  
+  class Label < LabelTag
+    include ModelTag
+    def set_primary_attributes(context)
+      super context
+      if @params[0] && ! @params[0].match(/:/)
+        @value_string = resolve_value(@params.shift,context)
+      else
+        @value_string = @attribute_name.capitalize
+      end
+    end
+  end
+
+  class Submit < SubmitTag
+    include ModelTag
+  end
+
+  class CheckBox < CheckBoxTag
+    include ModelTag
+
+  end
+
 end

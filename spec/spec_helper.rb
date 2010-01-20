@@ -218,6 +218,9 @@ Liquid::Template.register_tag('check_box_tag', Clot::CheckBoxTag)
 
 Liquid::Template.register_tag('text_field', Clot::TextField)
 Liquid::Template.register_tag('text_area', Clot::TextArea)
+Liquid::Template.register_tag('label', Clot::Label)
+Liquid::Template.register_tag('submit', Clot::Submit)
+Liquid::Template.register_tag('check_box', Clot::CheckBox)
 
 require 'clot/form_for'
 require 'clot/deprecated'

@@ -8,7 +8,7 @@ module Clot
     end
 
     def personal_attributes(name,value)
-      "ERROR   ++++++++++++++++++ : called with #{name} : #{value}"
+      
     end
 
 
@@ -18,6 +18,10 @@ module Clot
       @params.each do |pair|
         pair = pair.split /:/
         value = resolve_value(pair[1],context)
+        if personal_attributes(pair[0], value)
+          next
+        end
+
         case pair[0]
           when "value"
             @value_string = value
@@ -31,8 +35,6 @@ module Clot
             @max_length_string = %{maxlength="#{value}" }
           when "disabled"
             @disabled_string = %{disabled="#{if (value == true || value == "disabled") then 'disabled' end}" }
-          else
-            personal_attributes(pair[0], value)
         end
       end
     end
@@ -162,8 +164,16 @@ module Clot
   class LabelTag < ClotTag
     def render_string
       @value_string ||= @name_string.capitalize
-      %{<label #{@class_string}for="#{@name_string}">#{@value_string}</label>}
+      %{<label #{@class_string}for="#{@id_string}">#{@value_string}</label>}
     end
+
+    def personal_attributes(name,value)
+      case name
+        when 'value'
+          @id_string << "_#{value}"
+      end
+    end
+
   end
 
   class CheckBoxTag < ClotTag
