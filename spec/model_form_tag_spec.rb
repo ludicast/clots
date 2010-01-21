@@ -42,11 +42,35 @@ describe "tags for forms that use models" do
         tag_should_parse_to('<select name="dummy[role]"><option selected="selected">admin</option><option>user</option></select>', 'roles' => @roles)
 
       end
-
-      it "should be generated with defaults for id/name" do
-        @tag = "{% collection_select dummy,friend_id,users %}"
-        tag_should_parse_to(%{<select name="dummy[friend_id]"><option value="#{@user_drop1.id}">#{@user_drop1.name}</option><option value="#{@user_drop2.id}">#{@user_drop2.name}</option></select>}, 'users' => @user_list)
+      context "with defaults for id/name" do
+        it "should work with no match" do
+          @tag = "{% collection_select dummy,friend_id,users %}"
+          tag_should_parse_to(%{<select name="dummy[friend_id]"><option value="#{@user_drop1.id}">#{@user_drop1.name}</option><option value="#{@user_drop2.id}">#{@user_drop2.name}</option></select>}, 'users' => @user_list)
+        end
+        it "should work with a match" do
+          @user.instance_eval "@liquid['friend_id'] = #{@user_drop1.id}"
+          @tag = "{% collection_select dummy,friend_id,users %}"
+          tag_should_parse_to(%{<select name="dummy[friend_id]"><option value="#{@user_drop1.id}" selected="selected">#{@user_drop1.name}</option><option value="#{@user_drop2.id}">#{@user_drop2.name}</option></select>}, 'users' => @user_list)
+        end
       end
+      context "setting values for id/name" do
+        before do
+          @user_drop1.instance_eval "@liquid['fun_id'] = 1"
+          @user_drop2.instance_eval "@liquid['fun_id'] = 2"
+        end
+
+        it "should work with no match" do
+          @tag = "{% collection_select dummy,friend_id,users,fun_id,email %}"
+          tag_should_parse_to(%{<select name="dummy[friend_id]"><option value="1">#{@user_drop1.email}</option><option value="2">#{@user_drop2.email}</option></select>}, 'users' => @user_list)
+        end
+        it "should work with a match" do
+          @user.instance_eval "@liquid['friend_id'] = 1"
+          @tag = "{% collection_select dummy,friend_id,users,fun_id,email %}"
+          tag_should_parse_to(%{<select name="dummy[friend_id]"><option value="1" selected="selected">#{@user_drop1.email}</option><option value="2">#{@user_drop2.email}</option></select>}, 'users' => @user_list)
+        end
+      end
+
+
     end
 
   end

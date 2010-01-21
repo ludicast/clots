@@ -28,12 +28,17 @@ module Clot
   
   class Label < LabelTag
     include ModelTag
+
+    def get_label_for(label)
+      label.capitalize
+    end
+
     def set_primary_attributes(context)
       super context
       if @params[0] && ! @params[0].match(/:/)
         @value_string = resolve_value(@params.shift,context)
       else
-        @value_string = @attribute_name.capitalize
+        @value_string = get_label_for(@attribute_name)
       end
     end
   end
@@ -47,21 +52,32 @@ module Clot
       end
       @default_id = 'id'
       @default_name = 'name'
-
+      if @params[0] && ! @params[0].match(/:/)
+         @default_id = @params.shift
+      end
+      if @params[0] && ! @params[0].match(/:/)
+         @default_name = @params.shift
+      end
     end
 
     def gen_option(item)
       selection_string = ""
       item_string = item
       value_string = ""
-      unless item.is_a?(String)
+
+      if item.is_a?(String)
+        if @item[@attribute_name.to_sym] == item
+          selection_string = ' selected="selected"'
+        end
+      else
         item_string = item[@default_name.to_sym]
         value_string = %{ value="#{item[@default_id.to_sym]}"}
+        if item[@default_id.to_sym].to_s == @value_string.to_s
+          selection_string = ' selected="selected"'
+        end
       end
 
-      if @item[@attribute_name.to_sym] == item
-        selection_string = ' selected="selected"'
-      end
+
       "<option#{value_string}#{selection_string}>#{item_string}</option>"
     end
 
@@ -87,11 +103,10 @@ module Clot
         @true_val = 1
         @false_val = 0
       end
+      
     end
 
     def render_string
-
-
       if @item[@attribute_name.to_sym]
         @checked_value = %{checked="checked" }
       end
