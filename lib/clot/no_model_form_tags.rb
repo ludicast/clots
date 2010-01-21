@@ -163,7 +163,7 @@ module Clot
 
   class LabelTag < ClotTag
     def render_string
-      @value_string ||= @name_string.capitalize
+      @value_string ||= @name_string.humanize
       %{<label #{@class_string}for="#{@id_string}">#{@value_string}</label>}
     end
 

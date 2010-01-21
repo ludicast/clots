@@ -208,6 +208,10 @@ describe "tags for forms that don't use models" do
       tag = "{% label_tag 'name' %}"
       tag.should parse_to('<label for="name">Name</label>')
     end
+    it "assigns humanized default value" do
+      tag = "{% label_tag 'supervising_boss_id' %}"
+      tag.should parse_to('<label for="supervising_boss_id">Supervising boss</label>')
+    end
     it "allows alternative value" do
       tag = "{% label_tag 'name', 'Your Name' %}"
       tag.should parse_to('<label for="name">Your Name</label>')

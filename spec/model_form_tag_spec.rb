@@ -118,6 +118,11 @@ describe "tags for forms that use models" do
         @tag = "{% label dummy,name %}"
         tag_should_parse_to %{<label for="dummy_name">Name</label>}
       end
+      it "should render humanized_label for field" do
+        @tag = "{% label dummy,supervising_boss_id %}"
+        tag_should_parse_to %{<label for="dummy_supervising_boss_id">Supervising boss</label>}
+      end
+
       it "should have alternative titles" do
         @tag = "{% label dummy,name, 'A short title' %}"
         tag_should_parse_to %{<label for="dummy_name">A short title</label>}

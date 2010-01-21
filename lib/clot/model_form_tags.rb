@@ -30,7 +30,7 @@ module Clot
     include ModelTag
 
     def get_label_for(label)
-      label.capitalize
+      label.humanize
     end
 
     def set_primary_attributes(context)
@@ -102,8 +102,7 @@ module Clot
       else
         @true_val = 1
         @false_val = 0
-      end
-      
+      end     
     end
 
     def render_string
