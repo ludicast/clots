@@ -29,16 +29,23 @@ describe "tags for forms that use models" do
     end
     context "outside of form" do
       it "should be generated for a generic collection" do
-        @user.stub!(:role).and_return("foo")
         @tag = "{% collection_select dummy,role,roles %}"
         tag_should_parse_to('<select name="dummy[role]"><option>admin</option><option>user</option></select>', 'roles' => @roles)
 
       end
-      
-      it "should be generated for no match" do
-        @user.stub!(:friend_id).and_return(-1)
-       # @tag = "{% collection_select dummy,friend_id,users,id,email %}"
-       # tag_should_parse_to('<select></select>', 'users' => @user_list)
+
+      it "should be generated with selection for a generic collection" do
+        @user.instance_eval do
+          @liquid['role'] = "admin"
+        end
+        @tag = "{% collection_select dummy,role,roles %}"
+        tag_should_parse_to('<select name="dummy[role]"><option selected="selected">admin</option><option>user</option></select>', 'roles' => @roles)
+
+      end
+
+      it "should be generated with defaults for id/name" do
+        @tag = "{% collection_select dummy,friend_id,users %}"
+        tag_should_parse_to(%{<select name="dummy[friend_id]"><option value="#{@user_drop1.id}">#{@user_drop1.name}</option><option value="#{@user_drop2.id}">#{@user_drop2.name}</option></select>}, 'users' => @user_list)
       end
     end
 

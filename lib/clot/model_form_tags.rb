@@ -15,7 +15,7 @@ module Clot
       end
         @id_string = "#{@first_attr}_#{@attribute_name}"
         @name_string = "#{@first_attr}[#{@attribute_name}]"
-        @value_string = @item[@attribute_name.to_sym].to_s
+        @value_string = @item[@attribute_name.to_sym]
     end
   end
 
@@ -45,14 +45,30 @@ module Clot
       if @params[0] && ! @params[0].match(/:/)
          @collection = resolve_value(@params.shift,context)
       end
+      @default_id = 'id'
+      @default_name = 'name'
+
     end
 
+    def gen_option(item)
+      selection_string = ""
+      item_string = item
+      value_string = ""
+      unless item.is_a?(String)
+        item_string = item[@default_name.to_sym]
+        value_string = %{ value="#{item[@default_id.to_sym]}"}
+      end
 
+      if @item[@attribute_name.to_sym] == item
+        selection_string = ' selected="selected"'
+      end
+      "<option#{value_string}#{selection_string}>#{item_string}</option>"
+    end
 
     def render_string
       @option_string = ""
       @collection.each do |item|
-        @option_string << "<option>#{item}</option>"
+        @option_string << gen_option(item) 
       end
 
       %{<select name="#{@name_string}">#{@option_string}</select>}

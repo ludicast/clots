@@ -29,6 +29,7 @@ module Spec
           model.instance_eval( "def #{symbol}() \"#{value}\"; end" )
           drop.liquid_attributes << symbol
         end
+        
         drop
       end
     end
