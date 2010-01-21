@@ -6,26 +6,63 @@ describe "tags for forms that use models" do
   include Liquid
 
 
-  def parse_form_tag_to(inner_code)
+  def parse_form_tag_to(inner_code, hash = {})
       template = "{% formfor liquid_demo_model %}#{@tag}{% endformfor %}"
       expected = %{<form method="POST" action="#{object_url @user}"><input type="hidden" name="_method" value="PUT"/>#{inner_code}</form>}
-      template.should parse_with_vars_to(expected, 'liquid_demo_model' => @user)
+      template.should parse_with_vars_to(expected, hash.merge( 'liquid_demo_model' => @user))
   end
 
-  def tag_should_parse_to expected
-    @tag.should parse_with_vars_to(expected, 'liquid_demo_model' => @user)
+  def tag_should_parse_to(expected, hash = {})
+    @tag.should parse_with_vars_to(expected, hash.merge( 'liquid_demo_model' => @user ))
   end
   
   before do
     @user = get_drop @@user_default_values
   end
 
-  context "for checkbox" do
-    context "outside of form" do 
-
+  context "for collection_select" do
+    it "should be generated for defaults" do
+  #    @tag = "{% collection_select liquid_demo_model,, %}"
+  #    tag_should_parse_to('<input name="liquid_demo_model[admin]" type="hidden" value="0" /><input checked="checked" id="liquid_demo_model_admin" name="liquid_demo_model[admin]" type="checkbox" value="1" />')
     end
   end
 
+  context "for checkbox" do
+
+    context "outside of form" do 
+      it "should be generated with checked" do
+        @tag = "{% check_box liquid_demo_model,admin %}"
+        tag_should_parse_to('<input name="liquid_demo_model[admin]" type="hidden" value="0" /><input checked="checked" id="liquid_demo_model_admin" name="liquid_demo_model[admin]" type="checkbox" value="1" />')
+      end
+
+      it "should be generated without checked" do
+        @tag = "{% check_box liquid_demo_model,banned %}"
+        tag_should_parse_to('<input name="liquid_demo_model[banned]" type="hidden" value="0" /><input id="liquid_demo_model_banned" name="liquid_demo_model[banned]" type="checkbox" value="1" />')
+      end
+
+      it "should have alternate labels" do
+        @tag = "{% check_box liquid_demo_model,admin,'yes','no' %}"
+        tag_should_parse_to('<input name="liquid_demo_model[admin]" type="hidden" value="no" /><input checked="checked" id="liquid_demo_model_admin" name="liquid_demo_model[admin]" type="checkbox" value="yes" />')
+      end
+    end
+
+    context "inside form" do
+      it "should be generated with checked" do
+        @tag = "{% check_box admin %}"    
+        parse_form_tag_to('<input name="liquid_demo_model[admin]" type="hidden" value="0" /><input checked="checked" id="liquid_demo_model_admin" name="liquid_demo_model[admin]" type="checkbox" value="1" />')
+      end
+
+      it "should be generated without checked" do
+        @tag = "{% check_box banned %}"
+        parse_form_tag_to('<input name="liquid_demo_model[banned]" type="hidden" value="0" /><input id="liquid_demo_model_banned" name="liquid_demo_model[banned]" type="checkbox" value="1" />')
+      end
+      
+      it "should have alternate labels" do
+        @tag = "{% check_box admin,'yes','no',class:'eula_check' %}"
+        parse_form_tag_to('<input name="liquid_demo_model[admin]" type="hidden" value="no" /><input class="eula_check" checked="checked" id="liquid_demo_model_admin" name="liquid_demo_model[admin]" type="checkbox" value="yes" />')
+      end
+    end
+  end
 
   context "for label" do
     context "outside of form" do

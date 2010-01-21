@@ -166,6 +166,8 @@ end
       :email => "sfake@fake.com",
       :password => "password",
       :password_confirmation => "password",
+      :admin => true,
+      :banned => false
     }
 
 include Liquid

@@ -38,9 +38,28 @@ module Clot
     end
   end
 
-  class CheckBox < CheckBoxTag
+  class CheckBox < ClotTag
     include ModelTag
 
+    def set_primary_attributes(context)
+      super(context)
+      if @params.length > 1 && ! @params[0].match(/:/) && ! @params[1].match(/:/)
+        @true_val = resolve_value(@params.shift,context)
+        @false_val = resolve_value(@params.shift,context)
+      else
+        @true_val = 1
+        @false_val = 0
+      end
+    end
+
+    def render_string
+
+
+      if @item[@attribute_name.to_sym]
+        @checked_value = %{checked="checked" }
+      end
+      %{<input name="#{@name_string}" type="hidden" value="#{@false_val}" />} + %{<input #{@disabled_string}#{@class_string}#{@checked_value}id="#{@id_string}" name="#{@name_string}" type="checkbox" value="#{@true_val}" />}
+    end
   end
 
 end

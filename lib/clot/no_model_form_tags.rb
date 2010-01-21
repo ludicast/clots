@@ -189,7 +189,7 @@ module Clot
 
     def render_string
       @value_string ||= 1
-      %{<input #{@disabled_string}#{@class_string}#{@checked_value}id="#{@name_string}" name="#{@name_string}" type="checkbox" value="#{@value_string}" />}
+      %{<input #{@disabled_string}#{@class_string}#{@checked_value}id="#{@id_string}" name="#{@name_string}" type="checkbox" value="#{@value_string}" />}
     end
   end
 
