@@ -38,6 +38,27 @@ module Clot
     end
   end
 
+  class CollectionSelect < ClotTag
+    include ModelTag
+    def set_primary_attributes(context)
+      super context
+      if @params[0] && ! @params[0].match(/:/)
+         @collection = resolve_value(@params.shift,context)
+      end
+    end
+
+
+
+    def render_string
+      @option_string = ""
+      @collection.each do |item|
+        @option_string << "<option>#{item}</option>"
+      end
+
+      %{<select name="#{@name_string}">#{@option_string}</select>}
+    end
+  end
+
   class CheckBox < ClotTag
     include ModelTag
 

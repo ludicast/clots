@@ -24,12 +24,24 @@ describe "tags for forms that use models" do
     before do
       @user_drop1 = mock_drop @@user_default_values
       @user_drop2 = mock_drop @@user_default_values
+      @user_list = [@user_drop1, @user_drop2]
+      @roles = ['admin','user']
+    end
+    context "outside of form" do
+      it "should be generated for a generic collection" do
+        @user.stub!(:role).and_return("foo")
+        @tag = "{% collection_select dummy,role,roles %}"
+        tag_should_parse_to('<select name="dummy[role]"><option>admin</option><option>user</option></select>', 'roles' => @roles)
+
+      end
+      
+      it "should be generated for no match" do
+        @user.stub!(:friend_id).and_return(-1)
+       # @tag = "{% collection_select dummy,friend_id,users,id,email %}"
+       # tag_should_parse_to('<select></select>', 'users' => @user_list)
+      end
     end
 
-    it "should be generated for defaults" do
-  #    @tag = "{% collection_select dummy,, %}"
-  #    tag_should_parse_to('<input name="dummy[admin]" type="hidden" value="0" /><input checked="checked" id="dummy_admin" name="dummy[admin]" type="checkbox" value="1" />')
-    end
   end
 
   context "for checkbox" do

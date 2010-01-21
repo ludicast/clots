@@ -164,7 +164,7 @@ end
 @@user_default_values =
     { :login => "sDUMMY",
       :email => "sfake@fake.com",
-      :name => "User Name",
+      :name => "User ##{rand(5000)}",
       :password => "password",
       :password_confirmation => "password",
       :admin => true,
@@ -223,6 +223,7 @@ Liquid::Template.register_tag('text_field', Clot::TextField)
 Liquid::Template.register_tag('text_area', Clot::TextArea)
 Liquid::Template.register_tag('label', Clot::Label)
 Liquid::Template.register_tag('check_box', Clot::CheckBox)
+Liquid::Template.register_tag('collection_select', Clot::CollectionSelect)
 
 require 'clot/form_for'
 require 'clot/deprecated'
