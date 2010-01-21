@@ -164,6 +164,7 @@ end
 @@user_default_values =
     { :login => "sDUMMY",
       :email => "sfake@fake.com",
+      :name => "User Name",
       :password => "password",
       :password_confirmation => "password",
       :admin => true,
