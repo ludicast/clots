@@ -74,6 +74,12 @@ describe "tags for forms that don't use models" do
       tag.should parse_to('<select id="people" name="people"><option>David</option></select>');
     end
 
+    it "should take prompt" do
+      tag = "{% select_tag 'people','<option>David</option>', prompt:'Gimme love' %}"
+      tag.should parse_to('<select id="people" name="people"><option value="">Gimme love</option><option>David</option></select>');
+    end
+    
+
     it "should use multiple options" do
       tag = "{% select_tag 'count','<option>1</option><option>2</option><option>3</option><option>4</option>' %}"
       tag.should parse_to('<select id="count" name="count"><option>1</option><option>2</option><option>3</option><option>4</option></select>');
@@ -253,6 +259,35 @@ describe "tags for forms that don't use models" do
       tag = "{% check_box_tag 'eula','accepted',disabled:true %}"
       tag.should parse_to('<input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />')
     end
+
+    context "when based on inclusions" do
+      before do
+        @tag = "{% check_box_tag 'hi', collection:array,member:2 %}"
+      end
+
+      it "should check if included" do
+        array = [1,2,3]
+        @tag.should parse_with_vars_to('<input checked="checked" id="hi" name="hi" type="checkbox" value="1" />',
+                                      'array' => array)
+      end
+      it "should not check if not included" do
+        array = [1,3]
+        @tag.should parse_with_vars_to('<input id="hi" name="hi" type="checkbox" value="1" />',
+                                      'array' => array)
+      end      
+    end
+
+    context "when multiple tags are listed" do
+      it "should behave with them like a group" do
+        @tag = "{% check_box_tag 'hi', collection:array,member:1 %}{% check_box_tag 'hi', collection:array,member:2 %}{% check_box_tag 'hi', collection:array,member:3 %}"
+        array = [1,3]
+        @tag.should parse_with_vars_to('<input checked="checked" id="hi" name="hi" type="checkbox" value="1" /><input id="hi" name="hi" type="checkbox" value="1" /><input checked="checked" id="hi" name="hi" type="checkbox" value="1" />',
+                                      'array' => array)
+      end
+
+
+    end
+
 
   end
 

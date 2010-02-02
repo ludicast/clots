@@ -44,11 +44,12 @@ module Clot
     include AttributeSetter
     include TagHelper
     def initialize(name, params, tokens)
-      @params = split_params(params)
+      @_params = split_params(params)
       super
     end
 
     def render(context)
+      @params = @_params.clone
       set_attributes(context)
       render_string
     end
@@ -151,11 +152,13 @@ module Clot
       case name
         when 'multiple'
           @multiple_string = %{multiple="#{value == "true" ? "multiple" : ""}" }
+        when 'prompt'
+          @prompt_option = %{<option value="">#{value}</option>}
       end
     end
 
     def render_string
-      %{<select #{@disabled_string}#{@class_string}id="#{@id_string}" #{@multiple_string}name="#{@name_string}#{unless @multiple_string.nil? then '[]' end}">#{@value_string}</select>}
+      %{<select #{@disabled_string}#{@class_string}id="#{@id_string}" #{@multiple_string}name="#{@name_string}#{unless @multiple_string.nil? then '[]' end}">#{@prompt_option}#{@value_string}</select>}
     end
 
   end
@@ -177,6 +180,19 @@ module Clot
   end
 
   class CheckBoxTag < ClotTag
+    def personal_attributes(name,value)
+      case name
+        when 'collection'
+          @checkbox_collection = value
+        when 'member'
+          @checkbox_member = value
+          if (!@checkbox_collection.nil?) && @checkbox_collection.include?(@checkbox_member)
+            @checked_value = %{checked="checked" }            
+          end
+      end
+    end
+
+
     def set_primary_attributes(context)
       super context
       if @params[0] && ! @params[0].match(/:/)

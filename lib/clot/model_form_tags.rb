@@ -81,8 +81,15 @@ module Clot
       "<option#{value_string}#{selection_string}>#{item_string}</option>"
     end
 
+    def personal_attributes(name,value)
+      case name
+        when 'prompt'
+          @prompt_option = %{<option value="">#{value}</option>}
+      end
+    end
+
     def render_string
-      @option_string = ""
+      @option_string = "#{@prompt_option}"
       @collection.each do |item|
         @option_string << gen_option(item) 
       end
