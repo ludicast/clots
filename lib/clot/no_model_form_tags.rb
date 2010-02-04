@@ -49,6 +49,11 @@ module Clot
     end
 
     def render(context)
+      instance_variables.each do |var|
+        unless ["@_params", "@markup", "@tag_name"].include? var
+          instance_variable_set var.to_sym, nil
+        end
+      end
       @params = @_params.clone
       set_attributes(context)
       render_string
@@ -76,7 +81,7 @@ module Clot
 
   class HiddenFieldTag < InputTag
 
-    def initialize(name, params, tokens)
+    def render_string
       @type = "hidden"
       super
     end
@@ -84,7 +89,7 @@ module Clot
 
   class TextFieldTag < InputTag
 
-    def initialize(name, params, tokens)
+    def render_string
       @type = "text"
       super
     end
@@ -92,7 +97,7 @@ module Clot
 
   class FileFieldTag < InputTag
 
-    def initialize(name, params, tokens)
+    def render_string
       @type = "file"
       super
     end
@@ -130,6 +135,8 @@ module Clot
     end
 
     def set_primary_attributes(context)
+      @value_string = "Save changes"
+      @commit_name_string = 'name="commit" '
       if @params[0] && ! @params[0].match(/:/)
         @value_string = resolve_value @params.shift, context
       end
@@ -139,11 +146,6 @@ module Clot
       %{<input #{@class_string}#{@onclick_string}#{@disabled_string}type="submit" #{@commit_name_string}value="#{@value_string}" />}
     end
 
-    def initialize(name, params, tokens)
-      @value_string = "Save changes"
-      @commit_name_string = 'name="commit" '
-      super
-    end
   end
 
   class SelectTag < ClotTag
@@ -186,7 +188,7 @@ module Clot
           @checkbox_collection = value
         when 'member'
           @checkbox_member = value
-          if (!@checkbox_collection.nil?) && @checkbox_collection.include?(@checkbox_member)
+          if (! @checkbox_collection.nil?) && @checkbox_collection.include?(@checkbox_member)
             @checked_value = %{checked="checked" }            
           end
       end

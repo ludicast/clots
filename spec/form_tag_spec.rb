@@ -3,6 +3,21 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "Form Tag" do
 
   include Liquid
+  
+  context "when consisting of the same indentical inner tag" do
+    it "produces unique tags each time" do
+      user_drop = get_drop @@user_default_values
+      def user_drop.child_ids
+        [1,3]
+      end
+
+      expected = "<form action=\"/users\" method=\"post\"><input checked=\"checked\" id=\"foo\" name=\"foo\" type=\"checkbox\" value=\"1\" /><input id=\"foo\" name=\"foo\" type=\"checkbox\" value=\"2\" /><input checked=\"checked\" id=\"foo\" name=\"foo\" type=\"checkbox\" value=\"3\" /></form>"
+      template = %{{% form_tag users_path %}{% for val in one_two_three %}{% check_box_tag 'foo',val,collection:liquid_demo_model_drop.child_ids, member:val %}{% endfor %}{% endform_tag %}}
+      template.should parse_with_vars_to(expected,
+        'liquid_demo_model_drop' => user_drop, 'one_two_three' => [1,2,3]
+      )
+    end
+  end
 
 
   it "should produce blank form tag" do

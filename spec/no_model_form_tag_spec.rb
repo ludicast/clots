@@ -260,7 +260,7 @@ describe "tags for forms that don't use models" do
       tag.should parse_to('<input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />')
     end
 
-    context "when based on inclusions" do
+    context "when based on bare inclusions" do
       before do
         @tag = "{% check_box_tag 'hi', collection:array,member:2 %}"
       end
@@ -276,7 +276,7 @@ describe "tags for forms that don't use models" do
                                       'array' => array)
       end      
     end
-
+    
     context "when multiple tags are listed" do
       it "should behave with them like a group" do
         @tag = "{% check_box_tag 'hi', collection:array,member:1 %}{% check_box_tag 'hi', collection:array,member:2 %}{% check_box_tag 'hi', collection:array,member:3 %}"
