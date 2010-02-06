@@ -142,7 +142,7 @@ module Clot
     def get_form_errors
       result = ""
       if @model and @model.errors.count > 0
-        result += '<div id="error-explanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'
+        result += '<div class="errorExplanation" id="errorExplanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'
 
         @model.errors.each do |attr, msg|
           result += "<li>"

@@ -4,6 +4,10 @@ This project seeks to implement extensions for liquid whereby it has the power o
 
 One of the big benefits of liquid is that it enforces a strict MVC paradign where the V cannot affect the M.  This is done for security reasons, but is an excellent approach to coding views in general.  Therefore, we seek to make liquid a fuller template library so it can be used for all views, not just ones that joe user can modify.
 
+## Links
+
+You now can include an intelligent navigation menu, that allows you to exclude items on-demand (for access control, etc.).  We will document this further, but for the meantime the test cases show how this may be used.
+
 ## Form Builder
 
 Clots allows a form to be created like so

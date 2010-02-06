@@ -143,14 +143,14 @@ describe "Form For" do
 
     it "should show generic error for drop" do
       @user_drop.errors.add("error")
-      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>1 error(s) occurred while processing information</h2><ul><li>error - is invalid</li></ul></div></form>'
+      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div class="errorExplanation" id="errorExplanation"><h2>1 error(s) occurred while processing information</h2><ul><li>error - is invalid</li></ul></div></form>'
       template = '{% formfor user class:tester %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => @user_drop)
     end
 
     it "should show error around relevant form item" do
       @user_drop.errors.add("login", "login already used")
-      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>1 error(s) occurred while processing information</h2><ul><li>login - login already used</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
+      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div class="errorExplanation" id="errorExplanation"><h2>1 error(s) occurred while processing information</h2><ul><li>login - login already used</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
       template = '{% formfor user class:tester %}{% field :login %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => @user_drop)
     end
@@ -159,7 +159,7 @@ describe "Form For" do
       @user_drop.errors.add("error")
       @user_drop.errors.add("login", "login already used")
       @user_drop.errors.add("login", "login too short")
-      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div id="error-explanation"><h2>3 error(s) occurred while processing information</h2><ul><li>login - login already used</li><li>login - login too short</li><li>error - is invalid</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
+      expected = '<form method="POST" class="tester" action="' + (object_url @user_drop) + '"><input type="hidden" name="_method" value="PUT"/><div class="errorExplanation" id="errorExplanation"><h2>3 error(s) occurred while processing information</h2><ul><li>login - login already used</li><li>login - login too short</li><li>error - is invalid</li></ul></div><input type="text" id="liquid_demo_model_login" name="liquid_demo_model[login]" value="' + @user_drop[:login] + '" class="error-item"/></form>'
       template = '{% formfor user class:tester %}{% field :login %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => @user_drop)
     end

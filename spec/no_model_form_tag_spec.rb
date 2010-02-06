@@ -274,9 +274,9 @@ describe "tags for forms that don't use models" do
         array = [1,3]
         @tag.should parse_with_vars_to('<input id="hi" name="hi" type="checkbox" value="1" />',
                                       'array' => array)
-      end      
+      end
     end
-    
+
     context "when multiple tags are listed" do
       it "should behave with them like a group" do
         @tag = "{% check_box_tag 'hi', collection:array,member:1 %}{% check_box_tag 'hi', collection:array,member:2 %}{% check_box_tag 'hi', collection:array,member:3 %}"

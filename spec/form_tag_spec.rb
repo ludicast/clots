@@ -4,7 +4,7 @@ describe "Form Tag" do
 
   include Liquid
   
-  context "when consisting of the same indentical inner tag" do
+  context "when consisting of the same identical inner tag" do
     it "produces unique tags each time" do
       user_drop = get_drop @@user_default_values
       def user_drop.child_ids
