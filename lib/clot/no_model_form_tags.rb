@@ -68,6 +68,8 @@ module Clot
       case name
         when "size"
           @size_string = %{size="#{value}" }
+        when "width"
+          @size_string = %{width="#{value}" }
       end
     end
 

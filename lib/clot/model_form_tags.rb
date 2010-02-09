@@ -3,13 +3,13 @@ module Clot
     def set_primary_attributes(context)
       @item = context['form_model']
       if @item
-        @attribute_name = @params.shift
+        @attribute_name =  resolve_value(@params.shift,context)
         @first_attr = context['form_class_name']
       else
         @first_attr =  @params.shift
 
         if @params[0] && ! @params[0].match(/:/)
-          @attribute_name = @params.shift
+          @attribute_name =  resolve_value(@params.shift,context)
         end
         @item = context[@first_attr]
       end
@@ -18,6 +18,15 @@ module Clot
         @value_string = @item[@attribute_name.to_sym]
     end
   end
+
+ class FileField < FileFieldTag
+   include ModelTag
+
+   def render_string
+     @value_string = nil
+     super
+   end
+ end
 
   class TextField < TextFieldTag
     include ModelTag
@@ -65,7 +74,7 @@ module Clot
       item_string = item
       value_string = ""
 
-      if item.is_a?(String)
+      if item.is_a?(String) || item.is_a?(Fixnum)
         if @item[@attribute_name.to_sym] == item
           selection_string = ' selected="selected"'
         end
@@ -94,7 +103,7 @@ module Clot
         @option_string << gen_option(item) 
       end
 
-      %{<select name="#{@name_string}">#{@option_string}</select>}
+      %{<select id="#{@id_string}" name="#{@name_string}">#{@option_string}</select>}
     end
   end
 

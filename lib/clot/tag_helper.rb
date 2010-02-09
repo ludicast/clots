@@ -6,6 +6,7 @@ module Clot
 
     def resolve_value(value,context)
       case value
+        when /^([\[])(.*)([\]])$/: array =  $2.split " "; array.map {|item| resolve_value item, context }
         when /^(["'])(.*)\1$/: $2
         when /^(\d+)$/:value.to_i
         when /^true$/:true
