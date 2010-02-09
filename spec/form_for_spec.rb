@@ -83,7 +83,7 @@ describe "Form For" do
       user_drop2 = get_drop @@user_default_values.merge(:id => 2)
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
       expected += "<option value=\"#{user_drop1.id}\" selected=\"selected\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\">#{user_drop2.email}</option></select></form>"
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", users, id, email %}{% endformfor %}'
+      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", users, "id", "email" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
@@ -109,7 +109,7 @@ describe "Form For" do
       expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
       expected += "<option value=\"\">nada to see</option>"
       expected += "<option value=\"#{user_drop1.id}\" selected=\"selected\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\">#{user_drop2.email}</option></select></form>"
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", users,id,email,prompt:"nada to see" %}{% endformfor %}'
+      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", users,"id","email",prompt:"nada to see" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 

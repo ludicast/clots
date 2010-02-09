@@ -60,16 +60,16 @@ describe "tags for forms that use models" do
         end
 
         it "should work with no match" do
-          @tag = "{% collection_select dummy,'friend_id',users,fun_id,email %}"
+          @tag = "{% collection_select dummy,'friend_id',users,'fun_id','email' %}"
           tag_should_parse_to(%{<select id="dummy_friend_id" name="dummy[friend_id]"><option value="1">#{@user_drop1.email}</option><option value="2">#{@user_drop2.email}</option></select>}, 'users' => @user_list)
         end
         it "should take prompt" do
-          @tag = "{% collection_select dummy,'friend_id',users,fun_id,email,prompt:'Gimme Love' %}"
+          @tag = "{% collection_select dummy,'friend_id',users,'fun_id','email',prompt:'Gimme Love' %}"
           tag_should_parse_to(%{<select id="dummy_friend_id" name="dummy[friend_id]"><option value="">Gimme Love</option><option value="1">#{@user_drop1.email}</option><option value="2">#{@user_drop2.email}</option></select>}, 'users' => @user_list)
         end
         it "should work with a match" do
           @user.instance_eval "@liquid['friend_id'] = 1"
-          @tag = "{% collection_select dummy,'friend_id',users,fun_id,email %}"
+          @tag = "{% collection_select dummy,'friend_id',users,'fun_id','email' %}"
           tag_should_parse_to(%{<select id="dummy_friend_id" name="dummy[friend_id]"><option value="1" selected="selected">#{@user_drop1.email}</option><option value="2">#{@user_drop2.email}</option></select>}, 'users' => @user_list)
         end
       end

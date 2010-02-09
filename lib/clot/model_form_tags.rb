@@ -62,10 +62,10 @@ module Clot
       @default_id = 'id'
       @default_name = 'name'
       if @params[0] && ! @params[0].match(/:/)
-         @default_id = @params.shift
+         @default_id = resolve_value(@params.shift,context)
       end
       if @params[0] && ! @params[0].match(/:/)
-         @default_name = @params.shift
+         @default_name = resolve_value(@params.shift,context)
       end
     end
 
