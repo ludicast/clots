@@ -67,10 +67,21 @@ module Clot
 
   class LiquidFormFor < LiquidForm
 
+    def get_errors(model)
+      errors = []
+      model.errors.each do |attr,msg|
+        errors << attr
+      end
+      errors
+
+    end
+
+
     def get_form_body(context)
       context.stack do
         context['form_model'] =  @model
         context['form_class_name'] =  @class_name
+        context['form_errors'] =  get_errors @model
         render_all(@nodelist, context) * ""
       end
     end

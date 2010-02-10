@@ -49,6 +49,8 @@ module Clot
     end
 
     def render(context)
+
+
       instance_variables.each do |var|
         unless ["@_params", "@markup", "@tag_name"].include? var
           instance_variable_set var.to_sym, nil  #this is because the same parse tag is re-rendered

@@ -3,6 +3,7 @@ module Clot
     def set_primary_attributes(context)
       @item = context['form_model']
       if @item
+        
         @attribute_name =  resolve_value(@params.shift,context)
         @first_attr = context['form_class_name']
       else
@@ -13,10 +14,24 @@ module Clot
         end
         @item = context[@first_attr]
       end
-        @id_string = "#{@first_attr}_#{@attribute_name}"
-        @name_string = "#{@first_attr}[#{@attribute_name}]"
-        @value_string = @item[@attribute_name.to_sym]
+      @id_string = "#{@first_attr}_#{@attribute_name}"
+      @name_string = "#{@first_attr}[#{@attribute_name}]"
+      @value_string = @item[@attribute_name.to_sym]
+
+      @errors = context['form_errors'] || []
+
     end
+
+    def render(context)
+      result = super(context)
+      if @errors.include? @attribute_name
+        result = "<div class=\"fieldWithErrors\">#{result}</div>"
+      end
+      result
+    end
+
+
+
   end
 
  class FileField < FileFieldTag
