@@ -15,10 +15,10 @@ Clots allows a form to be created like so
     {% formfor recipe %}
     {{ errors }}
         <p>
-            Title: {% field :title %}
+            Title: {% text_field "title" %}
         </p>
         <p>
-            Description: {% text :description, rows:4, cols:40 %}
+            Description: {% text_area_field "description", rows:4, cols:40 %}
         </p>
         <p>
             {{ "Update" | submit_button }}
@@ -41,6 +41,9 @@ And generate:
     </form>
 
 If there were errors, they would both appear at the top of the form and wrap the invalid form items.  You'll note also that CSRF protection is added if enabled.
+
+Note that the interface to this changed and we are currently documenting the improvements.
+
 
 ## BaseDrop Class
 
