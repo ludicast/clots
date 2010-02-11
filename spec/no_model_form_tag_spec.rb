@@ -209,6 +209,45 @@ describe "tags for forms that don't use models" do
     
   end
 
+  context "for password_field_tag" do
+    it "should generate regular password tag" do
+      tag = "{% password_field_tag 'pass' %}"
+      tag.should parse_to('<input id="pass" name="pass" type="password" />')
+    end
+
+    it "should have alernate value" do
+      tag = "{% password_field_tag 'secret', 'Your secret here' %}"
+      tag.should parse_to('<input id="secret" name="secret" type="password" value="Your secret here" />')
+    end
+
+    it "should take class" do
+      tag = "{% password_field_tag 'masked', class:'masked_input_field' %}"
+      tag.should parse_to('<input class="masked_input_field" id="masked" name="masked" type="password" />')
+    end
+
+    it "should take size" do
+      tag = "{% password_field_tag 'token','', size:15 %}"
+      tag.should parse_to('<input id="token" name="token" size="15" type="password" value="" />')
+    end
+
+    it "should take maxlength" do
+      tag = "{% password_field_tag 'key', maxlength:16 %}"
+      tag.should parse_to('<input id="key" maxlength="16" name="key" type="password" />')
+    end
+
+
+    it "should take disabled option" do
+      tag = "{% password_field_tag 'confirm_pass', disabled:true %}"
+      tag.should parse_to('<input disabled="disabled" id="confirm_pass" name="confirm_pass" type="password" />')
+    end
+
+    it "should take multiple options" do
+      tag = "{% password_field_tag 'pin', '1234',maxlength:4,size:6, class:'pin-input' %}"
+      tag.should parse_to('<input class="pin-input" id="pin" maxlength="4" name="pin" size="6" type="password" value="1234" />')
+    end
+      
+  end
+
   context "for label_tag" do
     it "assigns default value" do
       tag = "{% label_tag 'name' %}"

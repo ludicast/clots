@@ -91,6 +91,14 @@ module Clot
     end
   end
 
+  class PasswordFieldTag < InputTag
+
+    def render_string
+      @type = "password"
+      super
+    end
+  end
+
   class TextFieldTag < InputTag
 
     def render_string

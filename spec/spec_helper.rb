@@ -211,21 +211,6 @@ Spec::Matchers.define :parse_with_vars_to do |expected,attributes|
 
 end
 
-Liquid::Template.register_tag('select_tag', Clot::SelectTag)
-Liquid::Template.register_tag('text_field_tag', Clot::TextFieldTag)
-Liquid::Template.register_tag('hidden_field_tag', Clot::HiddenFieldTag)
-Liquid::Template.register_tag('file_field_tag', Clot::FileFieldTag)
-Liquid::Template.register_tag('text_area_tag', Clot::TextAreaTag)
-Liquid::Template.register_tag('submit_tag', Clot::SubmitTag)
-Liquid::Template.register_tag('label_tag', Clot::LabelTag)
-Liquid::Template.register_tag('check_box_tag', Clot::CheckBoxTag)
-
-Liquid::Template.register_tag('text_field', Clot::TextField)
-Liquid::Template.register_tag('text_area', Clot::TextArea)
-Liquid::Template.register_tag('label', Clot::Label)
-Liquid::Template.register_tag('check_box', Clot::CheckBox)
-Liquid::Template.register_tag('collection_select', Clot::CollectionSelect)
-Liquid::Template.register_tag('file_field', Clot::FileField)
 
 require 'clot/form_for'
 require 'clot/deprecated'
