@@ -169,10 +169,25 @@ module Clot
 
 
     def render(context)
-      @model = context[@_params[0]]
+      @params = @_params.clone
+      @model = context[@params.shift]
+
       result = ""
       if @model and @model.errors.count > 0
-        result += '<div class="errorExplanation" id="errorExplanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'
+        @suffix = @model.errors.count > 1 ? "s" : ""
+        @default_message = @model.errors.count.to_s + " error#{@suffix} occurred while processing information"
+
+        @params.each do |pair|
+          pair = pair.split /:/
+          value = resolve_value(pair[1],context)
+
+          case pair[0]
+            when "header_message"
+              @default_message = value
+          end
+        end
+
+        result += '<div class="errorExplanation" id="errorExplanation"><h2>' + @default_message + '</h2><ul>'
 
         @model.errors.each do |attr, msg|
           result += "<li>"

@@ -198,13 +198,8 @@ describe "tags for forms that use models" do
         @tag = "{% label dummy,'name', 'A short title',value:'public' %}"
         tag_should_parse_to %{<label for="dummy_name_public">A short title</label>}
       end
-
     end
-
-
-
   end
-
 
   context "for text_area" do
     context "outside of form" do
