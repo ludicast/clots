@@ -218,8 +218,6 @@ describe "tags for forms that use models" do
     end
   end
 
-
-
   context "for text_field" do
     context "outside of form" do
       it "should take regular name" do
