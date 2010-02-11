@@ -43,6 +43,10 @@ module Clot
    end
  end
 
+  class PasswordField < PasswordFieldTag
+    include ModelTag
+  end
+
   class TextField < TextFieldTag
     include ModelTag
   end

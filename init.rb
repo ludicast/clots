@@ -34,7 +34,7 @@ Liquid::Template.register_tag('label', Clot::Label)
 Liquid::Template.register_tag('check_box', Clot::CheckBox)
 Liquid::Template.register_tag('collection_select', Clot::CollectionSelect)
 Liquid::Template.register_tag('file_field', Clot::FileField)
-
+Liquid::Template.register_tag('password_field', Clot::PasswordField)
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 

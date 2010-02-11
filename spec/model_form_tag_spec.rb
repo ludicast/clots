@@ -136,6 +136,44 @@ describe "tags for forms that use models" do
     end
   end
 
+  context "for password_field" do
+    context "inside of form" do
+      it "should generate field with size" do
+        @tag = "{% password_field 'password',size:20 %}"
+        parse_form_tag_to(%{<input id="dummy_password" name="dummy[password]" size="20" type="password" value="#{@user.password}" />})
+      end
+
+      it "should generate field with class" do
+        @tag = "{% password_field 'password',class:'form_input' %}"
+        parse_form_tag_to(%{<input class="form_input" id="dummy_password" name="dummy[password]" type="password" value="#{@user.password}" />})
+      end
+
+      it "should generate field with onchange" do
+        @tag = %{{% password_field 'password',onchange:"if $('user[password]').length > 30 { alert('Your password needs to be shorter!'); }" %}}
+        parse_form_tag_to(%{<input id="dummy_password" name="dummy[password]" onchange="if $('user[password]').length > 30 { alert('Your password needs to be shorter!'); }" type="password" value="#{@user.password}" />})
+      end
+
+      it "should take multiple options" do
+        @tag = %{{% password_field 'password',size:20,class:'form_input' %}}
+        parse_form_tag_to(%{<input class="form_input" id="dummy_password" name="dummy[password]" size="20" type="password" value="#{@user.password}" />})
+      end
+
+
+
+=begin
+      password_field(:account, :pin, :size => 20, :class => 'form_input')
+      # => <input type="text" id="account_pin" name="account[pin]" size="20" value="#{@account.pin}" class="form_input" />
+
+=end
+
+
+    end
+
+    
+
+  end
+
+
   context "for label" do
     context "outside of form" do
       it "should render label for field" do
