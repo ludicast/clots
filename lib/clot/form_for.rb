@@ -27,7 +27,6 @@ module Clot
 
     def render_form(context)
       result = get_form_header(context)
-      result += get_form_errors
       result += get_form_body(context)
       result += get_form_footer
       result
@@ -150,7 +149,27 @@ module Clot
       result
     end
 
-    def get_form_errors
+
+
+    def set_variables(context)
+      set_model(context)
+      super
+    end
+
+  end
+
+
+  class ErrorMessagesFor < Liquid::Tag
+
+    include TagHelper
+    def initialize(name, params, tokens)
+      @_params = split_params(params)
+      super
+    end
+
+
+    def render(context)
+      @model = context[@_params[0]]
       result = ""
       if @model and @model.errors.count > 0
         result += '<div class="errorExplanation" id="errorExplanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'
@@ -163,12 +182,7 @@ module Clot
         result += "</ul></div>"
       end
       result
-    end
-
-    def set_variables(context)
-      set_model(context)
-      super
-    end
-
+    end    
   end
+
 end

@@ -12,6 +12,7 @@ Liquid::Template.register_filter Clot::UrlFilters
 Liquid::Template.register_filter Clot::LinkFilters  
 Liquid::Template.register_filter Clot::FormFilters
 
+Liquid::Template.register_tag('error_messages_for', Clot::ErrorMessagesFor)
 Liquid::Template.register_tag('formfor', Clot::LiquidFormFor)
 Liquid::Template.register_tag('form_for', Clot::LiquidFormFor)
 Liquid::Template.register_tag('yield', Clot::Yield)
