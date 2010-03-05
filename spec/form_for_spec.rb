@@ -8,7 +8,7 @@ describe "Form For" do
 
   context "edit form" do
     it "should be have hidden method of PUT" do
-      text_drop = mock_drop @@text_content_default_values
+      text_drop = mock_drop text_content_default_values
       expected = '<form method="POST" action="' + (object_url text_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
       template = '{% formfor text %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'text' => text_drop)
@@ -17,7 +17,7 @@ describe "Form For" do
 
   context "when selecting an alternate method" do
     it "should post to that method" do
-      text_drop = mock_drop @@text_content_default_values
+      text_drop = mock_drop text_content_default_values
       expected = '<form method="POST" action="' + (object_url text_drop) + '/no_no_no"></form>'
       template = '{% formfor text post_method:no_no_no %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'text' => text_drop)
@@ -27,7 +27,7 @@ describe "Form For" do
 
   context "when using a field * item" do
     it "should produce data based on form type" do
-      user_drop = get_drop @@user_default_values
+      user_drop = get_drop user_default_values
       expected = '<form method="POST" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/><input id="liquid_demo_model_login" name="liquid_demo_model[login]" type="text" value="' + user_drop.login + '" /></form>'
       template = '{% formfor liquid_demo_model %}{% text_field "login" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'liquid_demo_model' => user_drop)
@@ -70,46 +70,40 @@ describe "Form For" do
   end
 
   context "when using a select * item" do
-    before :all do
-      class LiquidDemoModelDrop
-        def friend_id
-          1
-        end
-      end      
-    end
-
     it "should dynamically create a select option" do
-      user_drop1 = get_drop @@user_default_values
-      user_drop2 = get_drop @@user_default_values.merge(:id => 2)
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
-      expected += "<option value=\"#{user_drop1.id}\" selected=\"selected\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\">#{user_drop2.email}</option></select></form>"
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", users, "id", "email" %}{% endformfor %}'
+      user_drop1 = mock_drop user_default_values.merge(:friend_id => 2)
+      user_drop2 = mock_drop user_default_values.merge(:id => 2)
+
+      expected = '<form method="POST" action="/dummy_drops/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
+      expected += "<option value=\"#{user_drop1.id}\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\" selected=\"selected\">#{user_drop2.email}</option></select></form>"
+      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", users, "id", "email" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
     it "should dynamically create a select based on array" do
-      user_drop1 = get_drop @@user_default_values
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
+      user_drop1 = mock_drop user_default_values.merge(:friend_id => 1)
+      expected = '<form method="POST" action="/dummy_drops/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
       expected += "<option selected=\"selected\">1</option><option>two</option></select></form>"
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", options %}{% endformfor %}'
+      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", options %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'options' => [1, "two"])
     end
 
     it "should dynamically create a select based on resolved array" do
-      user_drop1 = get_drop @@user_default_values
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
+      user_drop1 = mock_drop user_default_values.merge(:friend_id => 1)
+      expected = '<form method="POST" action="/dummy_drops/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
       expected += "<option selected=\"selected\">1</option><option>two</option></select></form>"
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", [1 "two"] %}{% endformfor %}'
+      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", [1 "two"] %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1)
     end
 
     it "should allow a prompt" do
-      user_drop1 = get_drop @@user_default_values
-      user_drop2 = get_drop @@user_default_values.merge(:id => 2)
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><select id="liquid_demo_model_drop_friend_id" name="liquid_demo_model_drop[friend_id]">'
+      user_drop1 = mock_drop user_default_values.merge(:friend_id => 2)
+      user_drop2 = mock_drop user_default_values.merge(:id => 2)
+
+      expected = '<form method="POST" action="/dummy_drops/'+ user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
       expected += "<option value=\"\">nada to see</option>"
-      expected += "<option value=\"#{user_drop1.id}\" selected=\"selected\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\">#{user_drop2.email}</option></select></form>"
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% collection_select "friend_id", users,"id","email",prompt:"nada to see" %}{% endformfor %}'
+      expected += "<option value=\"#{user_drop1.id}\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\" selected=\"selected\">#{user_drop2.email}</option></select></form>"
+      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", users,"id","email",prompt:"nada to see" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
@@ -117,7 +111,7 @@ describe "Form For" do
 
   context "edit form" do
     it "should allow you to apply a css class" do
-      user_drop = get_drop @@user_default_values
+      user_drop = get_drop user_default_values
       expected = '<form method="POST" class="tester" action="' + (object_url user_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
       template = '{% formfor user class:tester %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop)
@@ -126,7 +120,7 @@ describe "Form For" do
 
   context "when creating form items outside of the form" do
     specify "they should be out of the form's scope and raise error" do
-      user_drop = get_drop @@user_default_values
+      user_drop = get_drop user_default_values
       template = '{% formfor user class:tester %}{% endformfor %}{% field :login %}'
       lambda { Liquid::Template.parse(template).render 'user' => user_drop }.should raise_error
     end
@@ -136,7 +130,7 @@ describe "Form For" do
 
   context "when a form has errors" do
     before(:each) do
-      @user_drop = get_drop @@user_default_values
+      @user_drop = get_drop user_default_values
       @user_drop.stub!(:errors).and_return(ActiveRecord::Errors.new(@user_drop))
     end
 

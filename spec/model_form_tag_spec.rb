@@ -17,13 +17,13 @@ describe "tags for forms that use models" do
   end
   
   before do
-    @user = mock_drop @@user_default_values
+    @user = mock_drop user_default_values
   end
 
   context "for collection_select" do
     before do
-      @user_drop1 = mock_drop @@user_default_values
-      @user_drop2 = mock_drop @@user_default_values
+      @user_drop1 = mock_drop user_default_values
+      @user_drop2 = mock_drop user_default_values
       @user_list = [@user_drop1, @user_drop2]
       @roles = ['admin','user']
     end

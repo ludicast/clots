@@ -49,27 +49,27 @@ module Clot
       params.each do |pair|
         pair_data = pair.split ":"
         case pair_data[0]
-          when "label":
+          when "label" then
             @label = pair_data[1]
-          when "new"
+          when "new" then
             @label ||= "Create"
             @link = "/#{pair_data[1]}/new"
-          when "index"
+          when "index" then
             @label ||= "Index"
             @link = "/#{pair_data[1]}"
-          when "view"
+          when "view" then
             @label ||= "View"
             obj = context[pair_data[1]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}"
-          when "nested_index"
+          when "nested_index" then
             @label ||= "Index"
             obj = context[pair_data[1]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{pair_data[2]}"
-          when "edit"
+          when "edit" then
             @label ||= "Edit"
             obj = context[pair_data[1]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/edit"
-          when "delete"
+          when "delete" then
             @label ||= "Delete"
             obj = context[pair_data[1]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}"
@@ -108,7 +108,7 @@ module Clot
       @params.each do |pair|
         pair_data = pair.split ":"
         case pair_data[0]
-          when "factory_name": @tag_factory = pair_data[1].constantize
+          when "factory_name" then @tag_factory = pair_data[1].constantize
         end
 
       end

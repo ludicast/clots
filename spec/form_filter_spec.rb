@@ -72,7 +72,11 @@ describe "Form Filter" do
 
   context "the drop_class_to_table_item filter" do
     specify "should return the table item that matches the drop" do
-      class DummyClassDrop; end
+      class DummyClassDrop
+        def self.name
+          "DummyClassDrop"
+        end
+      end
       table_item = drop_class_to_table_item DummyClassDrop
       table_item.should == "dummy_class"
     end
@@ -146,43 +150,43 @@ describe "Form Filter" do
 
   context "the form_select_item filter" do 
     specify "selects an item based on inputed value and name" do
-      user_drop1 = mock_drop @@user_default_values
-      user_drop2 = mock_drop @@user_default_values
+      user_drop1 = mock_drop user_default_values
+      user_drop2 = mock_drop user_default_values
       item = form_select_item "item[field]",  user_drop2.id, [user_drop1, user_drop2], nil
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "selects an item based on inputted value and name when collection is used" do
-      user_drop1 = mock_drop @@user_default_values
-      user_drop2 = mock_drop @@user_default_values
+      user_drop1 = mock_drop user_default_values
+      user_drop2 = mock_drop user_default_values
       item = form_select_item "item[field]",  user_drop2.id, [user_drop1.id, user_drop2.id], nil
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.id}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.id}</option></select>"
     end
 
     specify "supports blank option" do
-      user_drop1 = mock_drop @@user_default_values
-      user_drop2 = mock_drop @@user_default_values
+      user_drop1 = mock_drop user_default_values
+      user_drop2 = mock_drop user_default_values
       item = form_select_item "item[field]",  user_drop2.id, [user_drop1, user_drop2], nil, "blank data"
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option>blank data</option><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\" selected=\"true\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "creates an item based on inputed value and name" do
-      user_drop1 = mock_drop @@user_default_values
-      user_drop2 = mock_drop @@user_default_values
+      user_drop1 = mock_drop user_default_values
+      user_drop2 = mock_drop user_default_values
       item = form_select_item "item[field]", "value", [user_drop1, user_drop2], nil
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end
 
     specify "creates an item based on heterogeneous collection " do
-      user_drop1 = mock_drop @@user_default_values
+      user_drop1 = mock_drop user_default_values
       collection = [1,"two"]
       item = form_select_item "item[field]", "value", collection, nil
       item.should == "<select id=\"item_field\" name=\"item[field]\"><option value=\"1\">1</option><option value=\"two\">two</option></select>"
     end
 
     specify "sets error class if there is an error" do
-      user_drop1 = mock_drop @@user_default_values 
-      user_drop2 = mock_drop @@user_default_values
+      user_drop1 = mock_drop user_default_values
+      user_drop2 = mock_drop user_default_values
       item = form_select_item "item[field]", "value", [user_drop1, user_drop2], true
       item.should == "<select id=\"item_field\" name=\"item[field]\" class=\"error-item\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end

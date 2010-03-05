@@ -59,7 +59,7 @@ end
 class LiquidDemoModelDrop < Liquid::Drop
 
   attr_reader :source, :liquid_attributes
-  undef :type
+  #undef :type
 
     def collection_label
       "item_label"
@@ -156,13 +156,15 @@ def get_drop(args = {})
   LiquidDemoModelDrop.new args
 end
 
-@@text_content_default_values = {
-  :name => "Basic Essay Here",
-  :data => "This is a basic ipsum lorem...",
-  :dropped_class => LiquidDemoModel
-}
+def text_content_default_values
+  {
+    :name => "Basic Essay Here",
+    :data => "This is a basic ipsum lorem...",
+    :dropped_class => LiquidDemoModel
+  }
+end
 
-@@user_default_values =
+def user_default_values
     { :login => "sDUMMY",
       :email => "sfake@fake.com",
       :name => "User ##{rand(5000)}",
@@ -171,17 +173,19 @@ end
       :admin => true,
       :banned => false
     }
+end
 
 include Liquid
 Spec::Matchers.define :parse_to do |expected|
   match do |template|
-    expected.should == Template.parse(template).render {}
+    @template_match_value =  Template.parse(template).render({})
+    expected == @template_match_value
   end
 
   failure_message_for_should do |template|
-    "expected #{template} to parse to #{expected}"
+    "expected #{template} to parse to: \n#{expected} but instead got: \n#{@template_match_value}"
   end
-
+     
   failure_message_for_should_not do |template|
     "expected #{template} to not parse to #{expected}"
   end
@@ -194,11 +198,12 @@ end
 
 Spec::Matchers.define :parse_with_vars_to do |expected,attributes|
   match do |template|
-    expected.should == Template.parse(template).render(attributes)
+    @template_match_value = Template.parse(template).render(attributes)
+    expected == @template_match_value
   end
 
   failure_message_for_should do |template|
-    "expected #{template} to parse to #{expected}"
+    "expected #{template} to parse to: \n#{expected}\n but instead got: \n#{@template_match_value}"
   end
 
   failure_message_for_should_not do |template|

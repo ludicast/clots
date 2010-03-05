@@ -22,11 +22,11 @@ end
 def set_filter
   GenericTagFactory[:link_filter] = lambda { |link, context|
     case link
-      when /bad1/:
+      when /bad1/ then
         ""
-      when /bad2/:
+      when /bad2/ then
         nil
-      when /bad3/:
+      when /bad3/ then
         false
       else
         link
@@ -219,7 +219,7 @@ describe "when using links" do
     end
     context "for nested resources" do
       before do
-        @user_drop = get_drop @@user_default_values
+        @user_drop = get_drop user_default_values
       end
       context "for index without label" do
         before do
@@ -245,7 +245,7 @@ describe "when using links" do
 
     context "for resource models" do
       before do
-        @user_drop = get_drop @@user_default_values
+        @user_drop = get_drop user_default_values
       end
       context "with view param without label" do
         before do

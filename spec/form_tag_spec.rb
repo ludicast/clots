@@ -6,7 +6,7 @@ describe "Form Tag" do
   
   context "when consisting of the same identical inner tag" do
     it "produces unique tags each time" do
-      user_drop = get_drop @@user_default_values
+      user_drop = get_drop user_default_values
       def user_drop.child_ids
         [1,3]
       end

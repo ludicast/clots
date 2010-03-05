@@ -50,7 +50,7 @@ module Clot
     end
 
     def drop_class_to_table_item(clazz)
-      match = /_drops/.match clazz.to_s.tableize
+      match = /_drops/.match clazz.name.tableize
       match.pre_match
     end  
     

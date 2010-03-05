@@ -58,6 +58,14 @@ module Clot
       "label field"
     end 
 
+    def self.method_missing(symbol, *args)
+      puts "ddd"
+      [symbol]
+
+    end
+
+
+
   protected
 
     def liquify(*records, &block)

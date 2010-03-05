@@ -182,7 +182,7 @@ module Clot
           value = resolve_value(pair[1],context)
 
           case pair[0]
-            when "header_message"
+            when "header_message" then
               @default_message = value
           end
         end

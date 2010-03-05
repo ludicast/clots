@@ -23,17 +23,17 @@ module Clot
         end
 
         case pair[0]
-          when "value"
+          when "value" then
             @value_string = value
-          when "accept"
+          when "accept" then
             @accept_string = %{accept="#{CGI::unescape value}" }
-          when "class"
+          when "class" then
             @class_string = %{class="#{value}" }
-          when "onchange"
+          when "onchange" then
             @onchange_string = %{onchange="#{value}" }
-          when "maxlength"
+          when "maxlength" then
             @max_length_string = %{maxlength="#{value}" }
-          when "disabled"
+          when "disabled" then
             @disabled_string = %{disabled="#{if (value == true || value == "disabled") then 'disabled' end}" }
         end
       end
@@ -51,9 +51,9 @@ module Clot
     def render(context)
 
 
-      instance_variables.each do |var|
-        unless ["@_params", "@markup", "@tag_name"].include? var
-          instance_variable_set var.to_sym, nil  #this is because the same parse tag is re-rendered
+      instance_variables.map(&:to_sym).each do |var|
+        unless [:@_params, :@markup, :@tag_name].include? var
+          instance_variable_set var, nil  #this is because the same parse tag is re-rendered
         end
       end
       @params = @_params.clone
@@ -68,9 +68,9 @@ module Clot
 
     def personal_attributes(name,value)
       case name
-        when "size"
+        when "size" then
           @size_string = %{size="#{value}" }
-        when "width"
+        when "width" then
           @size_string = %{width="#{value}" }
       end
     end
@@ -119,11 +119,11 @@ module Clot
     def personal_attributes(name,value)
 
       case name
-        when "cols"
+        when "cols" then
           @col_string = %{cols="#{value}" }
-        when "rows"
+        when "rows" then
           @row_string = %{ rows="#{value}"}
-        when "size"
+        when "size" then
           size_array = value.split /x/
           @col_string = %{cols="#{size_array[0]}" }
           @row_string = %{ rows="#{size_array[1]}"}
@@ -139,9 +139,9 @@ module Clot
 
     def personal_attributes(name,value)
       case name
-        when "name"
+        when "name" then
           if value.nil? then @commit_name_string = '' end
-        when "disable_with"
+        when "disable_with" then
           @onclick_string = %{onclick="this.disabled=true;this.value='#{value}';this.form.submit();" }
       end
     end
@@ -164,9 +164,9 @@ module Clot
 
     def personal_attributes(name,value)
       case name
-        when 'multiple'
+        when 'multiple' then
           @multiple_string = %{multiple="#{value == "true" ? "multiple" : ""}" }
-        when 'prompt'
+        when 'prompt' then
           @prompt_option = %{<option value="">#{value}</option>}
       end
     end
@@ -186,7 +186,7 @@ module Clot
 
     def personal_attributes(name,value)
       case name
-        when 'value'
+        when 'value' then
           @id_string << "_#{value}"
       end
     end
@@ -196,9 +196,9 @@ module Clot
   class CheckBoxTag < ClotTag
     def personal_attributes(name,value)
       case name
-        when 'collection'
+        when 'collection' then
           @checkbox_collection = value
-        when 'member'
+        when 'member' then
           @checkbox_member = value
           if (! @checkbox_collection.nil?) && @checkbox_collection.include?(@checkbox_member)
             @checked_value = %{checked="checked" }            

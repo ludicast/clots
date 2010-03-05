@@ -3,7 +3,6 @@ module Clot
     def set_primary_attributes(context)
       @item = context['form_model']
       if @item
-        
         @attribute_name =  resolve_value(@params.shift,context)
         @first_attr = context['form_class_name']
       else
@@ -16,8 +15,18 @@ module Clot
       end
       @id_string = "#{@first_attr}_#{@attribute_name}"
       @name_string = "#{@first_attr}[#{@attribute_name}]"
-      @value_string = @item[@attribute_name.to_sym]
 
+      if @item.respond_to? @attribute_name
+        @value_string = @item.send(@attribute_name)
+      else
+        @value_string = @item[@attribute_name]
+      end
+
+    #  rescue
+      #  puts "rescued"
+     #   @value_string = @item.send(@attribute_name)
+
+      
       @errors = context['form_errors'] || []
 
     end
@@ -94,11 +103,11 @@ module Clot
       value_string = ""
 
       if item.is_a?(String) || item.is_a?(Fixnum)
-        if @item[@attribute_name.to_sym] == item
+        if (@item[@attribute_name.to_sym].to_s == item.to_s) || (@item.respond_to?(@attribute_name.to_sym) && @item.send(@attribute_name.to_sym).to_s == item.to_s)
           selection_string = ' selected="selected"'
         end
       else
-        item_string = item[@default_name.to_sym]
+        item_string = item[@default_name.to_sym] || (@item.respond_to?(@attribute_name.to_sym) && @item.send(@default_name.to_sym))
         value_string = %{ value="#{item[@default_id.to_sym]}"}
         if item[@default_id.to_sym].to_s == @value_string.to_s
           selection_string = ' selected="selected"'
@@ -111,7 +120,7 @@ module Clot
 
     def personal_attributes(name,value)
       case name
-        when 'prompt'
+        when 'prompt' then
           @prompt_option = %{<option value="">#{value}</option>}
       end
     end
