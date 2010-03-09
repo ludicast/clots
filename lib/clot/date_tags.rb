@@ -19,6 +19,14 @@ module Clot
         @value_string = @value_string.send(time_method)
       end
     end
+
+    def personal_attributes(name,value)
+      case name
+        when "field_name" then
+          @field_name = value
+      end
+    end
+
   end
 
   class SelectMinute < NumberedTag
@@ -35,7 +43,8 @@ module Clot
       :sec
     end
     def render_string
-        %{<select id="date_second" name="date[second]">} + get_options(0, 59, @value_string) + "</select>"
+      field_name = @field_name || "second"
+      %{<select id="date_#{field_name}" name="date[#{field_name}]">} + get_options(0, 59, @value_string) + "</select>"
     end
   end
 end

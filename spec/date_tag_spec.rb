@@ -15,6 +15,10 @@ describe "for date tags" do
       @tag = "{% select_second 33 %}"
       @tag.should parse_to('<select id="date_second" name="date[second]">' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
     end
+    it "should take a field_name" do
+      @tag = "{% select_second 33,field_name:'stride' %}"
+      @tag.should parse_to('<select id="date_stride" name="date[stride]">' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+    end
     it "should take a Time" do
       time = Time.now
       @tag = "{% select_second time %}"
