@@ -39,6 +39,7 @@ Liquid::Template.register_tag('file_field', Clot::FileField)
 Liquid::Template.register_tag('password_field', Clot::PasswordField)
 
 Liquid::Template.register_tag('select_second', Clot::SelectSecond)
+Liquid::Template.register_tag('select_minute', Clot::SelectMinute)
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 
