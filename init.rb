@@ -5,6 +5,7 @@ require 'clot/yield'
 require 'clot/if_content_for'
 require 'clot/no_model_form_tags'
 require 'clot/model_form_tags'
+require 'clot/date_tags'
 require 'extras/liquid_view'
 
 
@@ -36,6 +37,8 @@ Liquid::Template.register_tag('check_box', Clot::CheckBox)
 Liquid::Template.register_tag('collection_select', Clot::CollectionSelect)
 Liquid::Template.register_tag('file_field', Clot::FileField)
 Liquid::Template.register_tag('password_field', Clot::PasswordField)
+
+Liquid::Template.register_tag('select_second', Clot::SelectSecond)
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 
