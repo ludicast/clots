@@ -81,5 +81,29 @@ describe "for date tags" do
     end
   end
 
+  context "for select_day" do
+    it "should take a number" do
+      @tag = "{% select_day 33 %}"
+      @tag.should parse_to('<select id="date_day" name="date[day]">' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+    end
+    it "should take a prompt" do
+      @tag = "{% select_day 33, prompt:'Choose day' %}"
+      @tag.should parse_to('<select id="date_day" name="date[day]"><option value="">Choose day</option>' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+    end
+    it "should take a prompt" do
+      @tag = "{% select_day 33, prompt:true %}"
+      @tag.should parse_to('<select id="date_day" name="date[day]"><option value="">Days</option>' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+    end
+    it "should take a field_name" do
+      @tag = "{% select_day 33,field_name:'stride' %}"
+      @tag.should parse_to('<select id="date_stride" name="date[stride]">' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+    end
+    it "should take a Time" do
+      time = Time.now
+      @tag = "{% select_day time %}"
+      @tag.should parse_with_vars_to('<select id="date_day" name="date[day]">' + get_options(0,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),59) + "</select>", 'time' => time)
+    end
+  end
+
 
 end
