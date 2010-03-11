@@ -24,6 +24,9 @@ module Clot
       case name
         when "field_name" then
           @field_name = value
+        when "prompt" then
+          prompt_text = (value === true) ? default_prompt : value
+          @prompt_val = "<option value=\"\">#{prompt_text}</option>"
       end
     end
 
@@ -33,18 +36,42 @@ module Clot
     def time_method
       :min
     end
+    def default_prompt
+      "Minutes"
+    end
+
     def render_string
-        %{<select id="date_minute" name="date[minute]">} + get_options(0, 59, @value_string) + "</select>"
+      field_name = @field_name || "minute"
+      %{<select id="date_#{field_name}" name="date[#{field_name}]">#{@prompt_val}} + get_options(0, 59, @value_string) + "</select>"
     end
   end
+
+  class SelectHour < NumberedTag
+    def time_method
+      :hour
+    end
+    def default_prompt
+      "Hours"
+    end
+
+    def render_string
+      field_name = @field_name || "hour"
+      %{<select id="date_#{field_name}" name="date[#{field_name}]">#{@prompt_val}} + get_options(0, 59, @value_string) + "</select>"
+    end
+  end
+
 
   class SelectSecond < NumberedTag
     def time_method
       :sec
     end
+    def default_prompt
+      "Seconds"
+    end
+
     def render_string
       field_name = @field_name || "second"
-      %{<select id="date_#{field_name}" name="date[#{field_name}]">} + get_options(0, 59, @value_string) + "</select>"
+      %{<select id="date_#{field_name}" name="date[#{field_name}]">#{@prompt_val}} + get_options(0, 59, @value_string) + "</select>"
     end
   end
 end
