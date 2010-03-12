@@ -30,11 +30,21 @@ module Clot
       end
     end
 
-    def render_string
-      field_name = @field_name || default_field_name
-      %{<select id="date_#{field_name}" name="date[#{field_name}]">#{@prompt_val}} + get_options(0, 59, @value_string) + "</select>"
+    def default_start
+      0
     end
 
+    def default_end
+      59
+    end
+
+    def render_string
+      field_name = @field_name || default_field_name
+      %{<select id="date_#{field_name}" name="date[#{field_name}]">#{@prompt_val}} + get_options(default_start, default_end, @value_string) + "</select>"
+    end
+    def time_method
+      default_field_name
+    end
   end
 
   class SelectMinute < NumberedTag
@@ -47,22 +57,39 @@ module Clot
   end
 
   class SelectHour < NumberedTag
-    def time_method
-      :hour
-    end
     def default_field_name
       "hour"
     end
   end
 
   class SelectDay < NumberedTag
-    def time_method
-      :day
-    end
     def default_field_name
       "day"
     end
+
+    def default_start
+      1
+    end
+
+    def default_end
+      31
+    end
   end
+
+  class SelectYear < NumberedTag
+    def default_field_name
+      "year"
+    end
+
+    def default_start
+      @value_string - 5
+    end
+
+    def default_end
+      @value_string + 5
+    end   
+  end
+
 
   class SelectSecond < NumberedTag
     def time_method

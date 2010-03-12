@@ -83,26 +83,59 @@ describe "for date tags" do
 
   context "for select_day" do
     it "should take a number" do
-      @tag = "{% select_day 33 %}"
-      @tag.should parse_to('<select id="date_day" name="date[day]">' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+      @tag = "{% select_day 14 %}"
+      @tag.should parse_to('<select id="date_day" name="date[day]">' + get_options(1,13) + '<option selected="selected" value="14">14</option>' + get_options(15,31) + "</select>")
     end
     it "should take a prompt" do
-      @tag = "{% select_day 33, prompt:'Choose day' %}"
-      @tag.should parse_to('<select id="date_day" name="date[day]"><option value="">Choose day</option>' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+      @tag = "{% select_day 14, prompt:'Choose day' %}"
+      @tag.should parse_to('<select id="date_day" name="date[day]"><option value="">Choose day</option>' + get_options(1,13) + '<option selected="selected" value="14">14</option>' + get_options(15,31) + "</select>")
     end
     it "should take a prompt" do
-      @tag = "{% select_day 33, prompt:true %}"
-      @tag.should parse_to('<select id="date_day" name="date[day]"><option value="">Days</option>' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+      @tag = "{% select_day 14, prompt:true %}"
+      @tag.should parse_to('<select id="date_day" name="date[day]"><option value="">Days</option>' + get_options(1,13) + '<option selected="selected" value="14">14</option>' + get_options(15,31) + "</select>")
     end
     it "should take a field_name" do
-      @tag = "{% select_day 33,field_name:'stride' %}"
-      @tag.should parse_to('<select id="date_stride" name="date[stride]">' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
+      @tag = "{% select_day 14,field_name:'stride' %}"
+      @tag.should parse_to('<select id="date_stride" name="date[stride]">' + get_options(1,13) + '<option selected="selected" value="14">14</option>' + get_options(15,31) + "</select>")
     end
     it "should take a Time" do
       time = Time.now
       @tag = "{% select_day time %}"
-      @tag.should parse_with_vars_to('<select id="date_day" name="date[day]">' + get_options(0,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),59) + "</select>", 'time' => time)
+      @tag.should parse_with_vars_to('<select id="date_day" name="date[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>", 'time' => time)
     end
+  end
+
+  context "for select_year" do
+    it "should set default year" do
+      @tag = "{% select_year 2009 %}"
+      @tag.should parse_to('<select id="date_year" name="date[year]">' + get_options(2004,2008) + %{<option selected="selected" value="2009">2009</option>} + get_options(2010,2014) + "</select>")
+    end
+
+
+           "
+    # Generates a select field for years that defaults to the current year that
+    # has ascending year values
+    select_year(Date.today, :start_year => 1992, :end_year => 2007)
+
+    # Generates a select field for years that defaults to the current year that
+    # is named 'birth' rather than 'year'
+    select_year(Date.today, :field_name => 'birth')
+
+    # Generates a select field for years that defaults to the current year that
+    # has descending year values
+    select_year(Date.today, :start_year => 2005, :end_year => 1900)
+
+    # Generates a select field for years that defaults to the year 2006 that
+    # has ascending year values
+    select_year(2006, :start_year => 2000, :end_year => 2010)
+
+    # Generates a select field for years with a custom prompt.  Use :prompt => true for a
+    # generic prompt.
+    select_year(14, :prompt => 'Choose year')
+    
+            "
+
+
   end
 
 
