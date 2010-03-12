@@ -110,7 +110,11 @@ describe "for date tags" do
       @tag = "{% select_year 2009 %}"
       @tag.should parse_to('<select id="date_year" name="date[year]">' + get_options(2004,2008) + %{<option selected="selected" value="2009">2009</option>} + get_options(2010,2014) + "</select>")
     end
-
+    it "should set default year" do
+      time = Time.now
+      @tag = "{% select_year time,start_year:1992,end_year:2020 %}"
+      @tag.should parse_with_vars_to('<select id="date_year" name="date[year]">' + get_options(1992,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,2020) + "</select>", 'time' => time)
+    end
 
            "
     # Generates a select field for years that defaults to the current year that

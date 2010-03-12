@@ -82,12 +82,23 @@ module Clot
     end
 
     def default_start
-      @value_string - 5
+      @start_year || @value_string - 5
     end
 
     def default_end
-      @value_string + 5
-    end   
+      @end_year || @value_string + 5
+    end
+
+    def personal_attributes(name,value)
+      super(name,value) || case name
+        when "start_year" then
+          @start_year = value
+        when "end_year" then
+          @end_year = value
+      end
+    end
+
+
   end
 
 
