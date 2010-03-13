@@ -43,6 +43,7 @@ Liquid::Template.register_tag('select_minute', Clot::SelectMinute)
 Liquid::Template.register_tag('select_hour', Clot::SelectHour)
 
 Liquid::Template.register_tag('select_day', Clot::SelectDay)
+Liquid::Template.register_tag('select_month', Clot::SelectMonth)
 Liquid::Template.register_tag('select_year', Clot::SelectYear)
 
 

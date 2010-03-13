@@ -1,13 +1,25 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-def get_options(from_val,to_val, reverse = false)
+def get_month(val)
+  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  months[val - 1]
+end
+
+
+def get_options(from_val,to_val, hash = {})
   options = ""
   range = (from_val..to_val)
-  if reverse
+  if hash[:reverse]
     range = range.to_a.reverse
   end
+
   range.each do |val|
-    options << %{<option value="#{val}">#{val}</option>}
+    if hash[:label_func]
+      print_val = send(hash[:label_func], val)
+    else
+      print_val = val
+    end
+    options << %{<option value="#{val}">#{print_val}</option>}
   end
   options
 end
@@ -123,7 +135,7 @@ describe "for date tags" do
     it "should set take start and end in descending order" do
       time = Time.now
       @tag = "{% select_year time,start_year:2020,end_year:1992 %}"
-      @tag.should parse_with_vars_to('<select id="date_year" name="date[year]">' + get_options(time.year + 1,2020, true) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} +  get_options(1992,time.year - 1, true) + "</select>", 'time' => time)
+      @tag.should parse_with_vars_to('<select id="date_year" name="date[year]">' + get_options(time.year + 1,2020, {:reverse => true}) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} +  get_options(1992,time.year - 1, {:reverse => true}) + "</select>", 'time' => time)
     end    
 
     it "should set take start and end in ascending order with year" do
@@ -145,9 +157,8 @@ describe "for date tags" do
 
   context "for select_month" do
     it "should produce month names by default" do
-
-
-
+      @tag = "{% select_month 5 %}"
+      @tag.should parse_to('<select id="date_month" name="date[month]">' + get_options(1,4,{:label_func => :get_month}) + %{<option selected="selected" value="5">May</option>} + get_options(6,12,{:label_func => :get_month}) + "</select>")
     end
   end
 

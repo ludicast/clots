@@ -1,6 +1,10 @@
 module Clot
   
   class NumberedTag < ClotTag
+    def value_string(val)
+      val
+    end
+
     def get_options(from_val,to_val, selected_value = nil)
       options = ""
 
@@ -12,9 +16,9 @@ module Clot
 
       range.each do |val|
         if selected_value == val
-          options << %{<option selected="selected" value="#{val}">#{val}</option>}
+          options << %{<option selected="selected" value="#{val}">#{value_string(val)}</option>}
         else
-          options << %{<option value="#{val}">#{val}</option>}
+          options << %{<option value="#{val}">#{value_string(val)}</option>}
         end
       end
       options
@@ -82,6 +86,27 @@ module Clot
       31
     end
   end
+
+  class SelectMonth < NumberedTag
+    def default_field_name
+      "month"
+    end
+
+    def default_start
+      1
+    end
+
+    def default_end
+      12
+    end
+    def value_string(val)
+      months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      months[val - 1]
+    end
+
+  end
+
+
 
   class SelectYear < NumberedTag
     def default_field_name
