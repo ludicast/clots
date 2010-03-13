@@ -108,6 +108,8 @@ module Clot
           @add_month_numbers = value
         when "use_short_month" then
           @use_short_month = value
+        when "use_month_names" then
+          @use_month_names = value
       end
     end
 
@@ -115,8 +117,12 @@ module Clot
       if @use_month_numbers
         super(val)
       else
-        months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        month_name = months[val - 1]
+        if @use_month_names
+          month_name = @use_month_names[val]
+        else
+          months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+          month_name = months[val - 1]
+        end
         if @add_month_numbers
           "#{val} - #{month_name}"
         elsif @use_short_month
