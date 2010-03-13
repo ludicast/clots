@@ -170,6 +170,12 @@ describe "for date tags" do
       @tag = "{% select_month time, field_name:'start' %}"
       @tag.should parse_with_vars_to('<select id="date_start" name="date[start]">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>", 'time' => time)
     end
+    it "should let you use numbers for months" do
+      time = Time.now
+      @tag = "{% select_month time, use_month_numbers:true %}"
+      @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1) + %{<option selected="selected" value="#{time.month}">#{time.month}</option>} + get_options(time.month + 1,12) + "</select>", 'time' => time)
+    end
+
   end
 
 end

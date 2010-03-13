@@ -99,9 +99,21 @@ module Clot
     def default_end
       12
     end
+
+    def personal_attributes(name,value)
+      super(name, value) || case name
+        when "use_month_numbers" then
+          @use_month_numbers = value
+      end
+    end
+
     def value_string(val)
-      months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-      months[val - 1]
+      if @use_month_numbers
+        super(val)
+      else
+        months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        months[val - 1]
+      end
     end
 
   end
