@@ -1,8 +1,12 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-def get_options(from_val,to_val)
+def get_options(from_val,to_val, reverse = false)
   options = ""
-  (from_val..to_val).each do |val|
+  range = (from_val..to_val)
+  if reverse
+    range = range.to_a.reverse
+  end
+  range.each do |val|
     options << %{<option value="#{val}">#{val}</option>}
   end
   options
@@ -110,37 +114,32 @@ describe "for date tags" do
       @tag = "{% select_year 2009 %}"
       @tag.should parse_to('<select id="date_year" name="date[year]">' + get_options(2004,2008) + %{<option selected="selected" value="2009">2009</option>} + get_options(2010,2014) + "</select>")
     end
-    it "should set default year" do
+    it "should set take start and end in ascending order" do
       time = Time.now
       @tag = "{% select_year time,start_year:1992,end_year:2020 %}"
       @tag.should parse_with_vars_to('<select id="date_year" name="date[year]">' + get_options(1992,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,2020) + "</select>", 'time' => time)
     end
 
-           "
-    # Generates a select field for years that defaults to the current year that
-    # has ascending year values
-    select_year(Date.today, :start_year => 1992, :end_year => 2007)
+    it "should set take start and end in descending order" do
+      time = Time.now
+      @tag = "{% select_year time,start_year:2020,end_year:1992 %}"
+      @tag.should parse_with_vars_to('<select id="date_year" name="date[year]">' + get_options(time.year + 1,2020, true) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} +  get_options(1992,time.year - 1, true) + "</select>", 'time' => time)
+    end    
 
-    # Generates a select field for years that defaults to the current year that
-    # is named 'birth' rather than 'year'
-    select_year(Date.today, :field_name => 'birth')
+    it "should set take start and end in ascending order with year" do
+      @tag = "{% select_year 2006,start_year:1992,end_year:2020 %}"
+      @tag.should parse_to('<select id="date_year" name="date[year]">' + get_options(1992,2005) + %{<option selected="selected" value="2006">2006</option>} + get_options(2007,2020) + "</select>")
+    end
 
-    # Generates a select field for years that defaults to the current year that
-    # has descending year values
-    select_year(Date.today, :start_year => 2005, :end_year => 1900)
+    it "should take a prompt parameter" do
+      @tag = "{% select_year 14,prompt:'Choose year' %}"
+    @tag.should parse_to('<select id="date_year" name="date[year]"><option value="">Choose year</option>' + get_options(9,13) + %{<option selected="selected" value="14">14</option>} + get_options(15,19) + "</select>")
+    end
 
-    # Generates a select field for years that defaults to the year 2006 that
-    # has ascending year values
-    select_year(2006, :start_year => 2000, :end_year => 2010)
-
-    # Generates a select field for years with a custom prompt.  Use :prompt => true for a
-    # generic prompt.
-    select_year(14, :prompt => 'Choose year')
-    
-            "
-
-
+    it "should take a field_name parameter" do
+      time = Time.now
+      @tag = "{% select_year time,field_name:'birth' %}"
+      @tag.should parse_with_vars_to('<select id="date_birth" name="date[birth]">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>", 'time' => time)
+    end
   end
-
-
 end

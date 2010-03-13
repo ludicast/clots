@@ -3,7 +3,14 @@ module Clot
   class NumberedTag < ClotTag
     def get_options(from_val,to_val, selected_value = nil)
       options = ""
-      (from_val..to_val).each do |val|
+
+      if from_val < to_val
+        range = (from_val..to_val)
+      else
+        range = (to_val..from_val).to_a.reverse
+      end
+
+      range.each do |val|
         if selected_value == val
           options << %{<option selected="selected" value="#{val}">#{val}</option>}
         else
