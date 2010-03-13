@@ -5,6 +5,14 @@ def get_month(val)
   months[val - 1]
 end
 
+def get_short_month(val)
+  get_month(val)[0..2]
+end
+
+
+def get_month_with_numbers(val)
+  "#{val} - #{get_month val}" 
+end
 
 def get_options(from_val,to_val, hash = {})
   options = ""
@@ -176,6 +184,17 @@ describe "for date tags" do
       @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1) + %{<option selected="selected" value="#{time.month}">#{time.month}</option>} + get_options(time.month + 1,12) + "</select>", 'time' => time)
     end
 
-  end
+    it "should let you add numbers for months" do
+      time = Time.now
+      @tag = "{% select_month time, add_month_numbers:true %}"
+      @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_month_with_numbers}) + %{<option selected="selected" value="#{time.month}">#{time.month} - #{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month_with_numbers}) + "</select>", 'time' => time)
+    end
 
+    it "should let you use short name for months" do
+      time = Time.now
+      @tag = "{% select_month time, use_short_month:true %}"
+      @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_short_month}) + %{<option selected="selected" value="#{time.month}">#{get_short_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_short_month}) + "</select>", 'time' => time)
+    end
+  end
 end
+
