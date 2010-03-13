@@ -156,10 +156,16 @@ describe "for date tags" do
   end
 
   context "for select_month" do
-    it "should produce month names by default" do
+    it "should take number produce month names by default" do
       @tag = "{% select_month 5 %}"
       @tag.should parse_to('<select id="date_month" name="date[month]">' + get_options(1,4,{:label_func => :get_month}) + %{<option selected="selected" value="5">May</option>} + get_options(6,12,{:label_func => :get_month}) + "</select>")
     end
+    it "should take time object produce month names by default" do
+      time = Time.now
+      @tag = "{% select_month time %}"
+      @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>", 'time' => time)
+    end
+
   end
 
 end
