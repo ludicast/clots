@@ -46,6 +46,8 @@ Liquid::Template.register_tag('select_day', Clot::SelectDay)
 Liquid::Template.register_tag('select_month', Clot::SelectMonth)
 Liquid::Template.register_tag('select_year', Clot::SelectYear)
 
+Liquid::Template.register_tag('select_date', Clot::SelectDate)
+Liquid::Template.register_tag('select_time', Clot::SelectTime)
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 

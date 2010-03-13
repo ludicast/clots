@@ -212,7 +212,45 @@ describe "for date tags" do
       @tag = "{% select_month time, use_short_month:true %}"
       @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_short_month}) + %{<option selected="selected" value="#{time.month}">#{get_short_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_short_month}) + "</select>", 'time' => time)
     end
+  end
 
+  context "for select_date tag" do
+    it "should take default time" do
+      time = Time.now
+      @tag = "{% select_date time %}"
+      @year_string = '<select id="date_year" name="date[year]">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>"
+      @month_string = '<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="date_day" name="date[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
+      @tag.should parse_with_vars_to(@year_string + @month_string + @day_string, 'time' => time)
+    end
+    it "should set default time to current time" do
+      time = Time.now
+      @tag = "{% select_date %}"
+      @year_string = '<select id="date_year" name="date[year]">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>"
+      @month_string = '<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="date_day" name="date[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
+      @tag.should parse_to(@year_string + @month_string + @day_string)
+
+    end
+  end
+
+  context "for select_time tag" do
+    it "should take default time" do
+      time = Time.now
+      @tag = "{% select_time time %}"
+      @hour_string = '<select id="date_hour" name="date[hour]">' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @tag.should parse_with_vars_to(@hour_string + @minute_string, 'time' => time)
+    end
+
+
+
+    it "should set default time to current time" do
+      time = Time.now
+      @tag = "{% select_time %}"
+      @hour_string = '<select id="date_hour" name="date[hour]">' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @tag.should parse_to(@hour_string + @minute_string)
+    end
   end
 end
-

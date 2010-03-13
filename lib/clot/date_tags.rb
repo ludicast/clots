@@ -171,4 +171,41 @@ module Clot
       "second"
     end
   end
+
+  class MultiDateTag < ClotTag
+    def set_primary_attributes(context)
+      @time = resolve_value(@params.shift,context) || Time.now
+    end
+
+    def render(context)
+      instance_variables.map(&:to_sym).each do |var|
+        unless [:@_params, :@markup, :@tag_name].include? var
+          instance_variable_set var, nil  #this is because the same parse tag is re-rendered
+        end
+      end
+      @params = @_params.clone
+      set_attributes(context)
+      render_nested(context)
+    end  
+
+  end
+
+  class SelectDate < MultiDateTag
+    def render_nested(context)
+      @year = SelectYear.new(".select_year",@time.year.to_s,[])
+      @month = SelectMonth.new(".select_month",@time.month.to_s,[])
+      @day = SelectDay.new(".select_day",@time.day.to_s,[])
+      @year.render(context) + @month.render(context) + @day.render(context)
+    end
+  end
+
+  class SelectTime < MultiDateTag
+
+    def render_nested(context)
+      @hour = SelectHour.new(".select_hour",@time.hour.to_s,[])
+      @minute = SelectMinute.new(".select_minute",@time.min.to_s,[])
+      @hour.render(context) + @minute.render(context)
+    end
+  end
+
 end
