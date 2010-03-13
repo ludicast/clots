@@ -142,4 +142,13 @@ describe "for date tags" do
       @tag.should parse_with_vars_to('<select id="date_birth" name="date[birth]">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>", 'time' => time)
     end
   end
+
+  context "for select_month" do
+    it "should produce month names by default" do
+
+
+
+    end
+  end
+
 end
