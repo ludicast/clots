@@ -200,6 +200,9 @@ module Clot
           @order = value
         when "discard_type" then
           @field_name = ",field_name:''"
+        when "date_separator" then
+          puts "has sep"
+          @date_separator = value
       end
     end
 
@@ -226,9 +229,15 @@ module Clot
 
       data = ""
       order.each do |unit|
+        if @not_first && @date_separator
+          data << @date_separator
+        end
+
+
         val = instance_variable_get("@#{unit}".to_sym)
         data << val.render(context)
-      end   
+        @not_first = true
+      end
       data
     end
   end
