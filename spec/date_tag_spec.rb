@@ -231,7 +231,14 @@ describe "for date tags" do
       @day_string = '<select id="date_day" name="date[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
       @tag.should parse_with_vars_to(@day_string + @month_string + @year_string, 'time' => time)
     end
-
+    it "should allow discarding of type" do
+      time = Time.now
+      @tag = "{% select_date time,discard_type:true %}"
+      @year_string = '<select id="date" name="date">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>"
+      @month_string = '<select id="date" name="date">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="date" name="date">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
+      @tag.should parse_with_vars_to(@year_string + @month_string + @day_string, 'time' => time)
+    end
     it "should set default time to current time" do
       time = Time.now
       @tag = "{% select_date %}"
@@ -259,5 +266,7 @@ describe "for date tags" do
       @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
       @tag.should parse_to(@hour_string + @minute_string)
     end
+    
+
   end
 end

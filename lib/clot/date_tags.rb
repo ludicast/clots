@@ -49,10 +49,27 @@ module Clot
       59
     end
 
+    def id_string(field_name)
+      if field_name && ! field_name.blank?
+        %{id="date_#{field_name}"}
+      else
+        %{id="date"}
+      end
+    end
+
+    def name_string(field_name)
+      if field_name && ! field_name.blank?
+        %{name="date[#{field_name}]"}
+      else
+        %{name="date"}        
+      end
+    end
+
     def render_string
       field_name = @field_name || default_field_name
-      %{<select id="date_#{field_name}" name="date[#{field_name}]">#{@prompt_val}} + get_options(default_start, default_end, @value_string) + "</select>"
+      %{<select #{id_string(field_name)} #{name_string(field_name)}>#{@prompt_val}} + get_options(default_start, default_end, @value_string) + "</select>"
     end
+
     def time_method
       default_field_name
     end
@@ -180,8 +197,9 @@ module Clot
      def personal_attributes(name,value)
       super(name,value) || case name
         when "order" then
-          puts "received order #{value}"
           @order = value
+        when "discard_type" then
+          @field_name = ",field_name:''"
       end
     end
 
@@ -200,11 +218,10 @@ module Clot
 
   class SelectDate < MultiDateTag
     def render_nested(context)
-      @year = SelectYear.new(".select_year",@time.year.to_s,[])
-      @month = SelectMonth.new(".select_month",@time.month.to_s,[])
-      @day = SelectDay.new(".select_day",@time.day.to_s,[])
+      @year = SelectYear.new(".select_year","#{@time.year.to_s} #{@field_name}",[])
+      @month = SelectMonth.new(".select_month","#{@time.month.to_s} #{@field_name}",[])
+      @day = SelectDay.new(".select_day","#{@time.day.to_s} #{@field_name}",[])
 
-      puts "order #{@order}"
       order = @order || ['year', 'month', 'day']
 
       data = ""
