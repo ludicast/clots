@@ -177,6 +177,14 @@ module Clot
       @time = resolve_value(@params.shift,context) || Time.now
     end
 
+     def personal_attributes(name,value)
+      super(name,value) || case name
+        when "order" then
+          puts "received order #{value}"
+          @order = value
+      end
+    end
+
     def render(context)
       instance_variables.map(&:to_sym).each do |var|
         unless [:@_params, :@markup, :@tag_name].include? var
@@ -195,7 +203,16 @@ module Clot
       @year = SelectYear.new(".select_year",@time.year.to_s,[])
       @month = SelectMonth.new(".select_month",@time.month.to_s,[])
       @day = SelectDay.new(".select_day",@time.day.to_s,[])
-      @year.render(context) + @month.render(context) + @day.render(context)
+
+      puts "order #{@order}"
+      order = @order || ['year', 'month', 'day']
+
+      data = ""
+      order.each do |unit|
+        val = instance_variable_get("@#{unit}".to_sym)
+        data << val.render(context)
+      end   
+      data
     end
   end
 
