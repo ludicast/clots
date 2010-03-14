@@ -244,37 +244,41 @@ module Clot
         else unit
       end
     end
+
+    def render_units(units, context, separator = nil)
+      data = ""
+      units.each do |unit|
+         set_unit unit
+         if @not_first && separator
+           data << separator
+         end
+
+         val = instance_variable_get("@#{unit}".to_sym)
+         data << val.render(context)
+         @not_first = true
+      end
+      data
+    end
+
+
   end
 
   class SelectDate < MultiDateTag
     def render_nested(context)
       order = @order || ['year', 'month', 'day']
-
-      data = ""
-      order.each do |unit|
-        set_unit unit
-        if @not_first && @date_separator
-          data << @date_separator
-        end
-
-        val = instance_variable_get("@#{unit}".to_sym)
-        data << val.render(context)
-        @not_first = true
-      end
-      data
+      render_units(order, context, @date_separator)
     end
   end
 
   class SelectTime < MultiDateTag
+
+
     def render_nested(context)
       units = ["hour", "minute"]
       if @include_seconds
         units << "second"
       end
-      units.each do |unit|
-         set_unit unit
-      end
-      @hour.render(context) + @time_separator.to_s + @minute.render(context) + (@second ? @second.render(context) : '')
+      render_units(units, context, @time_separator)
     end
   end
 
