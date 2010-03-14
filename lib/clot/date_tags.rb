@@ -209,6 +209,8 @@ module Clot
           @date_separator = value
         when "time_separator" then
           @time_separator = value
+        when "include_seconds" then
+          @include_seconds = true
         when /(.*)_prompt/ then
           value_string = value === true ? 'true' : "'#{value}'"
           instance_variable_set("@#{$1}_prompt".to_sym,",prompt:#{value_string}")
@@ -237,7 +239,7 @@ module Clot
     
     def time_unit(unit)
       case unit
-      #  when "seconds" then "sec"
+        when "second" then "sec"
         when "minute" then "min"
         else unit
       end
@@ -265,12 +267,14 @@ module Clot
 
   class SelectTime < MultiDateTag
     def render_nested(context)
-    #  @hour = SelectHour.new(".select_hour",@time.hour.to_s,[])
-    #  @minute = SelectMinute.new(".select_minute",@time.min.to_s,[])
-      ["hour", "minute"].each do |unit|
+      units = ["hour", "minute"]
+      if @include_seconds
+        units << "second"
+      end
+      units.each do |unit|
          set_unit unit
       end
-      @hour.render(context) + @time_separator.to_s + @minute.render(context)
+      @hour.render(context) + @time_separator.to_s + @minute.render(context) + (@second ? @second.render(context) : '')
     end
   end
 
