@@ -333,5 +333,51 @@ describe "for date tags" do
       @tag.should parse_with_vars_to(@hour_string + ":" + @minute_string + ":" + @second_string, 'time' => time)
     end
 
+    it "should allow prompts" do
+      time = Time.now
+      @tag = "{% select_time time, include_seconds:true, second_prompt:'input seconds',minute_prompt:'input minutes',hour_prompt:'input hours' %}"
+      @hour_string = '<select id="date_hour" name="date[hour]"><option value="">input hours</option>' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]"><option value="">input minutes</option>' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @second_string = '<select id="date_second" name="date[second]"><option value="">input seconds</option>' + get_options(0,(time.sec - 1)) + %{<option selected="selected" value="#{time.sec}">#{time.sec}</option>} + get_options((time.sec + 1),59) + "</select>"
+      @tag.should parse_with_vars_to(@hour_string + @minute_string + @second_string, 'time' => time)
+    end
+
+    it "should allow default prompt" do
+      time = Time.now
+      @tag = "{% select_time time,hour_prompt:true %}"
+      @hour_string = '<select id="date_hour" name="date[hour]"><option value="">Hours</option>' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @tag.should parse_with_vars_to(@hour_string + @minute_string, 'time' => time)
+    end
+
+    it "should allow default prompt" do
+      time = Time.now
+      @tag = "{% select_time time,prompt:true %}"
+      @hour_string = '<select id="date_hour" name="date[hour]"><option value="">Hours</option>' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]"><option value="">Minutes</option>' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @tag.should parse_with_vars_to(@hour_string + @minute_string, 'time' => time)
+    end
+
   end
+
+
+  context "for select_datetime" do
+    it "should work with default time" do
+      time = Time.now
+      @hour_string = '<select id="date_hour" name="date[hour]">' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @year_string = '<select id="date_year" name="date[year]">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>"
+      @month_string = '<select id="date_month" name="date[month]">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="date_day" name="date[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
+
+      @tag = "{% select_datetime %}"
+      @tag.should parse_to(@year_string + @month_string +@day_string + @hour_string + @minute_string)
+
+    end
+
+
+
+
+  end
+
 end

@@ -271,14 +271,26 @@ module Clot
   end
 
   class SelectTime < MultiDateTag
-
-
     def render_nested(context)
       units = ["hour", "minute"]
       if @include_seconds
         units << "second"
       end
       render_units(units, context, @time_separator)
+    end
+  end
+
+  class SelectDateTime < MultiDateTag
+    def render_nested(context)
+      time_units = ["hour", "minute"]
+      if @include_seconds
+        time_units << "second"
+      end
+      time_result = render_units(time_units, context, @time_separator)
+
+      order = @order || ['year', 'month', 'day']
+      date_result = render_units(order, context, @date_separator)
+      date_result + time_result
     end
   end
 
