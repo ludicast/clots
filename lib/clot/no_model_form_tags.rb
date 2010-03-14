@@ -16,7 +16,8 @@ module Clot
       set_primary_attributes(context)
       
       @params.each do |pair|
-        pair = pair.split /:/
+        pair.match /([^:]*):(.*)/
+        pair =  [$1, $2]
         value = resolve_value(pair[1],context)
         if personal_attributes(pair[0], value)
           next

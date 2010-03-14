@@ -307,7 +307,13 @@ describe "for date tags" do
       @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
       @tag.should parse_to(@hour_string + @minute_string)
     end
-    
+    it "should allow separator" do
+      time = Time.now
+      @tag = "{% select_time time, time_separator:':' %}"
+      @hour_string = '<select id="date_hour" name="date[hour]">' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="date_minute" name="date[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"
+      @tag.should parse_with_vars_to(@hour_string + ":" + @minute_string, 'time' => time)
+    end
 
   end
 end

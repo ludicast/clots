@@ -207,6 +207,8 @@ module Clot
           @discard_type = ",field_name:''"
         when "date_separator" then
           @date_separator = value
+        when "time_separator" then
+          @time_separator = value
         when /(.*)_prompt/ then
           value_string = value === true ? 'true' : "'#{value}'"
           instance_variable_set("@#{$1}_prompt".to_sym,",prompt:#{value_string}")
@@ -244,14 +246,11 @@ module Clot
 
   class SelectDate < MultiDateTag
     def render_nested(context)
-      ["year", "month", "day"].each do |unit|
-         set_unit unit
-      end
-
       order = @order || ['year', 'month', 'day']
 
       data = ""
       order.each do |unit|
+        set_unit unit
         if @not_first && @date_separator
           data << @date_separator
         end
@@ -271,7 +270,7 @@ module Clot
       ["hour", "minute"].each do |unit|
          set_unit unit
       end
-      @hour.render(context) + @minute.render(context)
+      @hour.render(context) + @time_separator.to_s + @minute.render(context)
     end
   end
 
