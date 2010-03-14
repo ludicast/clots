@@ -121,7 +121,7 @@ module Clot
     end
 
     def personal_attributes(name,value)
-      super(name, value) || case name
+      case name
         when "use_month_numbers" then
           @use_month_numbers = value
         when "add_month_numbers" then
@@ -130,7 +130,7 @@ module Clot
           @use_short_month = value
         when "use_month_names" then
           @use_month_names = value
-      end
+      end || super(name, value)
     end
 
     def value_string(val)
@@ -171,12 +171,12 @@ module Clot
     end
 
     def personal_attributes(name,value)
-      super(name,value) || case name
+      case name
         when "start_year" then
           @start_year = value
         when "end_year" then
           @end_year = value
-      end
+      end || super(name, value)
     end
 
 
@@ -198,7 +198,7 @@ module Clot
     end
 
     def personal_attributes(name,value)
-      super(name,value) || case name
+      case name
         when "order" then
           @order = value
         when "prefix" then
@@ -207,13 +207,12 @@ module Clot
           @discard_type = ",field_name:''"
         when "date_separator" then
           @date_separator = value
-        when "day_prompt" then
-          @day_prompt = ",prompt:'#{value}'"
-        when "month_prompt" then
-          @month_prompt = ",prompt:'#{value}'"
-        when "year_prompt" then
-          @year_prompt = ",prompt:'#{value}'"           
-      end
+        when /(.*)_prompt/ then
+          value_string = value === true ? 'true' : "'#{value}'"
+          instance_variable_set("@#{$1}_prompt".to_sym,",prompt:#{value_string}")
+        when "prompt" then
+          @prompt = ",prompt:true"        
+      end || super(name,value)
     end
 
     def render(context)
@@ -227,13 +226,27 @@ module Clot
       render_nested(context)
     end  
 
+    def set_unit(unit)
+        prompt = instance_variable_get("@#{unit}_prompt".to_sym)
+        line = "#{@time.send(time_unit(unit).to_sym).to_s} #{@discard_type}#{@prefix}#{prompt || @prompt}"
+        instance_variable_set "@#{unit}",
+           "Clot::Select#{unit.capitalize}".constantize.new(".select_#{unit}", line,[])
+    end
+    
+    def time_unit(unit)
+      case unit
+      #  when "seconds" then "sec"
+        when "minute" then "min"
+        else unit
+      end
+    end
   end
 
   class SelectDate < MultiDateTag
     def render_nested(context)
-      @year = SelectYear.new(".select_year","#{@time.year.to_s} #{@discard_type}#{@prefix}#{@year_prompt}",[])
-      @month = SelectMonth.new(".select_month","#{@time.month.to_s} #{@discard_type}#{@prefix}#{@month_prompt}",[])
-      @day = SelectDay.new(".select_day","#{@time.day.to_s} #{@discard_type}#{@prefix}#{@day_prompt}",[])
+      ["year", "month", "day"].each do |unit|
+         set_unit unit
+      end
 
       order = @order || ['year', 'month', 'day']
 
@@ -253,8 +266,11 @@ module Clot
 
   class SelectTime < MultiDateTag
     def render_nested(context)
-      @hour = SelectHour.new(".select_hour",@time.hour.to_s,[])
-      @minute = SelectMinute.new(".select_minute",@time.min.to_s,[])
+    #  @hour = SelectHour.new(".select_hour",@time.hour.to_s,[])
+    #  @minute = SelectMinute.new(".select_minute",@time.min.to_s,[])
+      ["hour", "minute"].each do |unit|
+         set_unit unit
+      end
       @hour.render(context) + @minute.render(context)
     end
   end
