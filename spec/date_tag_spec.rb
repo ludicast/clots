@@ -256,6 +256,25 @@ describe "for date tags" do
       @day_string = '<select id="date_day" name="date[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
       @tag.should parse_with_vars_to(@year_string + "/" + @month_string + "/" + @day_string, 'time' => time)
     end
+    it "should take prefix option" do
+      time = Time.now
+      @tag = "{% select_date time,prefix:'payday' %}"
+      @year_string = '<select id="payday_year" name="payday[year]">' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>"
+      @month_string = '<select id="payday_month" name="payday[month]">' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="payday_day" name="payday[day]">' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
+      @tag.should parse_with_vars_to(@year_string + @month_string + @day_string, 'time' => time)
+    end
+
+    it "shuld take prompt" do
+      time = Time.now
+      @tag = %{{% select_date time, day_prompt:"Choose Day", month_prompt:"Choose Month", year_prompt:"Choose Year" %}}
+      @year_string = '<select id="date_year" name="date[year]"><option value="">Choose Year</option>' + get_options(time.year-5,time.year - 1) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} + get_options(time.year + 1,time.year + 5) + "</select>"
+      @month_string = '<select id="date_month" name="date[month]"><option value="">Choose Month</option>' + get_options(1,time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{time.month}">#{get_month time.month}</option>} + get_options(time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="date_day" name="date[day]"><option value="">Choose Day</option>' + get_options(1,(time.day - 1)) + %{<option selected="selected" value="#{time.day}">#{time.day}</option>} + get_options((time.day + 1),31) + "</select>"
+      @tag.should parse_to(@year_string + @month_string + @day_string)
+
+    end
+
   end
 
   context "for select_time tag" do

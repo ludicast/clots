@@ -1,6 +1,7 @@
 module Clot
   
   class NumberedTag < ClotTag
+
     def value_string(val)
       val
     end
@@ -35,6 +36,8 @@ module Clot
       case name
         when "field_name" then
           @field_name = value
+        when "prefix" then
+          @prefix = value
         when "prompt" then
           prompt_text = (value === true) ? default_field_name.pluralize.capitalize : value
           @prompt_val = "<option value=\"\">#{prompt_text}</option>"
@@ -51,17 +54,17 @@ module Clot
 
     def id_string(field_name)
       if field_name && ! field_name.blank?
-        %{id="date_#{field_name}"}
+        %{id="#{@prefix || 'date'}_#{field_name}"}
       else
-        %{id="date"}
+        %{id="#{@prefix || 'date'}"}
       end
     end
 
     def name_string(field_name)
       if field_name && ! field_name.blank?
-        %{name="date[#{field_name}]"}
+        %{name="#{@prefix || 'date'}[#{field_name}]"}
       else
-        %{name="date"}        
+        %{name="#{@prefix || 'date'}"}        
       end
     end
 
@@ -194,15 +197,22 @@ module Clot
       @time = resolve_value(@params.shift,context) || Time.now
     end
 
-     def personal_attributes(name,value)
+    def personal_attributes(name,value)
       super(name,value) || case name
         when "order" then
           @order = value
+        when "prefix" then
+          @prefix = ",prefix:'#{value}'"
         when "discard_type" then
-          @field_name = ",field_name:''"
+          @discard_type = ",field_name:''"
         when "date_separator" then
-          puts "has sep"
           @date_separator = value
+        when "day_prompt" then
+          @day_prompt = ",prompt:'#{value}'"
+        when "month_prompt" then
+          @month_prompt = ",prompt:'#{value}'"
+        when "year_prompt" then
+          @year_prompt = ",prompt:'#{value}'"           
       end
     end
 
@@ -221,9 +231,9 @@ module Clot
 
   class SelectDate < MultiDateTag
     def render_nested(context)
-      @year = SelectYear.new(".select_year","#{@time.year.to_s} #{@field_name}",[])
-      @month = SelectMonth.new(".select_month","#{@time.month.to_s} #{@field_name}",[])
-      @day = SelectDay.new(".select_day","#{@time.day.to_s} #{@field_name}",[])
+      @year = SelectYear.new(".select_year","#{@time.year.to_s} #{@discard_type}#{@prefix}#{@year_prompt}",[])
+      @month = SelectMonth.new(".select_month","#{@time.month.to_s} #{@discard_type}#{@prefix}#{@month_prompt}",[])
+      @day = SelectDay.new(".select_day","#{@time.day.to_s} #{@discard_type}#{@prefix}#{@day_prompt}",[])
 
       order = @order || ['year', 'month', 'day']
 
@@ -232,7 +242,6 @@ module Clot
         if @not_first && @date_separator
           data << @date_separator
         end
-
 
         val = instance_variable_get("@#{unit}".to_sym)
         data << val.render(context)
@@ -243,7 +252,6 @@ module Clot
   end
 
   class SelectTime < MultiDateTag
-
     def render_nested(context)
       @hour = SelectHour.new(".select_hour",@time.hour.to_s,[])
       @minute = SelectMinute.new(".select_minute",@time.min.to_s,[])
