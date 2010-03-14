@@ -6,6 +6,7 @@ require 'clot/if_content_for'
 require 'clot/no_model_form_tags'
 require 'clot/model_form_tags'
 require 'clot/date_tags'
+require 'clot/model_date_tags'
 require 'extras/liquid_view'
 
 
@@ -48,7 +49,11 @@ Liquid::Template.register_tag('select_year', Clot::SelectYear)
 
 Liquid::Template.register_tag('select_date', Clot::SelectDate)
 Liquid::Template.register_tag('select_time', Clot::SelectTime)
-Liquid::Template.register_tag('select_datetime', Clot::SelectDateTime)
+Liquid::Template.register_tag('select_datetime', Clot::SelectDatetime)
+
+Liquid::Template.register_tag('date_select', Clot::DateSelect)
+Liquid::Template.register_tag('time_select', Clot::TimeSelect)
+Liquid::Template.register_tag('datetime_select', Clot::DatetimeSelect)
 
 ActiveRecord::Base.send(:include, Clot::ActiveRecord::Droppable)
 

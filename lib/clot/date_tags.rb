@@ -205,6 +205,8 @@ module Clot
           @prefix = ",prefix:'#{value}'"
         when "discard_type" then
           @discard_type = ",field_name:''"
+        when "datetime_separator" then
+          @datetime_separator = value
         when "date_separator" then
           @date_separator = value
         when "time_separator" then
@@ -247,15 +249,16 @@ module Clot
 
     def render_units(units, context, separator = nil)
       data = ""
+      not_first = false
       units.each do |unit|
          set_unit unit
-         if @not_first && separator
+         if not_first && separator
            data << separator
          end
 
          val = instance_variable_get("@#{unit}".to_sym)
          data << val.render(context)
-         @not_first = true
+         not_first = true
       end
       data
     end
@@ -280,7 +283,7 @@ module Clot
     end
   end
 
-  class SelectDateTime < MultiDateTag
+  class SelectDatetime < MultiDateTag
     def render_nested(context)
       time_units = ["hour", "minute"]
       if @include_seconds
@@ -290,8 +293,10 @@ module Clot
 
       order = @order || ['year', 'month', 'day']
       date_result = render_units(order, context, @date_separator)
-      date_result + time_result
+      
+      date_result + @datetime_separator.to_s + time_result
     end
+
   end
 
 end
