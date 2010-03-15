@@ -11,11 +11,19 @@ def get_options(from_val,to_val, hash = {})
     if hash[:label_func]
       print_val = send(hash[:label_func], val)
     else
-      print_val = val
+      print_val = fill_zeros(val)
     end
     options << %{<option value="#{val}">#{print_val}</option>}
   end
   options
+end
+
+def fill_zeros(val)
+  if val < 10
+    "0#{val}"
+  else
+    val
+  end
 end
 
 
@@ -57,20 +65,53 @@ describe "tags for forms that use models" do
 
     end
 
-    it "should allow seconds to be included" do
-      @tag = "{% time_select dummy,'registered_at',include_seconds:true %}"
+    it "should allow prompt to be included" do
+      @tag = "{% time_select dummy,'registered_at',hour_prompt:'choose hour',minute_prompt:'choose minute' %}"
       @year_string = %{<input id="dummy_registered_at_1i" name="dummy[registered_at(1i)]" type="hidden" value="#{@time.year}" />}
       @month_string = %{<input id="dummy_registered_at_2i" name="dummy[registered_at(2i)]" type="hidden" value="#{@time.month}" />}
       @day_string = %{<input id="dummy_registered_at_3i" name="dummy[registered_at(3i)]" type="hidden" value="#{@time.day}" />}
 
-      @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{@time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
-      @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]">' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{@time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
-      @second_string = '<select id="dummy_registered_at_6i" name="dummy[registered_at(6i)]">' + get_options(0,(@time.sec - 1)) + %{<option selected="selected" value="#{@time.sec}">#{@time.sec}</option>} + get_options((@time.sec + 1),59) + "</select>"
-      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string + @second_string
+      @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]"><option value="">choose hour</option>' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{@time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]"><option value="">choose minute</option>' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{@time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
+      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
+    end
 
+    it "should allow default prompts to be included" do
+      @tag = "{% time_select dummy,'registered_at',hour_prompt:true,minute_prompt:true %}"
+      @year_string = %{<input id="dummy_registered_at_1i" name="dummy[registered_at(1i)]" type="hidden" value="#{@time.year}" />}
+      @month_string = %{<input id="dummy_registered_at_2i" name="dummy[registered_at(2i)]" type="hidden" value="#{@time.month}" />}
+      @day_string = %{<input id="dummy_registered_at_3i" name="dummy[registered_at(3i)]" type="hidden" value="#{@time.day}" />}
+
+      @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]"><option value="">Hours</option>' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{@time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]"><option value="">Minutes</option>' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{@time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
+      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
+    end
+
+    it "should allow default prompt to be included" do
+      @tag = "{% time_select dummy,'registered_at',prompt:true %}"
+      @year_string = %{<input id="dummy_registered_at_1i" name="dummy[registered_at(1i)]" type="hidden" value="#{@time.year}" />}
+      @month_string = %{<input id="dummy_registered_at_2i" name="dummy[registered_at(2i)]" type="hidden" value="#{@time.month}" />}
+      @day_string = %{<input id="dummy_registered_at_3i" name="dummy[registered_at(3i)]" type="hidden" value="#{@time.day}" />}
+
+      @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]"><option value="">Hours</option>' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{@time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]"><option value="">Minutes</option>' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{@time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
+      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
+    end
+
+
+    it "should allow minute steps to be included" do
+      @tag = "{% time_select dummy,'registered_at',minute_step:15 %}"
+      @time.stub!(:min).and_return(15)
+
+      @year_string = %{<input id="dummy_registered_at_1i" name="dummy[registered_at(1i)]" type="hidden" value="#{@time.year}" />}
+      @month_string = %{<input id="dummy_registered_at_2i" name="dummy[registered_at(2i)]" type="hidden" value="#{@time.month}" />}
+      @day_string = %{<input id="dummy_registered_at_3i" name="dummy[registered_at(3i)]" type="hidden" value="#{@time.day}" />}
+
+      @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros(@time.hour)}</option>} + get_options((@time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]"><option value="0">00</option><option selected="selected" value="15">15</option><option value="30">30</option><option value="45">45</option></select>'
+            
+      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
     end
 
   end
-
-
 end

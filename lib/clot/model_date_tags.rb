@@ -8,7 +8,7 @@ module Clot
         id_string = %{id_string_val:"#{@first_attr}_#{@attribute_name}_#{order}i",}
         name_string = %{name_string_val:"#{@first_attr}[#{@attribute_name}(#{order}i)]",}
 
-        line = "#{@time.send(time_unit(unit).to_sym).to_s},#{id_string} #{name_string}#{prompt || @prompt}"
+        line = "#{@time.send(time_unit(unit).to_sym).to_s},#{id_string} #{name_string}#{@minute_step}#{prompt || @prompt}"
 
         instance_variable_set "@#{unit}",
            "Clot::Select#{unit.capitalize}".constantize.new(".select_#{unit}", line,[])

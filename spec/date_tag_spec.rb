@@ -5,6 +5,16 @@ def get_month(val)
   months[val - 1]
 end
 
+
+def fill_zeros(val)
+  if val < 10
+    "0#{val}"
+  else
+    val
+  end
+end
+
+
 def get_short_month(val)
   get_month(val)[0..2]
 end
@@ -32,7 +42,7 @@ def get_options(from_val,to_val, hash = {})
     if hash[:label_func]
       print_val = send(hash[:label_func], val)
     else
-      print_val = val
+      print_val = fill_zeros(val)
     end
     options << %{<option value="#{val}">#{print_val}</option>}
   end
@@ -193,7 +203,7 @@ describe "for date tags" do
     it "should let you use numbers for months" do
       time = Time.now
       @tag = "{% select_month time, use_month_numbers:true %}"
-      @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1) + %{<option selected="selected" value="#{time.month}">#{time.month}</option>} + get_options(time.month + 1,12) + "</select>", 'time' => time)
+      @tag.should parse_with_vars_to('<select id="date_month" name="date[month]">' + get_options(1,time.month - 1) + %{<option selected="selected" value="#{time.month}">#{fill_zeros(time.month)}</option>} + get_options(time.month + 1,12) + "</select>", 'time' => time)
     end
 
     it "should let you add numbers for months" do

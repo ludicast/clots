@@ -3,7 +3,15 @@ module Clot
   class NumberedTag < ClotTag
 
     def value_string(val)
-      val
+      if val < 10
+       "0#{val}"
+      else
+        val
+      end
+    end
+
+    def can_show(val)
+      true
     end
 
     def get_options(from_val,to_val, selected_value = nil)
@@ -16,10 +24,12 @@ module Clot
       end
 
       range.each do |val|
-        if selected_value == val
-          options << %{<option selected="selected" value="#{val}">#{value_string(val)}</option>}
-        else
-          options << %{<option value="#{val}">#{value_string(val)}</option>}
+        if can_show(val)
+          if selected_value == val
+            options << %{<option selected="selected" value="#{val}">#{value_string(val)}</option>}
+          else
+            options << %{<option value="#{val}">#{value_string(val)}</option>}
+          end
         end
       end
       options
@@ -89,6 +99,18 @@ module Clot
     def default_field_name
       "minute"
     end
+
+    def can_show(val)
+      @minute_step.nil? || (val % @minute_step) == 0
+    end
+
+    def personal_attributes(name,value)
+      case name
+        when "minute_step" then
+          @minute_step = value
+      end || super(name, value)
+    end
+
   end
 
   class SelectHour < NumberedTag
@@ -203,6 +225,8 @@ module Clot
 
     def personal_attributes(name,value)
       case name
+        when "minute_step" then
+          @minute_step = "minute_step:#{value},"
         when "order" then
           @order = value
         when "prefix" then
