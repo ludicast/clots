@@ -73,7 +73,7 @@ module Clot
       time_units = ["hour", "minute"]
       time_result = render_units(time_units, context, @time_separator)
       date_result = render_units(date_units, context, @date_separator)
-      date_result + time_result
+      date_result + @datetime_separator.to_s + time_result
     end
   end
 
