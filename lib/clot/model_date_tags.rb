@@ -39,7 +39,7 @@ module Clot
 
 
     def render_nested(context)
-      @time = @value_string
+      @time = @value_string || Time.now
       time_units = ["hour", "minute"]
       if @include_seconds
         time_units << "second"
@@ -57,7 +57,7 @@ module Clot
 
   class DateSelect < ModelMultiDateTag
     def render_nested(context)
-      @time = @value_string
+      @time = @value_string || Time.now
       date_units = @order || ['year', 'month', 'day']
       @discard_day && date_units.delete("day")
 
@@ -68,7 +68,7 @@ module Clot
 
   class DatetimeSelect < ModelMultiDateTag
     def render_nested(context)
-      @time = @value_string
+      @time = @value_string || Time.now
       date_units =  ['year', 'month', 'day']
       time_units = ["hour", "minute"]
       time_result = render_units(time_units, context, @time_separator)
