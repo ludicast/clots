@@ -226,6 +226,10 @@ module Clot
 
     def personal_attributes(name,value)
       case name
+        when "discard_day" then
+          @discard_day = true  
+        when "include_blank" then
+          @include_blank = true
         when "minute_step" then
           @minute_step = "minute_step:#{value},"
         when "order" then
@@ -244,6 +248,8 @@ module Clot
           @time_separator = value
         when "include_seconds" then
           @include_seconds = true
+        when "use_month_numbers" then
+          @use_month_numbers = "use_month_numbers:true,"        
         when /(.*)_prompt/ then
           value_string = value === true ? 'true' : "'#{value}'"
           instance_variable_set("@#{$1}_prompt".to_sym,",prompt:#{value_string}")
