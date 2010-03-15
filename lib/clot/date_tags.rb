@@ -218,7 +218,8 @@ module Clot
     end
   end
 
-  class MultiDateTag < ClotTag
+  class MultiDateTag < ClotTag    
+
     def set_primary_attributes(context)
       @time = resolve_value(@params.shift,context) || Time.now
     end

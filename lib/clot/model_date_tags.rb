@@ -2,6 +2,15 @@ module Clot
   class ModelMultiDateTag < MultiDateTag
     include ModelTag
 
+    def fill_zeros(val)
+      if val < 10
+        "0#{val}"
+      else
+        val
+      end
+    end
+
+    
     def set_unit(unit)
         order = get_unit_order(unit)
         prompt = instance_variable_get("@#{unit}_prompt".to_sym)
@@ -37,9 +46,9 @@ module Clot
         time_units << "second"
       end
       time_result = render_units(time_units, context, @time_separator)
-      year = %{<input id="#{@first_attr}_#{@attribute_name}_1i" name="#{@first_attr}[#{@attribute_name}(1i)]" type="hidden" value="2010" />}
-      month = %{<input id="#{@first_attr}_#{@attribute_name}_2i" name="#{@first_attr}[#{@attribute_name}(2i)]" type="hidden" value="3" />}
-      day = %{<input id="#{@first_attr}_#{@attribute_name}_3i" name="#{@first_attr}[#{@attribute_name}(3i)]" type="hidden" value="15" />}
+      year = %{<input id="#{@first_attr}_#{@attribute_name}_1i" name="#{@first_attr}[#{@attribute_name}(1i)]" type="hidden" value="#{@time.year}" />}
+      month = %{<input id="#{@first_attr}_#{@attribute_name}_2i" name="#{@first_attr}[#{@attribute_name}(2i)]" type="hidden" value="#{@time.month}" />}
+      day = %{<input id="#{@first_attr}_#{@attribute_name}_3i" name="#{@first_attr}[#{@attribute_name}(3i)]" type="hidden" value="#{@time.day}" />}
       year + month + day + time_result
     end
 
@@ -47,11 +56,19 @@ module Clot
 
   end
 
-  class DateSelect < MultiDateTag
+  class DateSelect < ModelMultiDateTag
+    def render_nested(context)
+      @time = @value_string
+      date_units = ["year", "month", "day"]
 
+      date_result = render_units(date_units, context, @date_separator)
+      hour = %{<input id="#{@first_attr}_#{@attribute_name}_4i" name="#{@first_attr}[#{@attribute_name}(4i)]" type="hidden" value="#{@time.hour}" />}
+      minute = %{<input id="#{@first_attr}_#{@attribute_name}_5i" name="#{@first_attr}[#{@attribute_name}(5i)]" type="hidden" value="#{@time.min}" />}
+      date_result + hour + minute
+    end
   end
 
-  class DatetimeSelect < MultiDateTag
+  class DatetimeSelect < ModelMultiDateTag
 
   end
 
