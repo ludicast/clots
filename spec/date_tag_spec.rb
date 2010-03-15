@@ -434,7 +434,7 @@ describe "for date tags" do
       @tag = "{% select_datetime time,discard_type:true %}"
       @tag.should parse_with_vars_to(@year_string + @month_string +@day_string + @hour_string + @minute_string, 'time' => time)
     end
-    it "should work with inputted time" do
+    it "should work with new prefix" do
       time = Time.now
       @hour_string = '<select id="payday_hour" name="payday[hour]">' + get_options(0,(time.hour - 1)) + %{<option selected="selected" value="#{time.hour}">#{time.hour}</option>} + get_options((time.hour + 1),59) + "</select>"
       @minute_string = '<select id="payday_minute" name="payday[minute]">' + get_options(0,(time.min - 1)) + %{<option selected="selected" value="#{time.min}">#{time.min}</option>} + get_options((time.min + 1),59) + "</select>"

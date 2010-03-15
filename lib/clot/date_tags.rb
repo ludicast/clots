@@ -34,6 +34,10 @@ module Clot
 
     def personal_attributes(name,value)
       case name
+        when "id_string_val" then
+          @id_string = %{id="#{value}"}
+        when "name_string_val" then
+          @name_string = %{name="#{value}"}
         when "field_name" then
           @field_name = value
         when "prefix" then
@@ -53,7 +57,7 @@ module Clot
     end
 
     def id_string(field_name)
-      if field_name && ! field_name.blank?
+      @id_string || if field_name && ! field_name.blank?
         %{id="#{@prefix || 'date'}_#{field_name}"}
       else
         %{id="#{@prefix || 'date'}"}
@@ -61,7 +65,7 @@ module Clot
     end
 
     def name_string(field_name)
-      if field_name && ! field_name.blank?
+      @name_string || if field_name && ! field_name.blank?
         %{name="#{@prefix || 'date'}[#{field_name}]"}
       else
         %{name="#{@prefix || 'date'}"}        

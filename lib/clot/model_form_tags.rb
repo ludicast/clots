@@ -12,6 +12,7 @@ module Clot
           @attribute_name =  resolve_value(@params.shift,context)
         end
         @item = context[@first_attr]
+
       end
       @id_string = "#{@first_attr}_#{@attribute_name}"
       @name_string = "#{@first_attr}[#{@attribute_name}]"
@@ -21,12 +22,6 @@ module Clot
       else
         @value_string = @item[@attribute_name]
       end
-
-    #  rescue
-      #  puts "rescued"
-     #   @value_string = @item.send(@attribute_name)
-
-      
       @errors = context['form_errors'] || []
 
     end
