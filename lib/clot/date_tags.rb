@@ -230,6 +230,8 @@ module Clot
           @minute_step = "minute_step:#{value},"
         when "order" then
           @order = value
+        when "start_year" then
+          @start_year = "start_year:#{value},"
         when "prefix" then
           @prefix = ",prefix:'#{value}'"
         when "discard_type" then

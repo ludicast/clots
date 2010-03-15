@@ -67,6 +67,20 @@ describe "tags for forms that use models" do
 
       tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
     end
+    it "should generate selection with start year" do
+      @tag = "{% date_select dummy,'registered_at',start_year:1995 %}"
+
+      @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(1995,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
+      @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+
+      @hour_string = %{<input id="dummy_registered_at_4i" name="dummy[registered_at(4i)]" type="hidden" value="#{@time.hour}" />}
+      @minute_string = %{<input id="dummy_registered_at_5i" name="dummy[registered_at(5i)]" type="hidden" value="#{@time.min}" />}
+
+      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
+    end
+
+
   end
 
 
