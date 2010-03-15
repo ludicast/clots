@@ -58,7 +58,7 @@ module Clot
   class DateSelect < ModelMultiDateTag
     def render_nested(context)
       @time = @value_string
-      date_units = ["year", "month", "day"]
+      date_units = @order || ['year', 'month', 'day']
       @discard_day && date_units.delete("day")
 
       date_result = render_units(date_units, context, @date_separator)
