@@ -57,6 +57,18 @@ describe "tags for forms that use models" do
 
     end
 
+    it "should allow seconds to be included" do
+      @tag = "{% time_select dummy,'registered_at',include_seconds:true %}"
+      @year_string = %{<input id="dummy_registered_at_1i" name="dummy[registered_at(1i)]" type="hidden" value="#{@time.year}" />}
+      @month_string = %{<input id="dummy_registered_at_2i" name="dummy[registered_at(2i)]" type="hidden" value="#{@time.month}" />}
+      @day_string = %{<input id="dummy_registered_at_3i" name="dummy[registered_at(3i)]" type="hidden" value="#{@time.day}" />}
+
+      @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{@time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
+      @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]">' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{@time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
+      @second_string = '<select id="dummy_registered_at_6i" name="dummy[registered_at(6i)]">' + get_options(0,(@time.sec - 1)) + %{<option selected="selected" value="#{@time.sec}">#{@time.sec}</option>} + get_options((@time.sec + 1),59) + "</select>"
+      tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string + @second_string
+
+    end
 
   end
 
