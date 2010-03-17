@@ -97,7 +97,7 @@ module Clot
       item_string = item
       value_string = ""
 
-      if item.is_a?(String) || item.is_a?(Fixnum)
+      if item.is_a?(String) || item.is_a?(Fixnum) || item.is_a?(Float)
         if (@item[@attribute_name.to_sym].to_s == item.to_s) || (@item.respond_to?(@attribute_name.to_sym) && @item.send(@attribute_name.to_sym).to_s == item.to_s)
           selection_string = ' selected="selected"'
         end

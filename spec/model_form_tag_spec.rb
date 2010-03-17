@@ -25,12 +25,12 @@ describe "tags for forms that use models" do
       @user_drop1 = mock_drop user_default_values
       @user_drop2 = mock_drop user_default_values
       @user_list = [@user_drop1, @user_drop2]
-      @roles = ['admin','user']
+      @roles = ['admin','user', 2, 3.4]
     end
     context "outside of form" do
       it "should be generated for a generic collection" do
         @tag = "{% collection_select dummy,'role',roles %}"
-        tag_should_parse_to('<select id="dummy_role" name="dummy[role]"><option>admin</option><option>user</option></select>', 'roles' => @roles)
+        tag_should_parse_to('<select id="dummy_role" name="dummy[role]"><option>admin</option><option>user</option><option>2</option><option>3.4</option></select>', 'roles' => @roles)
 
       end
 
@@ -39,7 +39,7 @@ describe "tags for forms that use models" do
           @liquid['role'] = "admin"
         end
         @tag = "{% collection_select dummy,'role',roles %}"
-        tag_should_parse_to('<select id="dummy_role" name="dummy[role]"><option selected="selected">admin</option><option>user</option></select>', 'roles' => @roles)
+        tag_should_parse_to('<select id="dummy_role" name="dummy[role]"><option selected="selected">admin</option><option>user</option><option>2</option><option>3.4</option></select>', 'roles' => @roles)
 
       end
       context "with defaults for id/name" do
