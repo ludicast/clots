@@ -65,6 +65,22 @@ module Clot
             @label ||= "Index"
             obj = context[pair_data[1]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{pair_data[2]}"
+          when "nested_new" then
+            @label ||= "Create"
+            obj = context[pair_data[1]]
+            @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{pair_data[2]}/new"
+          when "nested_show" then
+            @label ||= "Show"
+            obj = context[pair_data[1]]
+            obj2 = context[pair_data[2]]
+            @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{obj2.dropped_class.to_s.tableize}/#{obj2.id}"
+          when "nested_delete" then
+            @label ||= "Delete"
+            obj = context[pair_data[1]]
+            obj2 = context[pair_data[2]]
+            @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{obj2.dropped_class.to_s.tableize}/#{obj2.id}"
+            @context = context
+            @onclick = " onclick=\"#{gen_delete_onclick}\""
           when "edit" then
             @label ||= "Edit"
             obj = context[pair_data[1]]

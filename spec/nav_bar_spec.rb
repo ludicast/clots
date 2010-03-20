@@ -33,6 +33,7 @@ def set_filter
     end
   }
 end
+
 AlternativeFactory = {}
 
 describe "when using links" do
@@ -63,14 +64,18 @@ describe "when using links" do
       AlternativeFactory[:list_item_close_tag] = "</li>"
       AlternativeFactory[:list_item_separator] = "<br/>---<br/>"
       AlternativeFactory[:link_filter] = lambda{|link, context|
-        if link.match "luv" then false else true end
+        if link.match "luv" then
+          false
+        else
+          true
+        end
       }
       @links = "{% links factory_name:AlternativeFactory %}{% link luv %}{% link foo %}{% link bar %}{% link_separator %}{% endlinks %}"
     end
 
     it "should default to blank" do
       @links.should parse_to(
-        '<ul><li><a href="/foo">foo</a></li><br/>---<br/><li><a href="/bar">bar</a></li><br/>---<br/></ul>'
+              '<ul><li><a href="/foo">foo</a></li><br/>---<br/><li><a href="/bar">bar</a></li><br/>---<br/></ul>'
       )
     end
 
@@ -89,7 +94,7 @@ describe "when using links" do
         set_separator
       end
       it "should set separator" do
-        @separator.should parse_to(",")        
+        @separator.should parse_to(",")
       end
     end
   end
@@ -218,26 +223,101 @@ describe "when using links" do
       end
     end
     context "for nested resources" do
+
       before do
         @user_drop = get_drop user_default_values
       end
-      context "for index without label" do
-        before do
-          @links = "{% links %}{% link nested_index:user:tags %}{% endlinks %}"
+      context "when nested resource is class" do
+        context "for new" do
+          context "without label" do
+            before do
+              @links = "{% links %}{% link nested_new:user:tags %}{% endlinks %}"
+            end
+            it "should generate link" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags/new\">Create</a>",
+                                               'user' => @user_drop)
+            end
+          end
+          context "with assigned label" do
+            before do
+              @links = "{% links %}{% link nested_new:user:tags,label:foo %}{% endlinks %}"
+            end
+            it "should generate link with assigned label" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags/new\">foo</a>",
+                                               'user' => @user_drop)
+            end
+          end
         end
-        it "should generate link" do
-          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">Index</a>",
-                                                'user' => @user_drop)
+
+        context "for index" do
+          context "without label" do
+            before do
+              @links = "{% links %}{% link nested_index:user:tags %}{% endlinks %}"
+            end
+            it "should generate link" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">Index</a>",
+                                               'user' => @user_drop)
+            end
+          end
+          context "with assigned label" do
+            before do
+              @links = "{% links %}{% link nested_index:user:tags,label:foo %}{% endlinks %}"
+            end
+            it "should generate link with assigned label" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">foo</a>",
+                                               'user' => @user_drop)
+            end
+          end
         end
       end
-      context "for index with assigned label" do
+      context "when nested resource is object" do
         before do
-          @links = "{% links %}{% link nested_index:user:tags,label:foo %}{% endlinks %}"
+          @tag_drop = get_drop user_default_values.merge(:id => rand(100))
         end
-        it "should generate link with assigned label" do
-          @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/tags\">foo</a>",
-                                                'user' => @user_drop)
-        end        
+
+        context "for show" do
+
+          context "without label" do
+            before do
+              @links = "{% links %}{% link nested_show:user:tag %}{% endlinks %}"
+            end
+            it "should generate link" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/liquid_demo_models/#{@tag_drop.id}\">Show</a>",
+                                               'user' => @user_drop, 'tag' => @tag_drop)
+            end
+          end
+          context "with assigned label" do
+            before do
+              @links = "{% links %}{% link nested_show:user:tag,label:foo %}{% endlinks %}"
+            end
+            it "should generate link with assigned label" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/liquid_demo_models/#{@tag_drop.id}\">foo</a>",
+                                               'user' => @user_drop, 'tag' => @tag_drop)
+            end
+          end
+        end
+
+        context "for delete" do
+
+          context "without label" do
+            before do
+              @links = "{% links %}{% link nested_delete:user:tag %}{% endlinks %}"
+            end
+            it "should generate link" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/liquid_demo_models/#{@tag_drop.id}\" onclick=\"#{gen_delete_onclick}\">Delete</a>",
+                                               'user' => @user_drop, 'tag' => @tag_drop)
+            end
+          end
+          context "with assigned label" do
+            before do
+              @links = "{% links %}{% link nested_delete:user:tag,label:foo %}{% endlinks %}"
+            end
+            it "should generate link with assigned label" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/liquid_demo_models/#{@tag_drop.id}\" onclick=\"#{gen_delete_onclick}\">foo</a>",
+                                               'user' => @user_drop, 'tag' => @tag_drop)
+            end
+          end
+        end
 
       end
 
@@ -253,7 +333,7 @@ describe "when using links" do
         end
         it "should generate view parameter" do
           @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">View</a>",
-                                                'user' => @user_drop)
+                                           'user' => @user_drop)
         end
       end
       context "with view param with label" do
@@ -262,7 +342,7 @@ describe "when using links" do
         end
         it "should generate view parameter" do
           @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\">bads</a>",
-                                                'user' => @user_drop)
+                                           'user' => @user_drop)
         end
       end
       context "with edit param without label" do
@@ -271,7 +351,7 @@ describe "when using links" do
         end
         it "should generate edit parameter" do
           @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">Edit</a>",
-                                                'user' => @user_drop)
+                                           'user' => @user_drop)
         end
       end
       context "with edit param with label" do
@@ -280,7 +360,7 @@ describe "when using links" do
         end
         it "should generate edit parameter" do
           @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/edit\">bads</a>",
-                                                'user' => @user_drop)
+                                           'user' => @user_drop)
         end
       end
 
@@ -290,7 +370,7 @@ describe "when using links" do
         end
         it "should generate delte parameter" do
           @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">Delete</a>",
-                                                'user' => @user_drop)
+                                           'user' => @user_drop)
         end
       end
       context "with delete param with label" do
@@ -299,7 +379,7 @@ describe "when using links" do
         end
         it "should generate delete parameter" do
           @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}\" onclick=\"#{gen_delete_onclick}\">bads</a>",
-                                                'user' => @user_drop)
+                                           'user' => @user_drop)
         end
       end
     end
