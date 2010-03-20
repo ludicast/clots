@@ -275,6 +275,28 @@ describe "when using links" do
           @tag_drop = get_drop user_default_values.merge(:id => rand(100))
         end
 
+        context "for edit" do
+
+          context "without label" do
+            before do
+              @links = "{% links %}{% link nested_edit:user:tag %}{% endlinks %}"
+            end
+            it "should generate link" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/liquid_demo_models/#{@tag_drop.id}/edit\">Edit</a>",
+                                               'user' => @user_drop, 'tag' => @tag_drop)
+            end
+          end
+          context "with assigned label" do
+            before do
+              @links = "{% links %}{% link nested_edit:user:tag,label:foo %}{% endlinks %}"
+            end
+            it "should generate link with assigned label" do
+              @links.should parse_with_vars_to("<a href=\"/liquid_demo_models/#{@user_drop.id}/liquid_demo_models/#{@tag_drop.id}/edit\">foo</a>",
+                                               'user' => @user_drop, 'tag' => @tag_drop)
+            end
+          end
+        end
+
         context "for show" do
 
           context "without label" do

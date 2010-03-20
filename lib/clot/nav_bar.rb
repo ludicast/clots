@@ -74,6 +74,11 @@ module Clot
             obj = context[pair_data[1]]
             obj2 = context[pair_data[2]]
             @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{obj2.dropped_class.to_s.tableize}/#{obj2.id}"
+          when "nested_edit" then
+            @label ||= "Edit"
+            obj = context[pair_data[1]]
+            obj2 = context[pair_data[2]]
+            @link = "/#{obj.dropped_class.to_s.tableize}/#{obj.id}/#{obj2.dropped_class.to_s.tableize}/#{obj2.id}/edit"
           when "nested_delete" then
             @label ||= "Delete"
             obj = context[pair_data[1]]

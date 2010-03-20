@@ -8,7 +8,7 @@ module Clot
       case value
         when /^([\[])(.*)([\]])$/ then array =  $2.split " "; array.map { |item| resolve_value item, context }
         when /^(["'])(.*)\1$/ then $2
-        when /^(\d+[\.]\d+)$/ then puts "fff"; $1.to_f
+        when /^(\d+[\.]\d+)$/ then $1.to_f
         when /^(\d+)$/ then value.to_i
         when /^true$/ then true
         when /^false$/ then false
