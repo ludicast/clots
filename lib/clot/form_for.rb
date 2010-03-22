@@ -56,7 +56,7 @@ module Clot
 
     def set_variables(context)
       set_controller_action
-      set_form_action
+      set_form_action(context)
       set_class
       set_upload
     end
@@ -96,7 +96,7 @@ module Clot
       end
     end
 
-    def set_form_action
+    def set_form_action(context)
       if @activity == "edit"
         if @attributes["obj_class"]
           @form_action = object_url @model, @attributes["obj_class"]
@@ -110,6 +110,9 @@ module Clot
         @form_action = "/" + @attributes["obj_class"] + "/"
       else
         syntax_error
+      end
+      if @attributes["parent"]
+        @form_action = object_url(context[@attributes["parent"]]) + @form_action
       end
       unless @attributes["post_method"].nil?
         @form_action += '/' + @attributes["post_method"]

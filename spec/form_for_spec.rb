@@ -24,6 +24,15 @@ describe "Form For" do
     end
   end
 
+  context "when putting in a parent object" do
+    it "should be have hidden method of PUT" do
+      user_drop = get_drop user_default_values
+      text_drop = mock_drop text_content_default_values
+      expected = '<form method="POST" action="' + (object_url user_drop) + (object_url text_drop) + '"><input type="hidden" name="_method" value="PUT"/></form>'
+      template = '{% formfor text parent:user %}{% endformfor %}'
+      template.should parse_with_vars_to(expected, 'text' => text_drop, 'user' => user_drop)
+    end
+  end
 
   context "when using a field * item" do
     it "should produce data based on form type" do
