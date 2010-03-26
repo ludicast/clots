@@ -1,8 +1,38 @@
 module Clot
-# Taken from mephisto
+  module DropAssociation
+    def belongs_to(*args)
+      args.each do |sym|
+        belongs_to = %{
+        def #{sym}
+          @source.#{sym}
+        end
+        }
+        class_eval belongs_to
+      end
+    end
+
+    def has_many(*args)
+      args.each do |sym|
+        has_many = %{
+        def #{sym}
+          @source.#{sym}
+        end
+
+
+         def #{sym.to_s.singularize}_ids
+            @source.#{sym.to_s.singularize}_ids
+         end
+        }
+        class_eval has_many
+
+      end
+
+    end
+  end
   
   class BaseDrop < Liquid::Drop
-    
+    extend DropAssociation
+
     class_inheritable_reader :liquid_attributes
     write_inheritable_attribute :liquid_attributes, [:created_at]
     write_inheritable_attribute :liquid_attributes, [:updated_at]  
@@ -21,7 +51,7 @@ module Clot
     def eql?(comparison_object)
       self == (comparison_object)
     end
-    
+
     def ==(comparison_object)
       self.source == (comparison_object.is_a?(self.class) ? comparison_object.source : comparison_object)
     end
