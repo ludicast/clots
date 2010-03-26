@@ -6,6 +6,9 @@ module Clot
         def #{sym}
           @source.#{sym}
         end
+        def #{sym}_id
+          @source.#{sym}_id
+        end
         }
         class_eval belongs_to
       end
@@ -89,9 +92,7 @@ module Clot
     end 
 
     def self.method_missing(symbol, *args)
-      puts "ddd"
       [symbol]
-
     end
 
 
