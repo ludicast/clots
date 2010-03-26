@@ -8,7 +8,7 @@ One of the big benefits of liquid is that it enforces a strict MVC paradign wher
 
 We have changed the code to be simpler and match the form builders that Rails developers are used to.  Therefore most of the tag names changed to be consistent with the Rails conventions.
 
-Most tags also expect as input either liquid objects, quoted strings, numbers, booleans, or arrays.  To simplify arrays, they are expected to be surrounded by brackets and use spaces as delimiters.  An exaple array would be
+Most tags also expect as input either liquid objects, quoted strings, integers, floats, booleans, or arrays.  To simplify arrays, they are expected to be surrounded by brackets and use spaces as delimiters.  An exaple array would be
 
     [1 true "hello" "world"]
 
@@ -116,7 +116,9 @@ We also added a few extra methods to the BaseDrop class (as well as taking some 
       @source.errors
     end 
 
-This is necessary for having the BaseDrop and its subclasses interact properly with our form builder and filters.  You would probably be fine just adding these methods to your current drops as well.
+This is necessary for having the BaseDrop and its subclasses interact properly with our form builder and filters.  You would probably be fine just adding these methods to your current drops as well - they are just useful for the form builder and other tools.
+
+In addition, drops may have has_many and belongs_to options which create the usual association methods that delegate to your internal class.
 
 ## to_liquid added to ActiveRecord::Base
 
@@ -142,7 +144,7 @@ In order to use either of these tags (or the include tag) something similar to t
   
 ## Filters for RESTful routes
 
-We added some filters for restful routes.  They are contained within the url_filters directory.
+We added some filters for restful routes.  These are contained within the url_filters directory.
 
 ## Test Cases
 
