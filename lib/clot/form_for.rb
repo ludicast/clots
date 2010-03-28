@@ -100,11 +100,11 @@ module Clot
 
     def set_form_action(context)
       if @activity == "edit"
-        if @attributes["obj_class"]
-          @form_action = object_url @model, @attributes["obj_class"]
-        else
+      #  if @attributes["obj_class"]
+      #    @form_action = object_url @model, @attributes["obj_class"]
+      #  else
           @form_action = object_url @model
-        end
+     #   end
       elsif @activity == "new"
         if @model.nil?
           @model = @attributes["obj_class"].classify.constantize.new.to_liquid
@@ -130,11 +130,11 @@ module Clot
         @class_string = 'class="' + @attributes["class"] + '" '
       end
 
-      if @attributes["obj_class"]
-        @class_name = @attributes["obj_class"].chop
-      else
+   #   if @attributes["obj_class"]
+   #     @class_name = @attributes["obj_class"].chop
+   #   else
         @class_name = drop_class_to_table_item @model.class
-      end
+   #   end
 
     end
 

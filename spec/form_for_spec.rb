@@ -88,25 +88,25 @@ describe "Form For" do
       user_drop1 = mock_drop user_default_values.merge(:friend_id => 2)
       user_drop2 = mock_drop user_default_values.merge(:id => 2)
 
-      expected = '<form method="POST" action="/dummy_drops/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
+      expected = '<form method="POST" action="/nil_classes/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_friend_id" name="dummy[friend_id]">'
       expected += "<option value=\"#{user_drop1.id}\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\" selected=\"selected\">#{user_drop2.email}</option></select></form>"
-      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", users, "id", "email" %}{% endformfor %}'
+      template = '{% formfor user %}{% collection_select "friend_id", users, "id", "email" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
     it "should dynamically create a select based on array" do
       user_drop1 = mock_drop user_default_values.merge(:friend_id => 1)
-      expected = '<form method="POST" action="/dummy_drops/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
+      expected = '<form method="POST" action="/nil_classes/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_friend_id" name="dummy[friend_id]">'
       expected += "<option selected=\"selected\">1</option><option>two</option></select></form>"
-      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", options %}{% endformfor %}'
+      template = '{% formfor user %}{% collection_select "friend_id", options %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'options' => [1, "two"])
     end
 
     it "should dynamically create a select based on resolved array" do
       user_drop1 = mock_drop user_default_values.merge(:friend_id => 1)
-      expected = '<form method="POST" action="/dummy_drops/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
+      expected = '<form method="POST" action="/nil_classes/' + user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_friend_id" name="dummy[friend_id]">'
       expected += "<option selected=\"selected\">1</option><option>two</option></select></form>"
-      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", [1 "two"] %}{% endformfor %}'
+      template = '{% formfor user %}{% collection_select "friend_id", [1 "two"] %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1)
     end
 
@@ -114,10 +114,10 @@ describe "Form For" do
       user_drop1 = mock_drop user_default_values.merge(:friend_id => 2)
       user_drop2 = mock_drop user_default_values.merge(:id => 2)
 
-      expected = '<form method="POST" action="/dummy_drops/'+ user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_drop_friend_id" name="dummy_drop[friend_id]">'
+      expected = '<form method="POST" action="/nil_classes/'+ user_drop1.id.to_s + '"><input type="hidden" name="_method" value="PUT"/><select id="dummy_friend_id" name="dummy[friend_id]">'
       expected += "<option value=\"\">nada to see</option>"
       expected += "<option value=\"#{user_drop1.id}\">#{user_drop1.email}</option><option value=\"#{user_drop2.id}\" selected=\"selected\">#{user_drop2.email}</option></select></form>"
-      template = '{% formfor user obj_class:dummy_drops %}{% collection_select "friend_id", users,"id","email",prompt:"nada to see" %}{% endformfor %}'
+      template = '{% formfor user %}{% collection_select "friend_id", users,"id","email",prompt:"nada to see" %}{% endformfor %}'
       template.should parse_with_vars_to(expected, 'user' => user_drop1, 'users' => [user_drop1, user_drop2])
     end
 
