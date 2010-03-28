@@ -89,11 +89,13 @@ module Clot
     private
 
     def set_controller_action
-      if @model.nil? || @model.source.nil? || @model.source.new_record?
-        @activity = "new"
-      else
-        @activity = "edit"
-      end
+      silence_warnings {
+        if @model.nil? || @model.source.nil? || @model.source.new_record? ||  @model.source.id.nil?
+          @activity = "new"
+        else
+          @activity = "edit"
+        end
+      }
     end
 
     def set_form_action(context)
@@ -106,8 +108,9 @@ module Clot
       elsif @activity == "new"
         if @model.nil?
           @model = @attributes["obj_class"].classify.constantize.new.to_liquid
+        else
+          @form_action = "/" + @model.dropped_class.to_s.tableize.pluralize + "/"
         end
-        @form_action = "/" + @attributes["obj_class"] + "/"
       else
         syntax_error
       end

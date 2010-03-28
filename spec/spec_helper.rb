@@ -76,10 +76,10 @@ class LiquidDemoModelDrop < Liquid::Drop
           value = "\'#{value}\'"
         end
 
-        @source.instance_eval( "def #{symbol}() @#{symbol} || #{value}; end" )
+        @source.instance_eval( "def #{symbol}() @#{symbol} || #{value || 'nil'}; end" )
         @source.instance_eval( "def #{symbol}=(val) @#{symbol} = val; end" )
         @liquid_attributes << symbol
-        instance_eval( "def #{symbol}() @source.#{symbol} || #{value}; end" )
+        instance_eval( "def #{symbol}() @source.#{symbol} || #{value || 'nil'}; end" )
         instance_eval( "def #{symbol}=(val) @source.#{symbol} = val; end" )
       end
 
@@ -162,6 +162,19 @@ def text_content_default_values
     :data => "This is a basic ipsum lorem...",
     :dropped_class => LiquidDemoModel
   }
+end
+
+def empty_default_values
+    { 
+      :id => nil,
+      :login => "",
+      :email => "",
+      :name => "",
+      :password => "password",
+      :password_confirmation => "password",
+      :admin => true,
+      :banned => false
+    }
 end
 
 def user_default_values

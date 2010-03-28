@@ -21,13 +21,11 @@ module Clot
           @source.#{sym}
         end
 
-
          def #{sym.to_s.singularize}_ids
             @source.#{sym.to_s.singularize}_ids
          end
         }
         class_eval has_many
-
       end
 
     end

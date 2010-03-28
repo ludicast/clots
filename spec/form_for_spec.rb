@@ -6,6 +6,10 @@ describe "Form For" do
   include Clot::FormFilters
   include Liquid
 
+    before do
+      @new_drop = get_drop empty_default_values
+    end  
+
   context "edit form" do
     it "should be have hidden method of PUT" do
       text_drop = mock_drop text_content_default_values
@@ -43,38 +47,39 @@ describe "Form For" do
     end
 
     it "should dynamically create an input box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" type="text" value="My Name" /></form>'
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% text_field "name" %}{% endformfor %}'
-      template.should parse_to(expected)
+
+      expected = '<form method="POST" action="/liquid_demo_models/"><input id="liquid_demo_model_name" name="liquid_demo_model[name]" type="text" value="" /></form>'
+      template = '{% formfor liquid_demo_model_drop %}{% text_field "name" %}{% endformfor %}'
+      template.should parse_with_vars_to(expected, 'liquid_demo_model_drop' => @new_drop)
     end
 
     it "should set the tags appropriately" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><br/><input id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" type="text" value="My Name" /><hr/></form>'
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}<br/>{% text_field "name" %}<hr/>{% endformfor %}'
-      template.should parse_to(expected)
+      expected = '<form method="POST" action="/liquid_demo_models/"><br/><input id="liquid_demo_model_name" name="liquid_demo_model[name]" type="text" value="" /><hr/></form>'
+      template = '{% formfor liquid_demo_model_drop %}<br/>{% text_field "name" %}<hr/>{% endformfor %}'
+      template.should parse_with_vars_to(expected, 'liquid_demo_model_drop' => @new_drop)
     end
 
     it "should set params on  input box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" width="100" type="text" value="My Name" /></form>'
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% text_field "name", width:100 %}{% endformfor %}'
-      template.should parse_to(expected)
+      expected = '<form method="POST" action="/liquid_demo_models/"><input id="liquid_demo_model_name" name="liquid_demo_model[name]" width="100" type="text" value="" /></form>'
+      template = '{% formfor liquid_demo_model_drop  %}{% text_field "name", width:100 %}{% endformfor %}'
+      template.should parse_with_vars_to(expected, 'liquid_demo_model_drop' => @new_drop)
     end
 
   end
 
   context "when using a file * item" do
     it "should dynamically create a file upload box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><input id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]" type="file" /></form>'
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% file_field "name" %}{% endformfor %}'
-      template.should parse_to(expected)
+      expected = '<form method="POST" action="/liquid_demo_models/"><input id="liquid_demo_model_name" name="liquid_demo_model[name]" type="file" /></form>'
+      template = '{% formfor drop  %}{% file_field "name" %}{% endformfor %}'
+      template.should parse_with_vars_to(expected, 'drop' => @new_drop)
     end
   end
 
   context "when using a text * item" do
     it "should dynamically create a text box" do
-      expected = '<form method="POST" action="/liquid_demo_model_drops/"><textarea id="liquid_demo_model_drop_name" name="liquid_demo_model_drop[name]">My Name</textarea></form>'
-      template = '{% formfor liquid_demo_model_drop obj_class:liquid_demo_model_drops %}{% text_area "name" %}{% endformfor %}'
-      template.should parse_to(expected)
+      expected = '<form method="POST" action="/liquid_demo_models/"><textarea id="liquid_demo_model_name" name="liquid_demo_model[name]"></textarea></form>'
+      template = '{% formfor drop %}{% text_area "name" %}{% endformfor %}'
+      template.should parse_with_vars_to(expected, 'drop' => @new_drop)
     end
   end
 

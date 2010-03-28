@@ -18,7 +18,7 @@ module Clot
         end
 
       else
-        raise SyntaxError.new("Syntax error in tag 'yield' - Valid syntax: content_for '[template]' (with|for) [object|collection]")
+        raise SyntaxError.new("Syntax error in tag 'content_for' - Valid syntax: content_for '[template]' (with|for) [object|collection]")
       end
 
       super
