@@ -21,7 +21,7 @@ You now can include an intelligent navigation menu, that allows you to exclude i
 Clots allows a form to be created like so
 
     {% error_messages_for pizza %}
-    {% form_for pizza obj_class:pizzas %}
+    {% form_for pizza %}
         <p>
             {% label "name" %}<br />
             {% text_field "name" %}

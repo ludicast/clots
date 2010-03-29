@@ -100,17 +100,9 @@ module Clot
 
     def set_form_action(context)
       if @activity == "edit"
-      #  if @attributes["obj_class"]
-      #    @form_action = object_url @model, @attributes["obj_class"]
-      #  else
-          @form_action = object_url @model
-     #   end
+        @form_action = object_url @model
       elsif @activity == "new"
-        if @model.nil?
-          @model = @attributes["obj_class"].classify.constantize.new.to_liquid
-        else
-          @form_action = "/" + @model.dropped_class.to_s.tableize.pluralize + "/"
-        end
+        @form_action = "/" + @model.dropped_class.to_s.tableize.pluralize + "/"
       else
         syntax_error
       end
@@ -130,12 +122,7 @@ module Clot
         @class_string = 'class="' + @attributes["class"] + '" '
       end
 
-   #   if @attributes["obj_class"]
-   #     @class_name = @attributes["obj_class"].chop
-   #   else
-        @class_name = drop_class_to_table_item @model.class
-   #   end
-
+      @class_name = drop_class_to_table_item @model.class
     end
 
     def set_model(context)
