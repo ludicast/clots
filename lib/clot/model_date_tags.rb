@@ -1,15 +1,6 @@
 module Clot
   class ModelMultiDateTag < MultiDateTag
     include ModelTag
-
-    def fill_zeros(val)
-      if val < 10
-        "0#{val}"
-      else
-        val
-      end
-    end
-
     
     def set_unit(unit)
       order = get_unit_order(unit)

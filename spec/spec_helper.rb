@@ -226,9 +226,7 @@ Spec::Matchers.define :parse_with_vars_to do |expected,attributes|
   description do
     "parse"
   end
-
 end
-
 
 require 'clot/form_for'
 require 'clot/deprecated'

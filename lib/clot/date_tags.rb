@@ -2,16 +2,12 @@ module Clot
   
   class NumberedTag < ClotTag
 
-    def value_string(val)
-      if val < 10
-       "0#{val}"
-      else
-        val
-      end
-    end
-
     def can_show(val)
       true
+    end
+
+    def value_string(val)
+      val
     end
 
     def get_options(from_val,to_val, selected_value = nil)
@@ -92,7 +88,17 @@ module Clot
     end
   end
 
-  class SelectMinute < NumberedTag
+  class PaddedNumberedTag < NumberedTag
+    def value_string(val)
+      if val < 10
+       "0#{val}"
+      else
+        val
+      end
+    end
+  end
+
+  class SelectMinute < PaddedNumberedTag
     def time_method
       :min
     end
@@ -113,7 +119,7 @@ module Clot
 
   end
 
-  class SelectHour < NumberedTag
+  class SelectHour < PaddedNumberedTag
     def default_field_name
       "hour"
     end
@@ -183,17 +189,17 @@ module Clot
 
 
 
-  class SelectYear < NumberedTag
+  class SelectYear < PaddedNumberedTag
     def default_field_name
       "year"
     end
 
     def default_start
-      @start_year || @value_string - 5
+      (@start_year || @value_string - 5)
     end
 
     def default_end
-      @end_year || @value_string + 5
+      (@end_year || @value_string + 5)
     end
 
     def personal_attributes(name,value)
@@ -209,7 +215,7 @@ module Clot
   end
 
 
-  class SelectSecond < NumberedTag
+  class SelectSecond < PaddedNumberedTag
     def time_method
       :sec
     end

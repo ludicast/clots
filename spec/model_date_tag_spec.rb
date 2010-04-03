@@ -15,6 +15,8 @@ def get_options(from_val,to_val, hash = {})
   range.each do |val|
     if hash[:label_func]
       print_val = send(hash[:label_func], val)
+    elsif hash[:ignore_zeros]
+      print_val = val
     else
       print_val = fill_zeros(val)
     end
@@ -61,7 +63,7 @@ describe "tags for forms that use models" do
 
         @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
         @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-        @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+        @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
         @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros @time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
         @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]">' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{fill_zeros @time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
@@ -76,7 +78,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros @time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
       @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]">' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{fill_zeros @time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
@@ -92,7 +94,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros @time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
       @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]">' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{fill_zeros @time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
@@ -108,7 +110,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]"><option value="">Years</option>' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]"><option value="">pick a month</option>' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]"><option value="">hora</option>' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros @time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
       @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]">' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{fill_zeros @time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
@@ -122,7 +124,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]"><option value="">Years</option>' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]"><option value="">Months</option>' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]"><option value="">Days</option>' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]"><option value="">Days</option>' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]"><option value="">Hours</option>' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros @time.hour}</option>} + get_options((@time.hour + 1),59) + "</select>"
       @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]"><option value="">Minutes</option>' + get_options(0,(@time.min - 1)) + %{<option selected="selected" value="#{@time.min}">#{fill_zeros @time.min}</option>} + get_options((@time.min + 1),59) + "</select>"
@@ -142,7 +144,7 @@ describe "tags for forms that use models" do
 
         @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
         @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-        @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+        @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
         parse_form_tag_to @year_string + @month_string + @day_string
       end
@@ -153,7 +155,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       tag_should_parse_to @year_string + @month_string + @day_string
     end
@@ -164,7 +166,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]"><option value="">Choose Year</option>' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]"><option value="">Choose Month</option>' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]"><option value="">Choose Day</option>' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]"><option value="">Choose Day</option>' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
 
       tag_should_parse_to @year_string + @month_string + @day_string
@@ -175,7 +177,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(1995,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       tag_should_parse_to @year_string + @month_string + @day_string 
     end
@@ -184,7 +186,7 @@ describe "tags for forms that use models" do
       @tag = "{% date_select dummy,'registered_at',start_year:1995,use_month_numbers:true,discard_day:true,include_blank:true %}"
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]"><option value=""></option>' + get_options(1995,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
-      @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]"><option value=""></option>' + get_options(1,@time.month - 1) + %{<option selected="selected" value="#{@time.month}">#{fill_zeros @time.month}</option>} + get_options(@time.month + 1,12) + "</select>"
+      @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]"><option value=""></option>' + get_options(1,@time.month - 1, :ignore_zeros => true) + %{<option selected="selected" value="#{@time.month}">#{@time.month}</option>} + get_options(@time.month + 1,12,:ignore_zeros => true) + "</select>"
 
       tag_should_parse_to @year_string + @month_string
     end
@@ -193,7 +195,7 @@ describe "tags for forms that use models" do
 
       @year_string = '<select id="dummy_registered_at_1i" name="dummy[registered_at(1i)]">' + get_options(@time.year-5,@time.year - 1) + %{<option selected="selected" value="#{@time.year}">#{@time.year}</option>} + get_options(@time.year + 1,@time.year + 5) + "</select>"
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
-      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
+      @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1),:ignore_zeros => true) + %{<option selected="selected" value="#{@time.day}">#{@time.day}</option>} + get_options((@time.day + 1),31,:ignore_zeros => true) + "</select>"
 
       tag_should_parse_to  @month_string + @day_string + @year_string
     end
