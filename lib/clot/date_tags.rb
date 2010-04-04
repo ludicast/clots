@@ -123,6 +123,9 @@ module Clot
     def default_field_name
       "hour"
     end
+    def default_end
+      23
+    end
   end
 
   class SelectDay < NumberedTag
