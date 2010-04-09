@@ -16,6 +16,11 @@ class ChildModel
   def tag_ids
     [1, 2]
   end
+
+  def children
+    []
+  end
+
 end
 
 describe "A Drop" do
@@ -56,18 +61,37 @@ describe "A Drop" do
           end
 
           has_many :tags
+          has_many :children
         end
 
       end
+      context "for populated collection" do
+        it "should delegate object calls to its source object" do
+          drop = BaseDropWithHasMany.new
+          drop.tags.should == ["tag1", "tag2"]
+        end
 
-      it "should delegate object calls to its source object" do
-        drop = BaseDropWithHasMany.new
-        drop.tags.should == ["tag1", "tag2"]
+        it "should return true from has" do
+          drop = BaseDropWithHasMany.new
+          drop.has_tags.should == true
+        end
+
+        it "should return tag count" do
+          drop = BaseDropWithHasMany.new
+          drop.num_tags.should == 2
+        end
+
+        it "should delegate id calls to its source object" do
+          drop = BaseDropWithHasMany.new
+          drop.tag_ids.should == [1, 2]
+        end
       end
 
-      it "should delegate id calls to its source object" do
-        drop = BaseDropWithHasMany.new
-        drop.tag_ids.should == [1, 2]
+      context "for empty collection" do
+        it "should return false from has" do
+          drop = BaseDropWithHasMany.new
+          drop.has_children.should == false
+        end
       end
     end
   end

@@ -20,10 +20,15 @@ module Clot
         def #{sym}
           @source.#{sym}
         end
-
-         def #{sym.to_s.singularize}_ids
-            @source.#{sym.to_s.singularize}_ids
-         end
+        def has_#{sym}
+          ! @source.#{sym}.empty?
+        end
+        def num_#{sym}
+          @source.#{sym}.count
+        end
+        def #{sym.to_s.singularize}_ids
+           @source.#{sym.to_s.singularize}_ids
+        end
         }
         class_eval has_many
       end
