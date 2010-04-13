@@ -76,7 +76,15 @@ module Clot
       end
     end
 
-    def submit_button(message)
+    def submit_button(obj)
+      if obj.is_a? String
+        message = obj
+      elsif obj.id > 0
+        message = "Update"
+      else
+        message = "Create"
+      end
+
         '<div class="form-submit-button"><input type="submit" value="' + message + '"/></div>'
     end      
 

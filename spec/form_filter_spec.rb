@@ -57,6 +57,22 @@ describe "Form Filter" do
       template = '{{ "I am here" | submit_button }}'
       template.should parse_to(expected)
     end
+
+    it "it converts object with id into string 'Update'" do
+      expected = '<div class="form-submit-button"><input type="submit" value="Update"/></div>'
+      template = '{{ user | submit_button }}'
+      user = mock_drop user_default_values
+      template.should parse_with_vars_to(expected, 'user' => user)
+    end
+
+    it "it converts object without id into string 'Create'" do
+      expected = '<div class="form-submit-button"><input type="submit" value="Create"/></div>'
+      template = '{{ user | submit_button }}'
+      user = mock_drop user_default_values
+      user.stub!(:id).and_return(0)
+      template.should parse_with_vars_to(expected, 'user' => user)
+    end
+
   end
   
   context "the get_attribute_value filter" do
