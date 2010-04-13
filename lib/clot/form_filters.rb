@@ -79,7 +79,7 @@ module Clot
     def submit_button(obj)
       if obj.is_a? String
         message = obj
-      elsif obj.id > 0
+      elsif obj.id.is_a?(Fixnum) && obj.id > 0
         message = "Update"
       else
         message = "Create"
