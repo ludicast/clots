@@ -92,19 +92,27 @@ module Clot
       end
     end
 
+    def trim_zeros(val)
+      if val.is_a?(Float) && val.to_i.to_f == val
+        val.to_i
+      else
+        val
+      end
+    end
+
     def gen_option(item)
       selection_string = ""
       item_string = item
       value_string = ""
 
       if item.is_a?(String) || item.is_a?(Fixnum) || item.is_a?(Float)
-        if (@item[@attribute_name.to_sym].to_s == item.to_s) || (@item.respond_to?(@attribute_name.to_sym) && @item.send(@attribute_name.to_sym).to_s == item.to_s)
+        if (trim_zeros(@item[@attribute_name.to_sym]).to_s == item.to_s) || (@item.respond_to?(@attribute_name.to_sym) && trim_zeros(@item.send(@attribute_name.to_sym)).to_s == item.to_s)
           selection_string = ' selected="selected"'
         end
       else
         item_string = item[@default_name.to_sym] || (@item.respond_to?(@attribute_name.to_sym) && @item.send(@default_name.to_sym))
         value_string = %{ value="#{item[@default_id.to_sym]}"}
-        if item[@default_id.to_sym].to_s == @value_string.to_s
+        if trim_zeros(item[@default_id.to_sym]).to_s == @value_string.to_s
           selection_string = ' selected="selected"'
         end
       end
