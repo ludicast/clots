@@ -1,10 +1,12 @@
 module Clot
   class LiquidForm < Liquid::Block
-    include Clot::UrlFilters
-    include Clot::LinkFilters
-    include Clot::FormFilters
+    include UrlFilters
+    include LinkFilters
+    include FormFilters
+    include TagHelper
 
     Syntax = /([^\s]+)\s+/
+
     def initialize(tag_name, markup, tokens)
       if markup =~ Syntax
         @form_object = $1
@@ -25,232 +27,232 @@ module Clot
 
     def render_form(context)
       result = get_form_header(context)
-      result += get_form_errors
       result += get_form_body(context)
       result += get_form_footer
       result
     end
-    
+
     def syntax_error
       raise SyntaxError.new("Syntax Error in form tag")
     end
 
     def get_form_body(context)
       context.stack do
-        roll_tags(context)
         render_all(@nodelist, context) * ""
       end
     end
 
     def get_form_footer
       "</form>"
-    end      
-  end
-
-  class LiquidFormElementTag < Struct.new(:tag_name, :type, :params)
-    include Clot::UrlFilters
-    include Clot::LinkFilters
-    include Clot::FormFilters
-
-    attr_accessor :model, :class_name
-
-    def self.shift_name(args)
-      (args.shift)[/[:](.+)/,1]
     end
 
-    def self.split_params(params)
-      params.split(",").map(&:strip)
-    end
-
-    def self.parse_params(params)
-      args = split_params(params)
-      if args.length == 0
-        raise SyntaxError.new "Need to have fieldname inputted"
-      end
-      unless tag_name = shift_name(args)
-        raise SyntaxError.new "need to have fieldname in form of :field_name"
-      end
-      [args,tag_name]
-    end
-
-    def self.load_params(tag, args)
-      args.each do |param|
-        param_array = param.split(/[:]/)
-        tag.params << {:key => param_array[0], :value => param_array[1]}
-      end
-    end
-    
-    def render(context)
-      errors = @model.errors.on(tag_name)
-      name_string = @class_name  + "[" + tag_name.to_s + "]"
-      tag_text = output_tag type, name_string, @model[tag_name], errors, context
-      params.each do |param|
-        tag_text = set_param tag_text, param[:key], param[:value]
-      end
-      if respond_to? :wrap_form_tag
-        wrap_form_tag tag_text, tag_name, type, errors, @model.source.class.to_s.tableize.singularize
+    def set_upload
+      if @attributes["uploading"] || @attributes["multipart"] == "true"
+        @upload_info = ' enctype="multipart/form-data"'
       else
-        tag_text
+        @upload_info = ''
       end
+    end
+
+    def set_variables(context)
+      set_controller_action
+      set_form_action(context)
+      set_class
+      set_upload
     end
 
   end
 
-
-  class LiquidFieldTag < LiquidFormElementTag
-
-    def self.get_tag(type, params)
-      args, tag_name = parse_params(params)
-      tag = self.new(tag_name, type, [])
-      load_params(tag,args)
-      tag
-    end
-    
-
-    def output_tag(type, name, value, errors, context)
-      case type
-        when :field:  form_input_item name, value, errors
-        when :text:   form_text_item name, value, errors
-        when :file:   form_file_item name, value, errors
-      end
-    end
-
-  end
-
-  class LiquidCollectionTag < LiquidFormElementTag
-    attr_accessor :collection_name
-
-    def self.get_tag(type, params)
-      args, tag_name = parse_params(params)
-      tag = self.new(tag_name, type, [])
-      unless tag.collection_name = shift_name(args)
-        raise SyntaxError.new "need to have collection in form of :collection_name"
-      end
-
-      load_params(tag,args)
-      tag
-    end
-
-    def output_tag(type, name, value, errors, context)
-      case type
-        when :select: form_select_item name, value, context[@collection_name], errors
-      end
-    end
-
-  end
 
   class LiquidFormFor < LiquidForm
 
-    def roll_tags(context)
-      @nodelist.each do |node|
-        if (node.respond_to? :model=)
-          node.model = @model
-        end
-        if (node.respond_to? :class_name=)        
-          node.class_name = @class_name
-        end
+    def get_errors(model)
+      errors = []
+      model.errors.each do |attr,msg|
+        errors << attr
       end
-    end
+      errors
 
-    def unknown_tag(name, params, tokens)
-      if name == "field" || name == "text" || name == "file"
-        @nodelist << LiquidFieldTag.get_tag(name.to_sym, params)
-      elsif name == "select"
-        @nodelist << LiquidCollectionTag.get_tag(name.to_sym, params)
-      else
-        super
-      end
     end
 
 
-    private 
-
-    def set_method
-      if @model.nil? || @model.source.nil? || @model.source.new_record?
-        @activity = "new"
-      else
-        @activity = "edit"
+    def get_form_body(context)
+      context.stack do
+        context['form_model'] =  @model
+        context['form_class_name'] =  @class_name
+        context['form_errors'] =  get_errors @model
+        return render_all(@nodelist, context)
       end
     end
-    
-    def set_form_action
-      if @activity == "edit"
-        if @attributes["obj_class"]
-          @form_action = object_url @model, @attributes["obj_class"]
+
+
+    private
+
+    def set_controller_action
+      silence_warnings {
+        if @model.nil? || @model.source.nil?
+          @activity = "new"
+        elsif @model.dropped_class == Searchlogic::Search
+          @activity = "search"
+        elsif @form_object.include?("_change")
+          @activity = "change"
+        elsif @model.source.new_record? ||  @model.source.id.nil?
+          @activity = "new"
+        elsif @model.dropped_class == NationSignup
+          @activity = "new"
         else
-          @form_action = object_url @model
+          @activity = "edit"
         end
+      }
+    end
+
+    def set_form_action(context)
+      if @activity == "edit"
+        @form_action = object_url @model
       elsif @activity == "new"
-        if @model.nil?
-          @model = @attributes["obj_class"].classify.constantize.new.to_liquid
-        end
-        # JIM CHANGED THIS LINE
-        # @form_action = "/" + @attributes["obj_class"] + "/"
-        @form_action = "/" + @class_name.pluralize
+        @form_action = "/" + @model.dropped_class.to_s.tableize.pluralize
+      elsif ['search', 'change'].include?(@activity)
+        @form_action = ""
       else
         syntax_error
+      end
+      if @attributes["parent"]
+        @form_action = object_url(context[@attributes["parent"]]) + @form_action
+      end
+      if context.registers[:controller].params[:controller].split('/').first == 'users' or @form_action == '/accounts'
+        @form_action = "/users" + @form_action.gsub("/forms","")
+      elsif @activity != 'change'
+        @form_action = "/forms" + @form_action if not @form_action[0..5] == '/forms'
       end
       unless @attributes["post_method"].nil?
         @form_action += '/' + @attributes["post_method"]
         @activity = @attributes["post_method"]
       end
-      
+
     end
 
     def set_class
       @class_string = ""
       unless @attributes["class"].nil?
-        @class_string = 'class="' + @attributes["class"] + '" '
+        @class_string += 'class="' + @attributes["class"] + '" '
+      end
+      unless @attributes["autocomplete"].nil?
+        @class_string += 'autocomplete="' + @attributes["autocomplete"] + '" '
       end
 
-      if @attributes["obj_class"]
-        @class_name = @attributes["obj_class"].chop
-      else
-        @class_name = drop_class_to_table_item @model.class
-      end
-            
+      @class_name = drop_class_to_table_item @model.class
     end
-
-    def set_upload
-      if @attributes["uploading"]
-        @upload_info = ' enctype="multipart/form-data"'
-      else
-        @upload_info = ''
-      end      
-    end
-
+    
     def set_model(context)
       @model = context[@form_object] || nil
-    end
-
-    def set_variables(context)
-      set_model(context)
-      set_method
-      # jim switched the order of set_class and set_form_action
-      set_class
-      set_form_action      
-      set_upload
+      if not @model
+        if @form_object.include?("_search")
+          search_object_name = @form_object.gsub('_search',"").classify.constantize
+          search_object = search_object_name.search
+          search_object_name = (search_object_name.to_s + "SearchDrop").constantize
+          @model = search_object_name.new(search_object)
+          @model.defaults(context)
+          context[@form_object] = @model
+        elsif @form_object.include?("_change")
+          change_object = @form_object.gsub('_change',"").pluralize.classify.constantize
+          change_object_name = (change_object.to_s + "ChangeDrop").constantize
+          @model = change_object_name.new(change_object.new)
+          @model.defaults(context)
+          context[@form_object] = @model
+        else
+          @model = @form_object.classify.constantize.new.to_liquid
+          if @model.source.new_record?
+            @model.defaults(context)
+            context[@form_object] = @model
+          end
+        end
+      end
     end
 
     def get_form_header(context)
-      result = '<form method="POST" ' + @class_string + 'action="' + @form_action + '"' + @upload_info + '>'
+      cs = @class_name + "_form"
+      # temporarily taking out 'survey_question_response' from this list because i can't figure out why the javascript
+      # response on cagreens survey http://cagreens.nationbuilder.com/ga_dec2011_survey doesn't seem to work (it works everywhere else)
+      if ['comment', 'survey_response', 'face_tweet', 'feedback', 'volunteer_signup', 'event_rsvp', 'event_page', 'signup',
+          'password_reset', 'password', 'flag', 'nation_signup', 'blog_post_page', 'nation_signin', 'pledge', 'unsubscribe',
+          'account', 'petition_signature', 'suggestion_page', 'endorsement'].include?(@class_name) # hacky thing to make ajax forms work
+        cs = 'ajaxForm ' + cs
+      end
+      if ['endorsement', 'suggestion_page', 'petition_signature'].include?(@class_name)
+        @upload_info = ' enctype="multipart/form-data"'
+      end
+      if ['search', 'change'].include?(@activity)
+        method_type = "GET"
+      else
+        method_type = "POST"
+      end
+      result = '<form class="' + cs + '" method="' + method_type + '" ' + @class_string + 'action="' + @form_action + '"' + @upload_info + '>'
       if @activity == "edit"
         result += '<input type="hidden" name="_method" value="PUT"/>'
       end
 
-      # jim changed this to use registers
-      if context.registers[:auth_token]
-        result += '<input name="authenticity_token" type="hidden" value="' + context.registers[:auth_token] + '"/>'
+      # this will get replaced with a real authenticity token by rake middleware
+      if not ['search', 'change'].include?(@activity)
+        result += '<input name="authenticity_token" type="hidden" value="__CROSS_SITE_REQUEST_FORGERY_PROTECTION_TOKEN__"/>'
       end
+    
+      # jim change... add current page
+      if context['page'] and not ['search', 'change'].include?(@activity)
+        result += '<input name="page_id" type="hidden" value="' + context['page'].id.to_s + '"/>'
+        result += '<input name="return_to" type="hidden" value="' + context['page'].full_url + '"/>'
+      end
+      
+      if context['signup'] and ['profiles'].include?(context.registers[:controller].controller_name)
+        result += '<input name="signup_id" type="hidden" value="' + context['signup'].id.to_s + '"/>'
+      end
+      
+      # this is a honeypot field
+      result += '<div class="email_address_form" style="display:none;">'
+      result += '<p><label for "email_address">Optional email code</label><br/><input name="email_address" type="text" class="text" id="email_address" autocomplete="off"/></p>'
+      result += '</div>'
+      
       result
     end
 
-    def get_form_errors
+    def set_variables(context)
+      set_model(context)
+      super
+    end
+
+  end
+
+
+  class ErrorMessagesFor < Liquid::Tag
+
+    include TagHelper
+    def initialize(name, params, tokens)
+      @_params = split_params(params)
+      super
+    end
+
+
+    def render(context)
+      @params = @_params.clone
+      @model = context[@params.shift]
+
       result = ""
       if @model and @model.errors.count > 0
-        result += '<div id="error-explanation"><h2>' + @model.errors.count.to_s + ' error(s) occurred while processing information</h2><ul>'
+        @suffix = @model.errors.count > 1 ? "s" : ""
+        @default_message = @model.errors.count.to_s + " error#{@suffix} occurred while processing information"
 
-        @model.errors.each do |attr,msg|
+        @params.each do |pair|
+          pair = pair.split /:/
+          value = resolve_value(pair[1],context)
+
+          case pair[0]
+            when "header_message" then
+              @default_message = value
+          end
+        end
+
+        result += '<div class="errorExplanation" id="errorExplanation"><h2>' + @default_message + '</h2><ul>'
+
+        @model.errors.each do |attr, msg|
           result += "<li>"
           result += attr + " - " + msg.to_s
           result += "</li>"
@@ -258,7 +260,7 @@ module Clot
         result += "</ul></div>"
       end
       result
-    end
-    
+    end    
   end
+
 end

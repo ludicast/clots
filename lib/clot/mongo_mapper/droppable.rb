@@ -1,5 +1,5 @@
 module Clot
-  module ActiveRecord #:nodoc:
+  module MongoMapper #:nodoc:
     module Droppable
       
       def get_drop_class(class_obj)

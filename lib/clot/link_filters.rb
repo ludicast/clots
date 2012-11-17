@@ -1,7 +1,7 @@
 module Clot
   module LinkFilters
     include ActionView::Helpers::TagHelper
-    
+
     def edit_link(target, message = "Edit", class_name = "")
       url = object_url target, class_name
       content_tag :a, message, :href => url + "/edit"
@@ -15,13 +15,23 @@ module Clot
     
     def delete_link(target, message = "Delete", class_name = "")
       url = object_url target, class_name
-      if @context.has_key? 'auth_token'
-        token = @context['auth_token']
-        token_string = "var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', '" + token + "') ;f.appendChild(s);"
+      gen_delete_link(url,message)
+    end
+
+    def gen_delete_link(url, message = nil)
+      '<a href="' + url + '" onClick="' + gen_delete_onclick + '">' + message + '</a>'
+    end
+
+    def gen_delete_onclick
+      token_string = "var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', '__CROSS_SITE_REQUEST_FORGERY_PROTECTION_TOKEN__') ;f.appendChild(s);"
+      
+      if @context['page']
+        page_string = "var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'page_slug'); s.setAttribute('value', '" + @context['page'].slug + "') ;f.appendChild(s);"
       else
-        token_string = ""
+        page_string = ""
       end
-      content_tag :a, message, :href => url, :onclick => "if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);" + token_string + "f.submit(); };return false;"
+      
+      "if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);" + token_string + page_string + "f.submit(); };return false;"
     end
 
     def index_link(controller, message = nil)

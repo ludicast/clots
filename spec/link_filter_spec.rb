@@ -20,7 +20,7 @@ describe "Link Filters" do
 
   context "should produce restful link" do
     before(:each) do
-      @obj = get_drop @@text_content_default_values
+      @obj = get_drop text_content_default_values
     end
 
     context "with title" do
@@ -77,7 +77,6 @@ describe "Link Filters" do
         test_link = new_link "contents"
         test_link.should == '<a href="/contents/new">New Content</a>'
       end
-
     end
 
   end

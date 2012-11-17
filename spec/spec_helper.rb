@@ -10,6 +10,9 @@ ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
 
 
 require 'clot/url_filters'
+require 'clot/no_model_form_tags'
+require 'clot/model_form_tags'
+
 class DummyDrop < Clot::BaseDrop; end
 module Spec
   module Rails
@@ -26,6 +29,7 @@ module Spec
           model.instance_eval( "def #{symbol}() \"#{value}\"; end" )
           drop.liquid_attributes << symbol
         end
+        
         drop
       end
     end
@@ -55,7 +59,7 @@ end
 class LiquidDemoModelDrop < Liquid::Drop
 
   attr_reader :source, :liquid_attributes
-  undef :type
+  #undef :type
 
     def collection_label
       "item_label"
@@ -72,10 +76,10 @@ class LiquidDemoModelDrop < Liquid::Drop
           value = "\'#{value}\'"
         end
 
-        @source.instance_eval( "def #{symbol}() @#{symbol} || #{value}; end" )
+        @source.instance_eval( "def #{symbol}() @#{symbol} || #{value || 'nil'}; end" )
         @source.instance_eval( "def #{symbol}=(val) @#{symbol} = val; end" )
         @liquid_attributes << symbol
-        instance_eval( "def #{symbol}() @source.#{symbol} || #{value}; end" )
+        instance_eval( "def #{symbol}() @source.#{symbol} || #{value || 'nil'}; end" )
         instance_eval( "def #{symbol}=(val) @source.#{symbol} = val; end" )
       end
 
@@ -152,29 +156,49 @@ def get_drop(args = {})
   LiquidDemoModelDrop.new args
 end
 
-@@text_content_default_values = {
-  :name => "Basic Essay Here",
-  :data => "This is a basic ipsum lorem...",
-  :dropped_class => LiquidDemoModel
-}
+def text_content_default_values
+  {
+    :name => "Basic Essay Here",
+    :data => "This is a basic ipsum lorem...",
+    :dropped_class => LiquidDemoModel
+  }
+end
 
-@@user_default_values =
-    { :login => "sDUMMY",
-      :email => "sfake@fake.com",
+def empty_default_values
+    { 
+      :id => nil,
+      :login => "",
+      :email => "",
+      :name => "",
       :password => "password",
       :password_confirmation => "password",
+      :admin => true,
+      :banned => false
     }
+end
+
+def user_default_values
+    { :login => "sDUMMY",
+      :email => "sfake@fake.com",
+      :name => "User ##{rand(5000)}",
+      :password => "password",
+      :password_confirmation => "password",
+      :admin => true,
+      :banned => false
+    }
+end
 
 include Liquid
 Spec::Matchers.define :parse_to do |expected|
   match do |template|
-    expected.should == Template.parse(template).render {}
+    @template_match_value =  Template.parse(template).render({})
+    expected == @template_match_value
   end
 
   failure_message_for_should do |template|
-    "expected #{template} to parse to #{expected}"
+    "expected #{template} to parse to: \n#{expected} but instead got: \n#{@template_match_value}"
   end
-
+     
   failure_message_for_should_not do |template|
     "expected #{template} to not parse to #{expected}"
   end
@@ -185,13 +209,14 @@ Spec::Matchers.define :parse_to do |expected|
 
 end
 
-Spec::Matchers.define :parse_with_atributes_to do |expected,attributes|
+Spec::Matchers.define :parse_with_vars_to do |expected,attributes|
   match do |template|
-    expected.should == Template.parse(template).render(attributes)
+    @template_match_value = Template.parse(template).render(attributes)
+    expected == @template_match_value
   end
 
   failure_message_for_should do |template|
-    "expected #{template} to parse to #{expected}"
+    "expected #{template} to parse to: \n#{expected}\n but instead got: \n#{@template_match_value}"
   end
 
   failure_message_for_should_not do |template|
@@ -203,3 +228,9 @@ Spec::Matchers.define :parse_with_atributes_to do |expected,attributes|
   end
 
 end
+
+
+require 'clot/form_for'
+require 'clot/deprecated'
+
+Liquid::Template.register_tag('form_tag', Clot::FormTag)

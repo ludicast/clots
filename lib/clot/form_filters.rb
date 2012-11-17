@@ -50,7 +50,7 @@ module Clot
     end
 
     def drop_class_to_table_item(clazz)
-      match = /_drops/.match clazz.to_s.tableize
+      match = /_drops/.match clazz.name.tableize
       match.pre_match
     end  
     
@@ -90,21 +90,37 @@ module Clot
       text
     end
 
-    def form_file_item(name, value, errors )
-      input = "<input type=\"file\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"/>"
+    def form_file_item(name, errors )
+      input = "<input type=\"file\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" />"
       input
     end
 
-    def form_select_item(name, value, collection, errors)
+    def form_select_item(name, value, collection, errors, blank_option = nil)
+      prompt = ""
+      if blank_option
+        prompt = "<option>#{blank_option}</option>"
+      end
+
       select = "<select id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>"
+      select += prompt
       collection.each do |item|
-        select += "<option value=\"#{item.id}\"#{get_selection_value(value, item)}>#{item.collection_label}</option>"
+        @_id = @_label = item.to_s
+        if item.respond_to?(:id) && item.respond_to?(:collection_label)
+          @_id = item.id
+          @_label = item.collection_label
+        end
+        select += "<option value=\"#{@_id}\"#{get_selection_value(value, item)}>#{@_label}</option>"
+
       end
       select += "</select>"
     end
 
-     def get_selection_value(value,item)
-       value == item.id ? ' selected="true"' : ''
+    def get_selection_value(value,item)
+        matched_value = item.to_s
+        if item.respond_to?(:collection_label)
+          matched_value = item.id
+        end
+        value.to_s == matched_value.to_s ? ' selected="true"' : ''
     end
 
     def get_error_class(errors)
