@@ -184,7 +184,9 @@ module Clot
         if @model.nil?
           @model = @attributes["obj_class"].classify.constantize.new.to_liquid
         end
-        @form_action = "/" + @attributes["obj_class"] + "/"
+        # JIM CHANGED THIS LINE
+        # @form_action = "/" + @attributes["obj_class"] + "/"
+        @form_action = "/" + @class_name.pluralize
       else
         syntax_error
       end
@@ -224,8 +226,9 @@ module Clot
     def set_variables(context)
       set_model(context)
       set_method
-      set_form_action      
+      # jim switched the order of set_class and set_form_action
       set_class
+      set_form_action      
       set_upload
     end
 
@@ -235,8 +238,9 @@ module Clot
         result += '<input type="hidden" name="_method" value="PUT"/>'
       end
 
-      if context.has_key? 'auth_token'
-        result += '<input name="authenticity_token" type="hidden" value="' + context['auth_token'] + '"/>'
+      # jim changed this to use registers
+      if context.registers[:auth_token]
+        result += '<input name="authenticity_token" type="hidden" value="' + context.registers[:auth_token] + '"/>'
       end
       result
     end
