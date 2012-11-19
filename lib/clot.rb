@@ -1,4 +1,5 @@
 require 'clot/active_record/droppable'
+require 'clot/base_drop'
 require 'clot/content_for'
 require 'clot/date_tags'
 require 'clot/deprecated'
