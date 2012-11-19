@@ -1,3 +1,8 @@
+require 'clot/url_filters'
+require 'clot/link_filters'
+require 'clot/form_filters'
+require 'clot/tag_helper'
+
 module Clot
   class LiquidForm < Liquid::Block
     include UrlFilters
@@ -142,7 +147,7 @@ module Clot
 
       @class_name = drop_class_to_table_item @model.class
     end
-    
+
     def set_model(context)
       @model = context[@form_object] || nil
       if not @model
@@ -195,22 +200,22 @@ module Clot
       if not ['search', 'change'].include?(@activity)
         result += '<input name="authenticity_token" type="hidden" value="__CROSS_SITE_REQUEST_FORGERY_PROTECTION_TOKEN__"/>'
       end
-    
+
       # jim change... add current page
       if context['page'] and not ['search', 'change'].include?(@activity)
         result += '<input name="page_id" type="hidden" value="' + context['page'].id.to_s + '"/>'
         result += '<input name="return_to" type="hidden" value="' + context['page'].full_url + '"/>'
       end
-      
+
       if context['signup'] and ['profiles'].include?(context.registers[:controller].controller_name)
         result += '<input name="signup_id" type="hidden" value="' + context['signup'].id.to_s + '"/>'
       end
-      
+
       # this is a honeypot field
       result += '<div class="email_address_form" style="display:none;">'
       result += '<p><label for "email_address">Optional email code</label><br/><input name="email_address" type="text" class="text" id="email_address" autocomplete="off"/></p>'
       result += '</div>'
-      
+
       result
     end
 
@@ -260,7 +265,7 @@ module Clot
         result += "</ul></div>"
       end
       result
-    end    
+    end
   end
 
 end
