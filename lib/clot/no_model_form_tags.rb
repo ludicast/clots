@@ -1,3 +1,5 @@
+require 'clot/tag_helper'
+
 module Clot
   module AttributeSetter
     def set_primary_attributes(context)
@@ -8,13 +10,13 @@ module Clot
     end
 
     def personal_attributes(name,value)
-      
+
     end
 
 
     def set_attributes(context)
       set_primary_attributes(context)
-      
+
       @params.each do |pair|
         pair.match /([^:]*):(.*)/
         pair =  [$1, $2]
@@ -205,7 +207,7 @@ module Clot
         when 'member' then
           @checkbox_member = value
           if (! @checkbox_collection.nil?) && @checkbox_collection.include?(@checkbox_member)
-            @checked_value = %{checked="checked" }            
+            @checked_value = %{checked="checked" }
           end
       end
     end

@@ -1,5 +1,8 @@
+require 'clot/date_tags'
+require 'clot/no_model_form_tags'
+
 module Clot
-  
+
   class NumberedTag < ClotTag
 
     def value_string(val)
@@ -78,7 +81,7 @@ module Clot
       @name_string || if field_name && ! field_name.blank?
         %{name="#{@prefix || 'date'}[#{field_name}]"}
       else
-        %{name="#{@prefix || 'date'}"}        
+        %{name="#{@prefix || 'date'}"}
       end
     end
 
@@ -218,7 +221,7 @@ module Clot
     end
   end
 
-  class MultiDateTag < ClotTag    
+  class MultiDateTag < ClotTag
 
     def set_primary_attributes(context)
       @time = resolve_value(@params.shift,context) || Time.zone.now
@@ -227,7 +230,7 @@ module Clot
     def personal_attributes(name,value)
       case name
         when "discard_day" then
-          @discard_day = true  
+          @discard_day = true
         when "include_blank" then
           @include_blank = true
         when "minute_step" then
@@ -249,12 +252,12 @@ module Clot
         when "include_seconds" then
           @include_seconds = true
         when "use_month_numbers" then
-          @use_month_numbers = "use_month_numbers:true,"        
+          @use_month_numbers = "use_month_numbers:true,"
         when /(.*)_prompt/ then
           value_string = value === true ? 'true' : "'#{value}'"
           instance_variable_set("@#{$1}_prompt".to_sym,",prompt:#{value_string}")
         when "prompt" then
-          @prompt = ",prompt:true"        
+          @prompt = ",prompt:true"
       end || super(name,value)
     end
 
@@ -267,7 +270,7 @@ module Clot
       @params = @_params.clone
       set_attributes(context)
       render_nested(context)
-    end  
+    end
 
     def set_unit(unit)
         prompt = instance_variable_get("@#{unit}_prompt".to_sym)
@@ -275,7 +278,7 @@ module Clot
         instance_variable_set "@#{unit}",
            "Clot::Select#{unit.capitalize}".constantize.new(".select_#{unit}", line,[])
     end
-    
+
     def time_unit(unit)
       case unit
         when "second" then "sec"
@@ -330,7 +333,7 @@ module Clot
 
       order = @order || ['year', 'month', 'day']
       date_result = render_units(order, context, @date_separator)
-      
+
       date_result + @datetime_separator.to_s + time_result
     end
 

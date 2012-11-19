@@ -9,7 +9,3 @@ module Clot
     end
   end
 end
-
-class Clot::LiquidFormFor
-  include Clot::Deprecated
-end

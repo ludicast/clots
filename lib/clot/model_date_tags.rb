@@ -1,3 +1,5 @@
+require 'clot/model_form_tags'
+
 module Clot
   class ModelMultiDateTag < MultiDateTag
     include ModelTag
@@ -10,7 +12,7 @@ module Clot
       end
     end
 
-    
+
     def set_unit(unit)
       order = get_unit_order(unit)
       prompt = instance_variable_get("@#{unit}_prompt".to_sym)
@@ -31,7 +33,7 @@ module Clot
         when "minute" then 5
         when "second" then 6
       end
-    end    
+    end
 
   end
 
