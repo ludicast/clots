@@ -39,8 +39,7 @@ module Clot
     end
 
     class_attribute :liquid_attributes
-    write_inheritable_attribute :liquid_attributes, [:created_at]
-    write_inheritable_attribute :liquid_attributes, [:updated_at]
+    self.liquid_attributes = [:created_at, :updated_at]
     attr_reader :source
     delegate :hash, :to => :source
 
