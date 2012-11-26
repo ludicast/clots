@@ -38,7 +38,7 @@ module Clot
       include Rails.application.routes.url_helpers
     end
 
-    class_inheritable_reader :liquid_attributes
+    class_attribute :liquid_attributes
     write_inheritable_attribute :liquid_attributes, [:created_at]
     write_inheritable_attribute :liquid_attributes, [:updated_at]
     attr_reader :source
