@@ -258,14 +258,22 @@ module Clot
         result += '<div class="errorExplanation" id="errorExplanation"><h2>' + @default_message + '</h2><ul>'
 
         @model.errors.each do |attr, msg|
-          result += "<li>"
-          result += attr + " - " + msg.to_s
-          result += "</li>"
+          result += "<li>#{error_message(attr, msg)}</li>"
         end
+
         result += "</ul></div>"
       end
       result
     end
+
+    def error_message(attr, msg)
+      if attr == :base
+        "#{attr} - #{msg}"
+      else
+        msg
+      end  
+    end
+
   end
 
 end
