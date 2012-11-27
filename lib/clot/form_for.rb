@@ -267,7 +267,7 @@ module Clot
     end
 
     def error_message(attr, msg)
-      if attr == :base
+      unless attr == :base
         "#{attr} - #{msg}"
       else
         msg
