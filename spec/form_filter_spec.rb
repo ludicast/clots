@@ -7,7 +7,7 @@ describe "Form Filter" do
   include Liquid
 
   before(:each) do
-    @context = {}    
+    @context = {}
   end
 
 
@@ -30,7 +30,7 @@ describe "Form Filter" do
       template.should parse_to(expected)
     end
   end
- 
+
   context "the set_param filter" do
     it "should let you change params on an input" do
       expected = '<input dummy="ffgg" type="password" ilse="sss" />'
@@ -48,9 +48,9 @@ describe "Form Filter" do
       expected = '<input dummy="ffgg" ilse="sss"  type="password">'
       template = '{{ \'<input dummy="ffgg" ilse="sss" >\' | set_param: "type", "password" }}'
       template.should parse_to(expected)
-    end      
+    end
   end
-  
+
   context "the submit_button filter" do
     it "converts text to submit button" do
       expected = '<div class="form-submit-button"><input type="submit" value="I am here"/></div>'
@@ -58,7 +58,7 @@ describe "Form Filter" do
       template.should parse_to(expected)
     end
   end
-  
+
   context "the get_attribute_value filter" do
     specify "should return the value for the attribute of an open tag" do
       value = get_attribute_value "attribute", '<tag attribute="value">'
@@ -143,12 +143,12 @@ describe "Form Filter" do
 
    specify "sets error class if there is an error" do
      item = form_text_item "item[field]", "value", true
-     item.should == "<textarea id=\"item_field\" name=\"item[field]\" class=\"error-item\">value</textarea>"      
+     item.should == "<textarea id=\"item_field\" name=\"item[field]\" class=\"error-item\">value</textarea>"
    end
 
  end
 
-  context "the form_select_item filter" do 
+  context "the form_select_item filter" do
     specify "selects an item based on inputed value and name" do
       user_drop1 = mock_drop user_default_values
       user_drop2 = mock_drop user_default_values
@@ -191,5 +191,5 @@ describe "Form Filter" do
       item.should == "<select id=\"item_field\" name=\"item[field]\" class=\"error-item\"><option value=\"#{user_drop1.id}\">#{user_drop1.collection_label}</option><option value=\"#{user_drop2.id}\">#{user_drop2.collection_label}</option></select>"
     end
   end
-   
+
 end

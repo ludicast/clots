@@ -15,7 +15,7 @@ describe "tags for forms that use models" do
   def tag_should_parse_to(expected, hash = {})
     @tag.should parse_with_vars_to(expected, hash.merge( 'dummy' => @user ))
   end
-  
+
   before do
     @user = mock_drop user_default_values
   end
@@ -101,7 +101,7 @@ describe "tags for forms that use models" do
 
   context "for checkbox" do
 
-    context "outside of form" do 
+    context "outside of form" do
       it "should be generated with checked" do
         @tag = "{% check_box dummy,'admin' %}"
         tag_should_parse_to('<input name="dummy[admin]" type="hidden" value="0" /><input checked="checked" id="dummy_admin" name="dummy[admin]" type="checkbox" value="1" />')
@@ -128,7 +128,7 @@ describe "tags for forms that use models" do
         @tag = "{% check_box 'banned' %}"
         parse_form_tag_to('<input name="dummy[banned]" type="hidden" value="0" /><input id="dummy_banned" name="dummy[banned]" type="checkbox" value="1" />')
       end
-      
+
       it "should have alternate labels" do
         @tag = "{% check_box 'admin','yes','no',class:'eula_check' %}"
         parse_form_tag_to('<input name="dummy[admin]" type="hidden" value="no" /><input class="eula_check" checked="checked" id="dummy_admin" name="dummy[admin]" type="checkbox" value="yes" />')
@@ -169,7 +169,7 @@ describe "tags for forms that use models" do
 
     end
 
-    
+
 
   end
 
@@ -206,7 +206,7 @@ describe "tags for forms that use models" do
       it "should take regular cols/rows" do
         @tag = "{% text_area dummy,'name',cols:20,rows:40 %}"
         tag_should_parse_to %{<textarea cols="20" id="dummy_name" name="dummy[name]" rows="40">#{@user.name}</textarea>}
-      end      
+      end
       it "should take regular size" do
         @tag = "{% text_area dummy,'name',size:'20x40' %}"
         tag_should_parse_to %{<textarea cols="20" id="dummy_name" name="dummy[name]" rows="40">#{@user.name}</textarea>}

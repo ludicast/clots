@@ -29,7 +29,7 @@ module Spec
           model.instance_eval( "def #{symbol}() \"#{value}\"; end" )
           drop.liquid_attributes << symbol
         end
-        
+
         drop
       end
     end
@@ -55,7 +55,7 @@ class LiquidDemoModel
     @saved = true
   end
 end
-  
+
 class LiquidDemoModelDrop < Liquid::Drop
 
   attr_reader :source, :liquid_attributes
@@ -68,7 +68,7 @@ class LiquidDemoModelDrop < Liquid::Drop
     def initialize(args = {})
    #   @source = mock_model(LiquidDemoModel)
       @source =   LiquidDemoModel.new
-      @dropped_class = @source.class  # LiquidDemoModel      
+      @dropped_class = @source.class  # LiquidDemoModel
       @liquid_attributes = []
 
       args.each_pair do |symbol,value|
@@ -127,7 +127,7 @@ class LiquidDemoModelDrop < Liquid::Drop
           classes << klass = klass.superclass
         end
         classes
-      rescue  
+      rescue
         [self]
       end
 
@@ -165,7 +165,7 @@ def text_content_default_values
 end
 
 def empty_default_values
-    { 
+    {
       :id => nil,
       :login => "",
       :email => "",
@@ -198,7 +198,7 @@ Spec::Matchers.define :parse_to do |expected|
   failure_message_for_should do |template|
     "expected #{template} to parse to: \n#{expected} but instead got: \n#{@template_match_value}"
   end
-     
+
   failure_message_for_should_not do |template|
     "expected #{template} to not parse to #{expected}"
   end

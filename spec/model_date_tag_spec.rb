@@ -177,7 +177,7 @@ describe "tags for forms that use models" do
       @month_string = '<select id="dummy_registered_at_2i" name="dummy[registered_at(2i)]">' + get_options(1,@time.month - 1,{:label_func => :get_month}) + %{<option selected="selected" value="#{@time.month}">#{get_month @time.month}</option>} + get_options(@time.month + 1,12,{:label_func => :get_month}) + "</select>"
       @day_string = '<select id="dummy_registered_at_3i" name="dummy[registered_at(3i)]">' + get_options(1,(@time.day - 1)) + %{<option selected="selected" value="#{@time.day}">#{fill_zeros @time.day}</option>} + get_options((@time.day + 1),31) + "</select>"
 
-      tag_should_parse_to @year_string + @month_string + @day_string 
+      tag_should_parse_to @year_string + @month_string + @day_string
     end
 
     it "should generate selection with start year, month_numbers, blank, and excluding day" do
@@ -203,7 +203,7 @@ describe "tags for forms that use models" do
   context "for time_select" do
     context "within form" do
       it "should generate selection event when class is nil" do
-        @user.stub!(:registered_at).and_return(nil)        
+        @user.stub!(:registered_at).and_return(nil)
         @tag = "{% time_select 'registered_at' %}"
         @year_string = %{<input id="dummy_registered_at_1i" name="dummy[registered_at(1i)]" type="hidden" value="#{@time.year}" />}
         @month_string = %{<input id="dummy_registered_at_2i" name="dummy[registered_at(2i)]" type="hidden" value="#{@time.month}" />}
@@ -272,7 +272,7 @@ describe "tags for forms that use models" do
 
       @hour_string = '<select id="dummy_registered_at_4i" name="dummy[registered_at(4i)]">' + get_options(0,(@time.hour - 1)) + %{<option selected="selected" value="#{@time.hour}">#{fill_zeros(@time.hour)}</option>} + get_options((@time.hour + 1),59) + "</select>"
       @minute_string = '<select id="dummy_registered_at_5i" name="dummy[registered_at(5i)]"><option value="0">00</option><option selected="selected" value="15">15</option><option value="30">30</option><option value="45">45</option></select>'
-            
+
       tag_should_parse_to @year_string + @month_string + @day_string + @hour_string + @minute_string
     end
 

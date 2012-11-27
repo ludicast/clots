@@ -8,7 +8,7 @@ describe "Form For" do
 
     before do
       @new_drop = get_drop empty_default_values
-    end  
+    end
 
   context "edit form" do
     it "should be have hidden method of PUT" do

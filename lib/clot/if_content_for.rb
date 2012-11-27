@@ -3,13 +3,13 @@ module Clot
     include Liquid
 
     Syntax = /(#{QuotedFragment}+)(\s+(?:with|for)\s+(#{QuotedFragment}+))?/
-  
-    def initialize(tag_name, markup, tokens)      
+
+    def initialize(tag_name, markup, tokens)
       @blocks = []
- 
+
       if markup =~ Syntax
 
-        @template_name = $1 
+        @template_name = $1
         @variable_name = $3
         @attributes    = {}
 
@@ -23,7 +23,7 @@ module Clot
 
       super
     end
-    
+
     def render(context)
       @template_name
       super

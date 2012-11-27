@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "Form Tag" do
 
   include Liquid
-  
+
   context "when consisting of the same identical inner tag" do
     it "produces unique tags each time" do
       user_drop = get_drop user_default_values
@@ -32,17 +32,17 @@ describe "Form Tag" do
 
   it "should allow multipart" do
     form = "{% form_tag '/upload' multipart:true %}{% endform_tag %}"
-    form.should parse_to('<form action="/upload" method="post" enctype="multipart/form-data"></form>')    
+    form.should parse_to('<form action="/upload" method="post" enctype="multipart/form-data"></form>')
   end
 
   it "should allow get method" do
     form = "{% form_tag '/upload' method:get %}{% endform_tag %}"
-    form.should parse_to('<form action="/upload" method="get"></form>')    
+    form.should parse_to('<form action="/upload" method="get"></form>')
   end
 
   it "should allow path" do
     form = "{% form_tag users_path %}{% endform_tag %}"
-    form.should parse_to('<form action="/users" method="post"></form>')    
+    form.should parse_to('<form action="/users" method="post"></form>')
   end
 
   it "should take inner tags" do

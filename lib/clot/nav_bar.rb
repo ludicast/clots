@@ -114,7 +114,7 @@ module Clot
       @params = split_params(params)
       super
     end
-    
+
     def get_nav_body(context)
       context.stack do
         LinksBlock.link_block ||= 1

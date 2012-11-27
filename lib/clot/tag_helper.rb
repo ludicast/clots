@@ -16,7 +16,7 @@ module Clot
         when /^(.+)_path$/ then "/#{$1}"
         else context[value]
       end
-    end    
+    end
 
   end
 end

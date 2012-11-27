@@ -28,7 +28,7 @@ def get_spanish_month_name(val)
 end
 
 def get_month_with_numbers(val)
-  "#{val} - #{get_month val}" 
+  "#{val} - #{get_month val}"
 end
 
 def get_options(from_val,to_val, hash = {})
@@ -61,7 +61,7 @@ describe "for date tags" do
     end
     it "should take a prompt" do
       @tag = "{% select_second 33, prompt:true %}"
-      @tag.should parse_to('<select id="date_second" name="date[second]"><option value="">Seconds</option>' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>") 
+      @tag.should parse_to('<select id="date_second" name="date[second]"><option value="">Seconds</option>' + get_options(0,32) + '<option selected="selected" value="33">33</option>' + get_options(34,59) + "</select>")
     end
     it "should take a field_name" do
       @tag = "{% select_second 33,field_name:'stride' %}"
@@ -161,7 +161,7 @@ describe "for date tags" do
       time = Time.now
       @tag = "{% select_year time,start_year:2020,end_year:1992 %}"
       @tag.should parse_with_vars_to('<select id="date_year" name="date[year]">' + get_options(time.year + 1,2020, {:reverse => true}) + %{<option selected="selected" value="#{time.year}">#{time.year}</option>} +  get_options(1992,time.year - 1, {:reverse => true}) + "</select>", 'time' => time)
-    end    
+    end
 
     it "should set take start and end in ascending order with year" do
       @tag = "{% select_year 2006,start_year:1992,end_year:2020 %}"

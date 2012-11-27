@@ -7,7 +7,7 @@ describe "Link Filters" do
   include Liquid
 
   before(:each) do
-    @context = {}    
+    @context = {}
   end
 
   context "stylesheet_link filter" do
@@ -39,7 +39,7 @@ describe "Link Filters" do
         cts_index = index_link "contents", "Index"
         assert_equal cts_index, '<a href="/contents">Index</a>'
       end
-      
+
       it "for editing" do
         test_link = edit_link @obj, "EDIT"
         test_link.should == '<a href="/liquid_demo_models/1/edit">EDIT</a>'

@@ -271,7 +271,7 @@ module Clot
         "#{attr} - #{msg}"
       else
         msg
-      end  
+      end
     end
 
   end

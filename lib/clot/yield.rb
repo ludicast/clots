@@ -3,14 +3,14 @@ module Clot
     include Liquid
 
     Syntax = /(#{QuotedFragment}+)(\s+(?:with|for)\s+(#{QuotedFragment}+))?/
-  
-    def initialize(tag_name, markup, tokens)      
+
+    def initialize(tag_name, markup, tokens)
       @blocks = []
       @naked_yield = false
- 
+
       if markup =~ Syntax
 
-        @template_name = $1 
+        @template_name = $1
         @variable_name = $3
         @attributes    = {}
 
@@ -18,32 +18,32 @@ module Clot
           @attributes[key] = value
         end
       elsif !( markup =~ /\w/ )
-        @naked_yield = true        
+        @naked_yield = true
       else
         raise SyntaxError.new("Syntax error in tag 'yield' - Valid syntax: yield '[template]' (with|for) [object|collection]")
       end
 
       super
     end
-    
-    def render(context)     
+
+    def render(context)
       if @naked_yield
         return context['content_for_layout']
       else
         partial = Liquid::Template.load_theme(context, @template_name)
-        #source  = Liquid::Template.file_system.read_template_file( "#{context['controller_name']}/#{context['action_name']}/#{@template_name}")      
-        #partial = Liquid::Template.parse(source)      
-        
+        #source  = Liquid::Template.file_system.read_template_file( "#{context['controller_name']}/#{context['action_name']}/#{@template_name}")
+        #partial = Liquid::Template.parse(source)
+
         variable = context[@variable_name || @template_name[1..-2]]
-        
+
         context.stack do
           @attributes.each do |key, value|
             context[key] = context[value]
           end
 
           if variable.is_a?(Array)
-            
-            variable.collect do |variable|            
+
+            variable.collect do |variable|
               context[@template_name[1..-2]] = variable
               partial.render(context)
             end

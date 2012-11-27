@@ -114,7 +114,7 @@ We also added a few extra methods to the BaseDrop class (as well as taking some 
 
     def errors
       @source.errors
-    end 
+    end
 
 This is necessary for having the BaseDrop and its subclasses interact properly with our form builder and filters.  You would probably be fine just adding these methods to your current drops as well - they are just useful for the form builder and other tools.
 
@@ -132,7 +132,7 @@ We thought this would be better than explicitly throwing to_liquid into the mode
 
 ## content_for and yield tags
 
-Tags have been defined to provide similar functionality to rail's 'content_for' and 'yield' statements.  
+Tags have been defined to provide similar functionality to rail's 'content_for' and 'yield' statements.
 
 The 'yield' tag is similar in function to liquid's 'include' tag, however the template name is automagically prefixed with the current controller and view directories.  This means that rather than defining a content_for tag in a view, the tag should be placed in a sub-folder of the view named after the action it will be called from.  Using the yield tag without any arguments will insert the content_for_layout variable, so it can be used the same as a typical yield statement.
 
@@ -141,7 +141,7 @@ The if_content_for block simply checks to see if a given template file exists an
 In order to use either of these tags (or the include tag) something similar to this will need to be added as a before_filter on your controller
 
     Liquid::Template.file_system = Liquid::LocalFileSystem.new( MyController.view_paths )
-  
+
 ## Filters for RESTful routes
 
 We added some filters for restful routes.  These are contained within the url_filters directory.

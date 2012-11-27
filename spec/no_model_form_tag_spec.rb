@@ -65,7 +65,7 @@ describe "tags for forms that don't use models" do
       tag = "{% hidden_field_tag 'collected_input','',onchange:\"alert('Input collected!')\" %}"
       tag.should parse_to(%{<input id="collected_input" name="collected_input" onchange="alert('Input collected!')" type="hidden" value="" />})
     end
-  
+
   end
 
   context "for select_tag" do
@@ -78,7 +78,7 @@ describe "tags for forms that don't use models" do
       tag = "{% select_tag 'people','<option>David</option>', prompt:'Gimme love' %}"
       tag.should parse_to('<select id="people" name="people"><option value="">Gimme love</option><option>David</option></select>');
     end
-    
+
 
     it "should use multiple options" do
       tag = "{% select_tag 'count','<option>1</option><option>2</option><option>3</option><option>4</option>' %}"
@@ -105,7 +105,7 @@ describe "tags for forms that don't use models" do
       tag = "{% select_tag 'destination','<option>NYC</option><option>Paris</option><option>Rome</option>',disabled:true %}"
       tag.should parse_to('<select disabled="disabled" id="destination" name="destination"><option>NYC</option><option>Paris</option><option>Rome</option></select>')
     end
-    
+
   end
 
   context "for text_area_tag" do
@@ -129,7 +129,7 @@ describe "tags for forms that don't use models" do
     it "should create text area with input" do
       tag = "{% text_area_tag 'body',size:'25x10' %}"
       tag.should parse_to('<textarea cols="25" id="body" name="body" rows="10"></textarea>')
-    end    
+    end
 
     it "should set disabled" do
       tag = "{% text_area_tag 'description','Description goes here.',disabled:true %}"
@@ -145,7 +145,7 @@ describe "tags for forms that don't use models" do
   context "for file_field_tag" do
     it "should have generic name" do
       tag = "{% file_field_tag 'attachment' %}"
-      tag.should parse_to('<input id="attachment" name="attachment" type="file" />')      
+      tag.should parse_to('<input id="attachment" name="attachment" type="file" />')
     end
     it "should have take css class" do
       tag = "{% file_field_tag 'avatar',class:'profile-input' %}"
@@ -168,7 +168,7 @@ describe "tags for forms that don't use models" do
     it "should take multiple values" do
       tag = "{% file_field_tag 'file',accept:'text/html',class:'upload',value:'index.html' %}"
       tag.should parse_to('<input accept="text/html" class="upload" id="file" name="file" type="file" value="index.html" />')
-    end 
+    end
   end
 
   context "for text_field_tag" do
@@ -199,14 +199,14 @@ describe "tags for forms that don't use models" do
 
     it "can take disabled option" do
       tag = "{% text_field_tag 'payment_amount','$0.00',disabled:true %}"
-      tag.should parse_to('<input disabled="disabled" id="payment_amount" name="payment_amount" type="text" value="$0.00" />')      
+      tag.should parse_to('<input disabled="disabled" id="payment_amount" name="payment_amount" type="text" value="$0.00" />')
     end
 
     it "can take multiple options" do
       tag = "{% text_field_tag 'ip','0.0.0.0',maxlength:15,size:20,class:'ip-input' %}"
       tag.should parse_to('<input class="ip-input" id="ip" maxlength="15" name="ip" size="20" type="text" value="0.0.0.0" />')
     end
-    
+
   end
 
   context "for password_field_tag" do
@@ -245,7 +245,7 @@ describe "tags for forms that don't use models" do
       tag = "{% password_field_tag 'pin', '1234',maxlength:4,size:6, class:'pin-input' %}"
       tag.should parse_to('<input class="pin-input" id="pin" maxlength="4" name="pin" size="6" type="password" value="1234" />')
     end
-      
+
   end
 
   context "for label_tag" do
@@ -278,7 +278,7 @@ describe "tags for forms that don't use models" do
       tag = "{% check_box_tag 'rock', 'rock music' %}"
       tag.should parse_to('<input id="rock" name="rock" type="checkbox" value="rock music" />')
     end
-    
+
     it "should take parameter for checked" do
       tag = "{% check_box_tag 'receive_email', 'yes', true %}"
       tag.should parse_to('<input checked="checked" id="receive_email" name="receive_email" type="checkbox" value="yes" />')

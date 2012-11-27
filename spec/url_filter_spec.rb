@@ -6,17 +6,17 @@ describe "Url Filters" do
   include Liquid
 
   before(:each) do
-    @context = {}    
+    @context = {}
   end
 
   context "stylesheet_url filter" do
     specify "should get url for stylesheet" do
       test_url = stylesheet_url "stylesheet"
       test_url.should == "/stylesheets/stylesheet.css"
-    end 
+    end
   end
 
-  context "object_url filter" do 
+  context "object_url filter" do
     specify "should get url for object" do
       obj = get_drop text_content_default_values
       test_url = object_url obj
@@ -34,7 +34,7 @@ describe "Url Filters" do
     before(:each) do
       @obj = get_drop text_content_default_values
     end
-   
+
     specify "should produce nested urls of objects" do
       url = get_nested_url @obj, @obj
       expected_url = "/liquid_demo_models/1/liquid_demo_models/1"
@@ -45,7 +45,7 @@ describe "Url Filters" do
       url = get_nested_url @obj, "/child"
       expected_url = "/liquid_demo_models/1/child"
       url.should == expected_url
-    end  
+    end
   end
 
   context "get_nested_edit_url filter" do

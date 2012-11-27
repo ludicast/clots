@@ -1,20 +1,20 @@
 module Clot
   module FormFilters
-    
+
     def form_item(tag, message, required = false)
       tag_id = get_attribute_value("id", tag)
-      
+
       form_string = ""
-      if tag_id 
+      if tag_id
         form_string = " for=\"#{tag_id}\""
       end
-      
+
       if required
         required_string = "<span class=\"required\">*</span>"
       else
         required_string = ""
       end
-      
+
       "<p><label#{form_string}>#{message}#{required_string}</label>#{tag}</p>"
     end
 
@@ -43,7 +43,7 @@ module Clot
     def concat(string1, string2)
       "#{string1}#{string2}"
     end
-    
+
 
     def get_id_from_name(name)
       name.sub("[", "_").sub("]","")
@@ -52,8 +52,8 @@ module Clot
     def drop_class_to_table_item(clazz)
       match = /_drops/.match clazz.name.tableize
       match.pre_match
-    end  
-    
+    end
+
     def get_attribute_value(prop, input)
       prop_match = /#{prop}="([^"]*)"/.match input
       if prop_match
@@ -78,12 +78,12 @@ module Clot
 
     def submit_button(message)
         '<div class="form-submit-button"><input type="submit" value="' + message + '"/></div>'
-    end      
+    end
 
     def form_input_item(name, value, errors )
       input = "<input type=\"text\" id=\"#{get_id_from_name(name)}\" name=\"#{name}\" value=\"#{value}\"#{get_error_class(errors)}/>"
       input
-    end    
+    end
 
     def form_text_item(name, value, errors )
       text = "<textarea id=\"#{get_id_from_name(name)}\" name=\"#{name}\"#{get_error_class(errors)}>#{value}</textarea>"
