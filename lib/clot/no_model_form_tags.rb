@@ -113,6 +113,14 @@ module Clot
     end
   end
 
+  class EmailFieldTag < InputTag
+
+    def render_string
+      @type ||= "email"
+      super
+    end
+  end
+
   class FileFieldTag < InputTag
 
     def render_string

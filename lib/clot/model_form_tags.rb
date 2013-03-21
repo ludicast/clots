@@ -77,6 +77,11 @@ module Clot
   class TextField < TextFieldTag
     include ModelTag
   end
+
+  class EmailField < EmailFieldTag
+    include ModelTag
+  end
+
   class TextArea < TextAreaTag
     include ModelTag
   end
