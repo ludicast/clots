@@ -21,6 +21,7 @@ Liquid::Template.register_filter Clot::FormFilters
 Liquid::Template.register_tag('error_messages_for', Clot::ErrorMessagesFor)
 Liquid::Template.register_tag('formfor', Clot::LiquidFormFor)
 Liquid::Template.register_tag('form_for', Clot::LiquidFormFor)
+Liquid::Template.register_tag('secure_form_for', Clot::LiquidFormFor)
 Liquid::Template.register_tag('yield', Clot::Yield)
 Liquid::Template.register_tag('if_content_for', Clot::IfContentFor)
 Liquid::Template.register_tag('form_tag', Clot::FormTag)
