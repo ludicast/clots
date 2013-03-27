@@ -77,6 +77,8 @@ module Clot
           @size_string = %{size="#{value}" }
         when "width" then
           @size_string = %{width="#{value}" }
+        when "placeholder" then
+          @placeholder_string = %{placeholder="#{value}" }
       end
     end
 
@@ -85,7 +87,7 @@ module Clot
         @value_string = CGI::escapeHTML(@value_string.to_s)
         @value_string = %{value="#{@value_string}" }
       end
-      %{<input #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
+      %{<input #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
     end
   end
 
