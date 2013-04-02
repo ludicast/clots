@@ -15,11 +15,11 @@ module Clot
 
     def delete_link(target, message = "Delete", class_name = "")
       url = object_url target, class_name
-      gen_delete_link(url,message)
+      gen_delete_link(url, message, class_name)
     end
 
-    def gen_delete_link(url, message = nil)
-      '<a href="' + url + '" onClick="' + gen_delete_onclick + '">' + message + '</a>'
+    def gen_delete_link(url, message = nil, class_name="")
+      '<a href="' + url + '" onClick="' + gen_delete_onclick + '" class="' + class_name + '">' + message + '</a>'
     end
 
     def gen_delete_onclick
