@@ -14,7 +14,7 @@ module Clot
 
 
     def delete_link(target, message = "Delete", class_name = "")
-      url = object_url target, class_name
+      url = object_url target
       gen_delete_link(url, message, class_name)
     end
 

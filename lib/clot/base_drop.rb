@@ -27,7 +27,6 @@ module Clot
         }
         class_eval has_many
       end
-
     end
   end
 

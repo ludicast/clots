@@ -140,7 +140,7 @@ module Clot
         if Rails.env.production? || Rails.env.staging?
           uri.scheme = "https"
         else
-          uri.scheme = "http"
+          uri.scheme = "https"
         end
         @form_action = uri.to_s
       end
