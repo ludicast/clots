@@ -34,6 +34,8 @@ module Clot
             @accept_string = %{accept="#{CGI::unescape value}" }
           when "class" then
             @class_string = %{class="#{value}" }
+          when "required" then
+            @class_string = %{required="#{value}" }
           when "onchange" then
             @onchange_string = %{onchange="#{value}" }
           when "maxlength" then
