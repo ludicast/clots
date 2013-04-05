@@ -35,7 +35,7 @@ module Clot
           when "class" then
             @class_string = %{class="#{value}" }
           when "required" then
-            @class_string = %{required="#{value}" }
+            @required_string = %{required="#{value}" }
           when "onchange" then
             @onchange_string = %{onchange="#{value}" }
           when "maxlength" then
@@ -89,7 +89,7 @@ module Clot
         @value_string = CGI::escapeHTML(@value_string.to_s)
         @value_string = %{value="#{@value_string}" }
       end
-      %{<input #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
+      %{<input #{@required_string}#{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
     end
   end
 
