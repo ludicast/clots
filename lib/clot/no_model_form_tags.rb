@@ -116,9 +116,22 @@ module Clot
   end
 
   class EmailFieldTag < InputTag
-
     def render_string
       @type ||= "email"
+      super
+    end
+  end
+
+  class PhoneFieldTag < InputTag
+    def render_string
+      @type ||= "tel"
+      super
+    end
+  end
+
+  class NumberFieldTag < InputTag
+    def render_string
+      @type ||= "number"
       super
     end
   end

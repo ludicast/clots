@@ -82,6 +82,14 @@ module Clot
     include ModelTag
   end
 
+  class PhoneField < PhoneFieldTag
+    include ModelTag
+  end
+
+  class NumberField < NumberFieldTag
+    include ModelTag
+  end
+
   class TextArea < TextAreaTag
     include ModelTag
   end

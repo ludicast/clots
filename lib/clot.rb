@@ -39,6 +39,8 @@ Liquid::Template.register_tag('password_field_tag', Clot::PasswordFieldTag)
 
 Liquid::Template.register_tag('text_field', Clot::TextField)
 Liquid::Template.register_tag('email_field', Clot::EmailField)
+Liquid::Template.register_tag('phone_field', Clot::PhoneField)
+Liquid::Template.register_tag('number_field', Clot::NumberField)
 Liquid::Template.register_tag('text_area', Clot::TextArea)
 Liquid::Template.register_tag('label', Clot::Label)
 Liquid::Template.register_tag('check_box', Clot::CheckBox)
