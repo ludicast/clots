@@ -56,8 +56,6 @@ module Clot
     end
 
     def render(context)
-
-
       instance_variables.map(&:to_sym).each do |var|
         unless [:@_params, :@markup, :@tag_name].include? var
           instance_variable_set var, nil  #this is because the same parse tag is re-rendered
@@ -88,6 +86,9 @@ module Clot
       unless @value_string.nil?
         @value_string = CGI::escapeHTML(@value_string.to_s)
         @value_string = %{value="#{@value_string}" }
+      end
+      if @required
+        @required_string = "required"
       end
       %{<input #{@required_string}#{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
     end
