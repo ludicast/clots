@@ -88,7 +88,7 @@ module Clot
         @value_string = %{value="#{@value_string}" }
       end
       if @required
-        @required_string = "required"
+        @required_string = "required "
       end
       %{<input #{@required_string}#{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
     end
