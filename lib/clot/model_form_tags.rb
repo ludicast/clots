@@ -47,12 +47,17 @@ module Clot
       end
       @errors = context['form_errors'] || []
 
-      model = @item.source.dup
+      begin
+      model = @item.source.clone
       unless model.valid?
         if model.errors[@attribute_name.to_sym].present?
           @required = true
         end
       end
+      rescue ArgumentError => e
+        @required = true
+      end
+
 
     end
 
