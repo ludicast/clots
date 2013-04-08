@@ -47,11 +47,13 @@ module Clot
       end
       @errors = context['form_errors'] || []
 
-      unless @item.source.valid?
-        if @item.source.errors[@attribute_name.to_sym].present?
+      model = @item.source.dup
+      unless model.valid?
+        if model.errors[@attribute_name.to_sym].present?
           @required = true
         end
       end
+
     end
 
     def render(context)
