@@ -2,6 +2,7 @@ module Clot
   module ModelTag
     def set_primary_attributes(context)
       @item = context['form_model']
+      @context = context
       if @item
 
         @attribute_name =  resolve_value(@params.shift,context)
@@ -46,6 +47,10 @@ module Clot
         @value_string = @item[@attribute_name.to_sym]
       end
       @errors = context['form_errors'] || []
+
+      if @errors.include? @attribute_name.to_sym
+        @error_message = @item.source.errors.full_message(@attribute_name, @item.source.errors[@attribute_name].first)
+      end
 
       model = @item.source
       unless model.valid?

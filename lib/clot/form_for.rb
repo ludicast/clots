@@ -254,7 +254,7 @@ module Clot
       result = ""
       if @model and @model.errors.count > 0
         @suffix = @model.errors.count > 1 ? "s" : ""
-        @default_message = @model.errors.count.to_s + " error#{@suffix} occurred while processing information"
+        @default_message = @model.errors.count.to_s + " error#{@suffix} occurred while processing this form."
 
         @params.each do |pair|
           pair = pair.split /:/
@@ -279,7 +279,8 @@ module Clot
 
     def error_message(attr, msg)
       unless attr == :base
-        "#{attr} - #{msg}"
+        #"#{attr} - #{msg}"
+        @model.errors.full_message(attr, msg)
       else
         msg
       end

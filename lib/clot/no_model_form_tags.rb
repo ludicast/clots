@@ -1,4 +1,5 @@
 require 'clot/tag_helper'
+require 'cgi'
 
 module Clot
   module AttributeSetter
@@ -90,7 +91,25 @@ module Clot
       if @required
         @required_string = "required "
       end
-      %{<input #{@required_string}#{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
+
+      if @error_message
+        if @class_string
+          @class_string.chomp!('" ')
+          @class_string += ' error" '
+        else
+          @class_string ||= %{ class="error" }
+        end
+        @data_error_message_string = %{ data-error-message="#{CGI.escapeHTML(@error_message)}" }
+
+      end
+
+
+      out = %{<input #{@data_error_message_string} #{@required_string} #{@accept_string}#{@disabled_string}#{@class_string}id="#{@id_string}" #{@max_length_string}name="#{@name_string}" #{@placeholder_string}#{@size_string}#{@onchange_string}type="#{@type}" #{@value_string}/>}
+      if @context && @context.registers[:controller].current_theme.api_version >= 2
+        out += %{<span class="error-message">#{@error_message}</span>} if @error_message
+      end
+
+      out
     end
   end
 
