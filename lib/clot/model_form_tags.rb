@@ -53,13 +53,14 @@ module Clot
       end
 
       model = @item.source
+      errors = @item.source.errors
       unless model.valid?
         if model.errors[@attribute_name.to_sym].present?
           @required = true
         end
       end
-
-
+      model.errors.clear
+      model.instance_eval { @errors = errors }
 
     end
 
