@@ -52,16 +52,7 @@ module Clot
         @error_message = @item.source.errors.full_message(@attribute_name, @item.source.errors[@attribute_name].first)
       end
 
-      model = @item.source
-      errors = @item.source.errors
-      unless model.valid?
-        if model.errors[@attribute_name.to_sym].present?
-          @required = true
-        end
-      end
-      model.errors.clear
-      model.instance_eval { @errors = errors }
-
+      @required = context['form_required_fields'].include?(@attribute_name.to_sym)
     end
 
     def render(context)

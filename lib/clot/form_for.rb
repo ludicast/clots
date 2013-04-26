@@ -77,15 +77,28 @@ module Clot
         errors << attr
       end
       errors
-
     end
 
+    def get_required_fields(model)
+      source = model.source
+      errors = source.errors
+      required_fields = if source.valid?
+          []
+        else
+          source.errors.to_hash.keys
+        end
+      source.errors.clear
+      source.instance_eval { @errors = errors }
+      required_fields
+    end
 
     def get_form_body(context)
       context.stack do
         context['form_model'] =  @model
         context['form_class_name'] =  @class_name
         context['form_errors'] =  get_errors @model
+        context['form_required_fields'] =  get_required_fields @model
+
         return render_all(@nodelist, context)
       end
     end
