@@ -82,13 +82,14 @@ module Clot
     def get_required_fields(model)
       source = model.source
       errors = source.errors
+      had_errors = true unless errors.empty?
       required_fields = if source.valid?
           []
         else
           source.errors.to_hash.keys
         end
       source.errors.clear
-      source.instance_eval { @errors = errors }
+      source.valid? if had_errors
       required_fields
     end
 
@@ -98,7 +99,6 @@ module Clot
         context['form_class_name'] =  @class_name
         context['form_errors'] =  get_errors @model
         context['form_required_fields'] =  get_required_fields @model
-
         return render_all(@nodelist, context)
       end
     end
