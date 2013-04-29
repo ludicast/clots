@@ -178,11 +178,13 @@ module Clot
           size_array = value.split /x/
           @col_string = %{cols="#{size_array[0]}" }
           @row_string = %{ rows="#{size_array[1]}"}
+        when "placeholder" then
+          @placeholder_string = %{placeholder="#{value}" }
       end
     end
 
     def render_string
-      %{<textarea #{@disabled_string}#{@class_string}#{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string}>#{@value_string}</textarea>}
+      %{<textarea #{@disabled_string}#{@class_string}#{@col_string}id="#{@id_string}" name="#{@name_string}"#{@row_string} #{@placeholder_string}>#{@value_string}</textarea>}
     end
   end
 
