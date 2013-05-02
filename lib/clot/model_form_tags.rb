@@ -21,7 +21,17 @@ module Clot
         raise "#{attribute_names[0]} is not a valid form field for #{@first_attr.camelize}."
       end
 
-      if attribute_names.size == 3
+      if attribute_names[0] == "custom_values" # oh geez
+        @name_string = @first_attr + "[#{attribute_names[0]}][#{attribute_names[1]}]"
+        @id_string = @first_attr + "_" + attribute_names.join('_') + '_custom'
+        @value_string = ""
+        if @item
+          @subitem = @item.custom_values
+          if @subitem
+            @value_string = @subitem[attribute_names[1]]
+          end
+        end
+      elsif attribute_names.size == 3
         @name_string = @first_attr + "[" + attribute_names[0].to_s + "_attributes][" + attribute_names[1].to_s + "_attributes][" + attribute_names[2].to_s + "]"
         @id_string = @first_attr + "_" + attribute_names[0].to_s + "_attributes_" + attribute_names[1].to_s + "_" + attribute_names[2].to_s
         @value_string = ""
