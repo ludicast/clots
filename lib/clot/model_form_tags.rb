@@ -3,8 +3,8 @@ module Clot
     def set_primary_attributes(context)
       @item = context['form_model']
       @context = context
-      if @item
 
+      if @item
         @attribute_name =  resolve_value(@params.shift,context)
         @first_attr = context['form_class_name']
       else
@@ -29,6 +29,16 @@ module Clot
           @subitem = @item.custom_values
           if @subitem
             @value_string = @subitem[attribute_names[1]]
+          end
+        end
+      elsif attribute_names[1] == "custom_values"
+        @name_string = @first_attr + "[#{attribute_names[0]}][#{attribute_names[1]}][#{attribute_names[2]}]"
+        @id_string = @first_attr + "_" + attribute_names.join('_') + '_custom'
+        @value_string = ""
+        if @item
+          @subitem = @item.custom_values
+          if @subitem
+            @value_string = @subitem[attribute_names[2]]
           end
         end
       elsif attribute_names.size == 3
