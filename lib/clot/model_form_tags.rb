@@ -28,7 +28,7 @@ module Clot
         if @item
           @subitem = @item.custom_values
           if @subitem
-            @value_string = @subitem[attribute_names[1]]
+            @value_string = convert_to_float_if_number_string(@subitem[attribute_names[1]])
           end
         end
       elsif attribute_names[1] == "custom_values"
@@ -38,7 +38,7 @@ module Clot
         if @item
           @subitem = @item.custom_values
           if @subitem
-            @value_string = @subitem[attribute_names[2]]
+            @value_string = convert_to_float_if_number_string(@subitem[attribute_names[2]])
           end
         end
       elsif attribute_names.size == 3
@@ -81,6 +81,14 @@ module Clot
       #  result = "<div class=\"fieldWithErrors\">#{result}</div>"
       #end
       result
+    end
+
+    def convert_to_float_if_number_string(value_string)
+      if value_string =~ /(^[-+]?([0-9]){0,16}\.?[0-9]{0,8}$)|(^$)/
+        value_string.to_f
+      else
+        value_string
+      end
     end
   end
 
