@@ -241,6 +241,11 @@ module Clot
     def render_string
       if @item[@attribute_name.to_sym]
         @checked_value = %{checked="checked" }
+      elsif @item.custom_values
+        custom_value_key = @attribute_name.split('.').last
+        if @item.custom_values[custom_value_key]
+          @checked_value = %{checked="checked" }
+        end
       end
       %{<input name="#{@name_string}" type="hidden" value="#{@false_val}" />} + %{<input #{@disabled_string}#{@class_string}#{@checked_value}id="#{@id_string}" name="#{@name_string}" type="checkbox" value="#{@true_val}" />}
     end
