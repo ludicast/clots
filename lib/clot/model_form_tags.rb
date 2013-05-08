@@ -241,7 +241,7 @@ module Clot
     def render_string
       if @item[@attribute_name.to_sym]
         @checked_value = %{checked="checked" }
-      elsif @item.custom_values
+      elsif @item["custom_values"].present?
         custom_value_key = @attribute_name.split('.').last
         if @item.custom_values[custom_value_key]
           @checked_value = %{checked="checked" }
