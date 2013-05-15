@@ -243,7 +243,7 @@ module Clot
         @checked_value = %{checked="checked" }
       elsif @item["custom_values"].present?
         custom_value_key = @attribute_name.split('.').last
-        if @item.custom_values[custom_value_key]
+        if "1" == @item.custom_values[custom_value_key]
           @checked_value = %{checked="checked" }
         end
       end
