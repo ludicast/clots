@@ -98,7 +98,6 @@ module Clot
         context['form_model'] =  @model
         context['form_class_name'] =  @class_name
         context['form_errors'] =  get_errors @model
-        context['form_required_fields'] =  get_required_fields @model
         return render_all(@nodelist, context)
       end
     end

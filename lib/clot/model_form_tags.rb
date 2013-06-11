@@ -71,8 +71,6 @@ module Clot
       if @errors.include? @attribute_name.to_sym
         @error_message = @item.source.errors.full_message(@attribute_name, @item.source.errors[@attribute_name].first)
       end
-
-      @required = context['form_required_fields'].include?(@attribute_name.to_sym)
     end
 
     def render(context)
