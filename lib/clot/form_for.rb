@@ -235,9 +235,11 @@ module Clot
       end
 
       # this is a honeypot field
-      result += '<div class="email_address_form" style="display:none;">'
-      result += '<p><label for "email_address">Optional email code</label><br/><input name="email_address" type="text" class="text" id="email_address" autocomplete="off"/></p>'
-      result += '</div>'
+      unless @class_name == 'password'
+        result += '<div class="email_address_form" style="display:none;">'
+        result += '<p><label for "email_address">Optional email code</label><br/><input name="email_address" type="text" class="text" id="email_address" autocomplete="off"/></p>'
+        result += '</div>'
+      end
 
       result
     end
