@@ -187,7 +187,7 @@ module Clot
               selection_string = ' selected="selected"'
             end
           end
-        elsif attribute_names.size == 3
+        elsif attribute_names.size == 3 && @item[attribute_names[0].to_sym] && @item[attribute_names[0].to_sym][attribute_names[1].to_sym] && @item[attribute_names[0].to_sym][attribute_names[1].to_sym][attribute_names[2].to_sym]
           if item[@default_id.to_sym].to_s == @item[attribute_names[0].to_sym][attribute_names[1].to_sym][attribute_names[2].to_sym].to_s
             selection_string = ' selected="selected"'
           end
