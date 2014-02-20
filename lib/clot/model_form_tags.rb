@@ -198,6 +198,8 @@ module Clot
         elsif attribute_names.size == 2
           if item[@default_id.to_sym].to_s == @item[attribute_names.first.to_sym][attribute_names.last.to_sym].to_s
             selection_string = ' selected="selected"'
+          elsif item[@default_id.to_sym].to_s == @item[attribute_names.first.to_s][attribute_names.last.to_s].to_s
+            selection_string = ' selected="selected"'
           end
         else
           if item[@default_id.to_sym].to_s == @item[@attribute_name.to_sym].to_s
