@@ -36,7 +36,7 @@ module Clot
         @id_string = @first_attr + "_" + attribute_names.join('_') + '_custom'
         @value_string = ""
         if @item
-          @subitem = @item.custom_values
+          @subitem = @item.send(attribute_names[0].downcase + '_custom_values')
           if @subitem
             @value_string = convert_to_float_if_number_string(@subitem[attribute_names[2]])
           end
