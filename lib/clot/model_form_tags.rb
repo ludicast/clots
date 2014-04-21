@@ -17,8 +17,14 @@ module Clot
       end
       attribute_names = @attribute_name.split('.')
 
-      unless @item.source.respond_to?(:"#{attribute_names[0]}=")
-        raise "#{attribute_names[0]} is not a valid form field for #{@first_attr.camelize}."
+      if @item.class.respond_to?(:allowed_params)
+        if !check_params(@item.class.allowed_params, attribute_names)
+          raise "#{attribute_names.join(".")} is not a valid form field for #{@first_attr.camelize}."
+        end
+      else
+        unless @item.source.respond_to?(:"#{attribute_names[0]}=")
+          raise "#{attribute_names[0]} is not a valid form field for #{@first_attr.camelize}."
+        end
       end
 
       if attribute_names[0] == "custom_values" # oh geez
@@ -88,6 +94,23 @@ module Clot
         value_string
       end
     end
+
+    def check_params(allowed_params, attribute_names)
+      return true if attribute_names.size == 0
+      attribute = attribute_names[0].to_sym
+      if attribute_names.size == 1
+        return allowed_params.include?(attribute)
+      else
+        allowed_params.each do |allowed|
+          if allowed.is_a?(Hash) && allowed.keys.first == attribute
+            new_params = allowed.values.first.is_a?(Array) ? allowed.values.first : [allowed.values.first]
+            return check_params(new_params, attribute_names[1..-1])
+          end
+        end
+      end
+      return false
+    end
+
   end
 
  class FileField < FileFieldTag
